@@ -8,7 +8,7 @@ Main function for testing
 https://mathematica.stackexchange.com/questions/19546/image-processing-floor-plan-detecting-rooms-borders-area-and-room-names-t
 '''
 def main():
-    img = cv2.imread("example3.png")
+    img = cv2.imread("example2.png")
 
     height, width, channels = img.shape
     blank_image = np.zeros((height,width,3), np.uint8) # output image same size as original
@@ -30,8 +30,8 @@ def main():
 
     # Show images
     cv2.imshow("a", img)
-    #cv2.imshow("b", wall_img)
-    #cv2.imshow("c", gray)
+    cv2.imshow("b", wall_img)
+    cv2.imshow("c", gray)
 
     # Exit
     cv2.waitKey()
