@@ -1,9 +1,8 @@
-
 import cv2
 import numpy as np
 
 '''
-Main function for testing
+Main function for testing and visualising
 
 https://mathematica.stackexchange.com/questions/19546/image-processing-floor-plan-detecting-rooms-borders-area-and-room-names-t
 '''
@@ -208,11 +207,6 @@ def detectOuterContours(detect_img, output_img = None, color = [255, 255, 255]):
         final = cv2.drawContours(output_img, [approx], 0, color)
     return approx, output_img
 
-'''
-Wall exist
-'''
-def wallExist(wall_list, wall):
-    return wall in wall_list
 
 '''
 Rect contains
@@ -246,5 +240,9 @@ def detectLines(detect_img, output_img = None, color = [255, 255, 255]):
 
     return lines, output_img
 
-if __name__ == "__main__":
-    main()
+
+'''
+Uncomment this for testing
+'''
+#if __name__ == "__main__":
+#    main()

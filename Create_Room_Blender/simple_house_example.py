@@ -1,6 +1,8 @@
 import bpy
 
 '''
+Example simple house implementation
+
 https://www.blender.org/forum/viewtopic.php?t=25794
 '''
 
