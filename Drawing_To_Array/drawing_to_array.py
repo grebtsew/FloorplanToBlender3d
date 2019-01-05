@@ -70,37 +70,51 @@ def test():
 
     wall_height = 1
 
-    # Convert 2d poses to 3d poses and boxes
+    scale = 100
 
-    counter_curr = 0
-    counter_box_size= 0
+    '''
+    Scale and create array of box_verts
+    [[box1],[box2],...]
+    '''
 
     # for each wall group
     for box in boxes:
         temp_verts = []
-        counter_box_size = 0
         # for each pos
         for pos in box:
 
-
         # add and convert all positions
-            verts.extend([(pos[0][0], pos[0][1], 0.0)])
-            verts.extend([(pos[0][0], pos[0][1], wall_height)])
+            temp_verts.extend([(pos[0][0]/scale, pos[0][1]/scale, 0.0)])
+            temp_verts.extend([(pos[0][0]/scale, pos[0][1]/scale, wall_height)])
 
-            counter_curr += 2
-            counter_box_size += 2
+        # add box to list
+        verts.extend(temp_verts)
 
-        # get correct position indexes
-        for i in range(0, counter_box_size):
-            temp_verts.extend([(counter_curr - i)])
+    '''
+    Create faces for each point and create mesh
+    We want to build each wall as a mesh
+    Therefore we split the each vert and send 4 points to each mesh
+    '''
+    for box in verts:
 
-        faces.append(temp_verts)
+        # for each two points
+        for i in Range(0, len(box) % 4):
+            t = i*2
+            temp_vert = []
+            #Verts to send
+            temp_vert.extend(box[i])
+            temp_vert.extend(box[i+2])
+            temp_vert.extend(box[i+3])
+            temp_vert.extend(box[i+1])
 
-        print(faces)
+            # faces
+            faces.extend([(0,1,2,3)])
 
-        print(verts)
-        print()
+            # Create mesh
 
+
+
+        pass
 
 '''
 Filter walls
