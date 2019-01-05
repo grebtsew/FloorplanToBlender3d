@@ -9,6 +9,7 @@ https://mathematica.stackexchange.com/questions/19546/image-processing-floor-pla
 def main():
     img = cv2.imread("example2.png")
 
+
     height, width, channels = img.shape
     blank_image = np.zeros((height,width,3), np.uint8) # output image same size as original
 
@@ -35,6 +36,70 @@ def main():
     # Exit
     cv2.waitKey()
     cv2.destroyAllWindows()
+
+'''
+Test function for future use
+'''
+def test():
+
+    '''
+    Receive image, convert
+    '''
+    # Read floorplan image
+    img = cv2.imread("example2.png")
+
+    # grayscale image
+    gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+
+    '''
+    Detect objects in image
+    '''
+    # create wall image (filter out small objects from image)
+    wall_img = wall_filter(gray)
+
+    # detect walls
+    boxes, img = detectPreciseBoxes(wall_img)
+
+    # detect outer Contours (simple floor or roof solution)
+    contour, img = detectOuterContours(gray)
+
+    # create verts (points 3d)
+    verts = []
+    # create faces for each plane
+    faces = []
+
+    wall_height = 1
+
+    # Convert 2d poses to 3d poses and boxes
+
+    counter_curr = 0
+    counter_box_size= 0
+
+    # for each wall group
+    for box in boxes:
+        temp_verts = []
+        counter_box_size = 0
+        # for each pos
+        for pos in box:
+
+
+        # add and convert all positions
+            verts.extend([(pos[0][0], pos[0][1], 0.0)])
+            verts.extend([(pos[0][0], pos[0][1], wall_height)])
+
+            counter_curr += 2
+            counter_box_size += 2
+
+        # get correct position indexes
+        for i in range(0, counter_box_size):
+            temp_verts.extend([(counter_curr - i)])
+
+        faces.append(temp_verts)
+
+        print(faces)
+
+        print(verts)
+        print()
 
 
 '''
@@ -244,5 +309,6 @@ def detectLines(detect_img, output_img = None, color = [255, 255, 255]):
 '''
 Uncomment this for testing
 '''
-#if __name__ == "__main__":
+if __name__ == "__main__":
+    test()
 #    main()

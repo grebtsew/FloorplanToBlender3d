@@ -53,33 +53,53 @@ wall_height = 1
 counter_curr = 0
 counter_box_size= 0
 
+# for each wall group
 for box in boxes:
     temp_verts = []
     counter_box_size = 0
 
+    # for each pos
     for pos in box:
         # add and convert all positions
-        verts.append(pos[0], pos[1], 0)
-        verts.append(pos[0], pos[1], wall_height)
+        verts.extend([(pos[0], pos[1], 0.0)])
+        verts.extend([(pos[0], pos[1], wall_height)])
 
         counter_curr += 1
         counter_box_size += 1
 
     # get correct position indexes
     for i in range(0, counter_box_size):
-        temp_verts.append(counter_curr - i)
+        temp_verts.extend([(counter_curr - i)])
 
     faces.append(temp_verts)
 
-edges = []
+    #create_custom_mesh("Wall"+counter_curr, [0,0,0], verts, faces)
 
-mesh = bpy.data.meshes.new(name=name)
-mesh.from_pydata(verts, edges, faces)
-# useful for development when the mesh may be invalid.
-mesh.validate(verbose=True)
-mesh.update()
-object_data_add(context, mesh, operator=self)
 
-ob = bpy.data.objects.new(name, mesh)
-bpy.context.scene.objects.link(ob)
-bpy.context.scene.update()
+
+
+def create_custom_mesh(objname, pos, vertex, faces):
+    '''
+    @Param objname, name of new meshe
+    @Param pos, object position [x, y, z]
+    @Param vertex, corners
+    @Param buildorder
+    '''
+
+    mymesh = bpy.data.meshes.new(objname)
+
+    myobject = bpy.data.objects.new(objname, mymesh)
+
+    bpy.context.scene.objects.link(myobject)
+
+    # Generate mesh data
+    mymesh.from_pydata(vertex, [], faces)
+    # Calculate the edges
+    mymesh.update(calc_edges=True)
+
+    # Set Location
+    myobject.location.x = pos[0]
+    myobject.location.y = pos[1]
+    myobject.location.z = pos[2]
+
+    return myobject
