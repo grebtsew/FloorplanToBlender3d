@@ -46,10 +46,15 @@ def test():
     Receive image, convert
     '''
     # Read floorplan image
-    img = cv2.imread("example2.png")
+    img = cv2.imread("example.png")
 
     # grayscale image
     gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+
+    # Resulting image
+    height, width, channels = img.shape
+    blank_image = np.zeros((height,width,3), np.uint8) # output image same size as original
+
 
     '''
     Detect objects in image
@@ -70,7 +75,7 @@ def test():
 
     wall_height = 1
 
-    scale = 100
+    scale = 1
 
     '''
     Scale and create array of box_verts
@@ -90,31 +95,48 @@ def test():
         # add box to list
         verts.extend(temp_verts)
 
-    '''
-    Create faces for each point and create mesh
-    We want to build each wall as a mesh
-    Therefore we split the each vert and send 4 points to each mesh
-    '''
-    for box in verts:
 
-        # for each two points
-        for i in Range(0, len(box) % 4):
-            t = i*2
-            temp_vert = []
-            #Verts to send
-            temp_vert.extend(box[i])
-            temp_vert.extend(box[i+2])
-            temp_vert.extend(box[i+3])
-            temp_vert.extend(box[i+1])
+    write_boxes_on_2d_image(boxes, blank_image)
 
-            # faces
-            faces.extend([(0,1,2,3)])
+    # TODO: use this code in blender somehow!, maybe save to file
+    # TODO: detect doors
+    # TODO: detect windows
+    # TODO: detect floors
+    # TODO: detect other details
+    # TODO: fix blender formats
 
-            # Create mesh
+'''
+Write boxes as lines and show image
+@Param boxes, numpy array of boxes
+@Param blank_image, image to write and show
+'''
+def write_boxes_on_2d_image(boxes, blank_image):
+
+    for box in boxes:
+        for index in range(0, len(box) ):
+
+            curr = box[index][0];
+
+            if(len(box)-1 >= index+1):
+                next = box[index+1][0];
+            else:
+                next = box[0][0]; # link to first pos
+
+            # draw line
+            cv2.line(blank_image,(curr[0],curr[1]),(next[0],next[1]),(255,0,0),5)
 
 
 
-        pass
+    cv2.imshow('show image',blank_image)
+    cv2.waitKey(0)
+
+
+'''
+Save to file
+Saves our resulting array as json in file.
+@Param file_path, path to outputfile
+'''
+
 
 '''
 Filter walls
@@ -325,4 +347,4 @@ Uncomment this for testing
 '''
 if __name__ == "__main__":
     test()
-#    main()
+    #main()
