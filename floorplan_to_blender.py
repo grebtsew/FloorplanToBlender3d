@@ -1,105 +1,124 @@
 import bpy
+import numpy as np
+import json
 
 '''
 Floorplan to Blender
 
-This file contains code to convert a floorplan to blender objects.
+HOW TO:
+
+1. Run create script to create data files for your floorplan.
+2. Edit path in this file to generated data files.
+3. Start blender
+4. Open Blender text editor
+5. Open this file "alt+o"
+6. Run script
+
+This code read data from a file and creates a 3d model of that data.
+RUN THIS CODE FROM BLENDER
+
+This code is tested on Windows 10, Blender 2.79, in January 2019.
 '''
 
-from Drawing_To_Array import drawing_to_array as floorplan
+# Edit this path to your destination
+path_to_wall_faces_file = "C:\\Users\\Daniel\\Documents\\GitHub\\ApartmentDrawing-To-Blender\\Drawing_To_Array\\wall_faces"
+path_to_wall_verts_file = "C:\\Users\\Daniel\\Documents\\GitHub\\ApartmentDrawing-To-Blender\\Drawing_To_Array\\wall_verts"
 
-import cv2
-import numpy as np
-
-'''
-Receive image, convert
-'''
-# Read floorplan image
-img = cv2.imread("Drawing_To_Array/example2.png")
-
-# grayscale image
-gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+path_to_floor_faces_file = "C:\\Users\\Daniel\\Documents\\GitHub\\ApartmentDrawing-To-Blender\\Drawing_To_Array\\floor_faces"
+path_to_floor_verts_file = "C:\\Users\\Daniel\\Documents\\GitHub\\ApartmentDrawing-To-Blender\\Drawing_To_Array\\floor_verts"
 
 '''
-Detect objects in image
-'''
-# create wall image (filter out small objects from image)
-wall_img = floorplan.wall_filter(gray)
-
-# detect walls
-boxes, img = floorplan.detectPreciseBoxes(wall_img)
-
-# detect outer Contours (simple floor or roof solution)
-contour, img = floorplan.detectOuterContours(gray)
-
-# TODO:
-# detect doors
-# detect windows
-# detect other objects (such as fridge, dishwasher, closets)
-
-'''
-Create 3d object for blender
+Our helpful functions
 '''
 
-# create verts (points 3d)
-verts = []
-# create faces for each plane
-faces = []
-
-wall_height = 1
-
-# Convert 2d poses to 3d poses and boxes
-
-counter_curr = 0
-counter_box_size= 0
-
-# for each wall group
-for box in boxes:
-    temp_verts = []
-    counter_box_size = 0
-
-    # for each pos
-    for pos in box:
-        # add and convert all positions
-        verts.extend([(pos[0], pos[1], 0.0)])
-        verts.extend([(pos[0], pos[1], wall_height)])
-
-        counter_curr += 1
-        counter_box_size += 1
-
-    # get correct position indexes
-    for i in range(0, counter_box_size):
-        temp_verts.extend([(counter_curr - i)])
-
-    faces.append(temp_verts)
-
-    #create_custom_mesh("Wall"+counter_curr, [0,0,0], verts, faces)
-
-
-
-
-def create_custom_mesh(objname, pos, vertex, faces):
+def read_from_file(file_path):
     '''
-    @Param objname, name of new meshe
+    Read from file
+    read verts data from file
+    @Param file_path, path to file
+    @Return data
+    '''
+    #Now read the file back into a Python list object
+    with open(file_path+'.txt', 'r') as f:
+        data = json.loads(f.read())
+    return data
+
+def init_object(name):
+    mymesh = bpy.data.meshes.new(name)
+    myobject = bpy.data.objects.new(name, mymesh)
+    bpy.context.scene.objects.link(myobject)
+    return myobject, mymesh
+
+def create_custom_mesh(objname, verts, faces, pos = None):
+    '''
+    @Param objname, name of new mesh
     @Param pos, object position [x, y, z]
     @Param vertex, corners
     @Param buildorder
     '''
-
-    mymesh = bpy.data.meshes.new(objname)
-
-    myobject = bpy.data.objects.new(objname, mymesh)
-
-    bpy.context.scene.objects.link(myobject)
+    # Create mesh and object
+    myobject, mymesh = init_object(objname)
 
     # Generate mesh data
-    mymesh.from_pydata(vertex, [], faces)
+    mymesh.from_pydata(verts, [], faces)
     # Calculate the edges
     mymesh.update(calc_edges=True)
 
     # Set Location
-    myobject.location.x = pos[0]
-    myobject.location.y = pos[1]
-    myobject.location.z = pos[2]
+    if pos is not None:
+        myobject.location.x = pos[0]
+        myobject.location.y = pos[1]
+        myobject.location.z = pos[2]
 
     return myobject
+
+
+'''
+Main functionallity here!
+'''
+
+'''
+Create Walls
+All walls are square
+Therefore we split data into two files
+'''
+# get image wall data
+verts = read_from_file(path_to_wall_verts_file)
+faces = read_from_file(path_to_wall_faces_file)
+
+# Create mesh from data
+boxcount = 0
+wallcount = 0
+
+# Create parent
+wall_parent, wall_parent_mesh = init_object("Walls")
+
+for box in verts:
+    boxname="Box"+str(boxcount)
+    for wall in box:
+        wallname = "Wall"+str(wallcount)
+
+        obj = create_custom_mesh(boxname + wallname, wall, faces)
+        obj.parent = wall_parent
+
+        wallcount += 1
+    boxcount += 1
+
+'''
+Create Floor
+'''
+# get image wall data
+verts = read_from_file(path_to_floor_verts_file)
+faces = read_from_file(path_to_floor_faces_file)
+
+# Create mesh from data
+cornername="Floor"
+create_custom_mesh(cornername, verts, [faces])
+
+'''
+TODO:
+Create door
+Create windows
+Create rooms by splitting the floor
+Create details
+'''
