@@ -2,30 +2,32 @@ import bpy
 import numpy as np
 import json
 
+
+
 '''
 Floorplan to Blender
 
-HOW TO:
+This code read data from a file and creates a 3d model of that data.
+RUN THIS CODE FROM BLENDER
 
-1. Run create script to create data files for your floorplan.
+HOW TO: (old style)
+
+1. Run create script to create data files for your floorplan image.
 2. Edit path in this file to generated data files.
 3. Start blender
 4. Open Blender text editor
 5. Open this file "alt+o"
 6. Run script
 
-This code read data from a file and creates a 3d model of that data.
-RUN THIS CODE FROM BLENDER
-
 This code is tested on Windows 10, Blender 2.79, in January 2019.
 '''
 
-# Edit this path to your destination
-path_to_wall_faces_file = "C:\\Users\\Daniel\\Documents\\GitHub\\ApartmentDrawing-To-Blender\\Drawing_To_Array\\wall_faces"
-path_to_wall_verts_file = "C:\\Users\\Daniel\\Documents\\GitHub\\ApartmentDrawing-To-Blender\\Drawing_To_Array\\wall_verts"
+# Edit these paths to your destination
+path_to_wall_faces_file = "C:\\Users\\Daniel\\Documents\\GitHub\\ApartmentDrawing-To-Blender\\Data\\wall_faces"
+path_to_wall_verts_file = "C:\\Users\\Daniel\\Documents\\GitHub\\ApartmentDrawing-To-Blender\\Data\\wall_verts"
 
-path_to_floor_faces_file = "C:\\Users\\Daniel\\Documents\\GitHub\\ApartmentDrawing-To-Blender\\Drawing_To_Array\\floor_faces"
-path_to_floor_verts_file = "C:\\Users\\Daniel\\Documents\\GitHub\\ApartmentDrawing-To-Blender\\Drawing_To_Array\\floor_verts"
+path_to_floor_faces_file = "C:\\Users\\Daniel\\Documents\\GitHub\\ApartmentDrawing-To-Blender\\Data\\floor_faces"
+path_to_floor_verts_file = "C:\\Users\\Daniel\\Documents\\GitHub\\ApartmentDrawing-To-Blender\\Data\\floor_verts"
 
 '''
 Our helpful functions
@@ -115,8 +117,16 @@ faces = read_from_file(path_to_floor_faces_file)
 cornername="Floor"
 create_custom_mesh(cornername, verts, [faces])
 
+
+'''
+Save to file
+'''
+bpy.ops.wm.save_as_mainfile(filepath="C:\\Users\\Daniel\\Documents\\GitHub\\ApartmentDrawing-To-Blender\\floorplan.blend")
+
+
 '''
 TODO:
+# TODO: create materials
 Create door
 Create windows
 Create rooms by splitting the floor

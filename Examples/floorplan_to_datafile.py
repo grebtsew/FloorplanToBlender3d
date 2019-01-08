@@ -2,6 +2,12 @@ import cv2
 import numpy as np
 import json
 
+'''
+This file contains the old implementation
+Where all functions are in this file...
+'''
+
+
 def main():
     '''
     Main function for testing and visualising
@@ -70,10 +76,15 @@ def test():
     wall_img = wall_filter(gray)
 
     # detect walls
-    #boxes, img = detectPreciseBoxes(wall_img)
+    boxes, img = detectPreciseBoxes(wall_img)
 
     # detect outer Contours (simple floor or roof solution)
-    contour, img = detectOuterContours(gray)
+    #contour, img = detectOuterContours(gray)
+
+    res = detectAndRemovePreciseBoxes(wall_img, output_img = gray )
+
+    # detect walls
+    boxes, img = detectPreciseBoxes(out, output_img = gray)
 
     # create verts (points 3d), points to use in mesh creations
     verts = []
@@ -86,20 +97,16 @@ def test():
     # Scale pixel value to 3d pos
     scale = 100
 
-    #Create verts
-    verts = scale_point_to_vector(contour, scale, height)
+    #cv2.imshow('1t', img)
+    cv2.imshow('2t', gray)
 
-    # create faces
-    count = 0
-    for box in verts:
-        faces.extend([count])
-        count += 1
+    cv2.waitKey(0)
 
-    print(verts)
-    print(faces)
+    print(boxes)
+    #print(out)
 
-    save_to_file("floor_verts", verts)
-    save_to_file("floor_faces", faces)
+    #save_to_file("floor_verts", verts)
+    #save_to_file("floor_faces", faces)
 
     # Write walls on image, by using draw line and box positions
     #write_boxes_on_2d_image(boxes, blank_image)
@@ -571,6 +578,6 @@ def detectLines(detect_img, output_img = None, color = [255, 255, 255]):
 Uncomment this for testing
 '''
 if __name__ == "__main__":
-    #test()
-    generate_all_files()
+    test()
+    #generate_all_files()
     #main()
