@@ -6,6 +6,10 @@ from . import IO
 from . import transform
 
 
+# TODO: generate doors
+# TODO: generate windows
+# TODO: generate rooms
+
 # Path
 path = "Data/"
 
@@ -37,7 +41,7 @@ def generate_floor_file(img_path):
     faces = []
 
     # Height of waLL
-    height = 0
+    height = 1
 
     # Scale pixel value to 3d pos
     scale = 100
@@ -88,8 +92,3 @@ def generate_walls_file(img_path):
     # One solution to get data to blender is to write and read from file.
     IO.save_to_file(path+"wall_verts", verts)
     IO.save_to_file(path+"wall_faces", faces)
-
-
-# TODO: generate doors
-# TODO: generate windows
-# TODO: generate rooms

@@ -2,6 +2,31 @@ import numpy as np
 import json
 import os
 from shutil import which
+import configparser
+
+def generate_config_file():
+    '''
+    Generate new config file, if no exist
+    '''
+    config = configparser.ConfigParser()
+    config['DEFAULT'] = {'image_path': 'Examples/example.png',
+    'blender_installation_path': 'C:\\Program Files\\Blender Foundation\\Blender\\blender.exe'}
+    with open('config.ini', 'w') as configfile:
+        config.write(configfile)
+
+def config_file_exist(name):
+    return os.path.isfile(name)
+
+def config_get_default():
+    '''
+    Read and return default values
+    '''
+    config = configparser.ConfigParser()
+
+    if not config_file_exist('config.ini'):
+        generate_config_file()
+    config.read('config.ini')
+    return config['DEFAULT']['image_path'], config['DEFAULT']['blender_installation_path']
 
 def save_to_file(file_path, data):
     '''

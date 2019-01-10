@@ -2,28 +2,10 @@ import cv2
 import numpy as np
 
 
-
-'''
-TODO
-Detect doors
-'''
-
-'''
-TODO
-Detect windows
-'''
-
-'''
-TODO
-Detect floors
-'''
-
-'''
-TODO
-Detect extra details
-Maybe text detections
-'''
-
+# TODO: detect doors
+# TODO: detect windows
+# TODO: detect rooms
+# TODO: detect details, text detection
 
 
 def wall_filter(gray):

@@ -581,3 +581,18 @@ if __name__ == "__main__":
     test()
     #generate_all_files()
     #main()
+
+
+#https://blender.stackexchange.com/questions/1365/how-can-i-run-blender-from-command-line-or-a-python-script-without-opening-a-gui
+#blender --background --factory-startup --python $HOME/background_job.py -- \
+#          --text="Hello World" \
+#          --render="/tmp/hello" \
+#          --save="/tmp/hello.blend"
+#
+# Notice:
+# '--factory-startup' is used to avoid the user default settings from
+#                     interfering with automated scene generation.
+#
+# '--' causes blender to ignore all following arguments so python can use them.
+#
+# See blender --help for details.

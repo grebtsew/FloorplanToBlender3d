@@ -2,6 +2,8 @@ import cv2
 import numpy as np
 from FloorplanToBlenderLib import * # floorplan to blender lib
 from subprocess import check_output
+import os
+
 
 '''
 This is a test file, used to develop and test new functions
@@ -81,19 +83,5 @@ def test():
 Start here
 '''
 if __name__ == "__main__":
-    #test()
+    test()
     #generate.generate_all_files("Examples/example.png")
-
-    print("C:\\Program Files\\Blender Foundation\\Blender\\blender.exe "+
-    "--background --python Blender/floorplan_to_3dObject_in_blender "+
-    "--text='Floorplan' " +
-    "--save='Floorplan.blend'")
-
-
-#          --save="/tmp/hello.blend"
-
-    check_output(["C:\\Program Files\\Blender Foundation\\Blender\\blender.exe ",
-     "--background",
-     "--python",
-     "Blender/floorplan_to_3dObject_in_blender.py"
-       ])

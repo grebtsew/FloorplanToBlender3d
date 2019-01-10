@@ -1,8 +1,8 @@
 import bpy
 import numpy as np
 import json
-
-
+import sys
+import math
 
 '''
 Floorplan to Blender
@@ -21,13 +21,6 @@ HOW TO: (old style)
 
 This code is tested on Windows 10, Blender 2.79, in January 2019.
 '''
-
-# Edit these paths to your destination
-path_to_wall_faces_file = "C:\\Users\\Daniel\\Documents\\GitHub\\ApartmentDrawing-To-Blender\\Data\\wall_faces"
-path_to_wall_verts_file = "C:\\Users\\Daniel\\Documents\\GitHub\\ApartmentDrawing-To-Blender\\Data\\wall_verts"
-
-path_to_floor_faces_file = "C:\\Users\\Daniel\\Documents\\GitHub\\ApartmentDrawing-To-Blender\\Data\\floor_faces"
-path_to_floor_verts_file = "C:\\Users\\Daniel\\Documents\\GitHub\\ApartmentDrawing-To-Blender\\Data\\floor_verts"
 
 '''
 Our helpful functions
@@ -72,63 +65,88 @@ def create_custom_mesh(objname, verts, faces, pos = None):
         myobject.location.y = pos[1]
         myobject.location.z = pos[2]
 
+    # rotate to fix mirrored floorplan
+    myobject.rotation_euler = (0, math.pi, 0)
+
     return myobject
 
 
 '''
 Main functionallity here!
 '''
+def main(argv):
+    '''
+    Create Walls
+    All walls are square
+    Therefore we split data into two files
+    '''
 
-'''
-Create Walls
-All walls are square
-Therefore we split data into two files
-'''
-# get image wall data
-verts = read_from_file(path_to_wall_verts_file)
-faces = read_from_file(path_to_wall_faces_file)
+    if(len(argv) > 4): # Note YOU need 5 arguments!
+        base_path = argv[4]
 
-# Create mesh from data
-boxcount = 0
-wallcount = 0
+        path_to_wall_faces_file = base_path + "\\Data\\wall_faces"
+        path_to_wall_verts_file = base_path + "\\Data\\wall_verts"
 
-# Create parent
-wall_parent, wall_parent_mesh = init_object("Walls")
+        path_to_floor_faces_file = base_path + "\\Data\\floor_faces"
+        path_to_floor_verts_file = base_path + "\\Data\\floor_verts"
+    else:
+        exit(0)
+    '''
+    Create Walls
+    '''
+    # get image wall data
+    verts = read_from_file(path_to_wall_verts_file)
+    faces = read_from_file(path_to_wall_faces_file)
 
-for box in verts:
-    boxname="Box"+str(boxcount)
-    for wall in box:
-        wallname = "Wall"+str(wallcount)
+    # Create mesh from data
+    boxcount = 0
+    wallcount = 0
 
-        obj = create_custom_mesh(boxname + wallname, wall, faces)
-        obj.parent = wall_parent
+    # Create parent
+    wall_parent, wall_parent_mesh = init_object("Walls")
 
-        wallcount += 1
-    boxcount += 1
+    for box in verts:
+        boxname="Box"+str(boxcount)
+        for wall in box:
+            wallname = "Wall"+str(wallcount)
 
-'''
-Create Floor
-'''
-# get image wall data
-verts = read_from_file(path_to_floor_verts_file)
-faces = read_from_file(path_to_floor_faces_file)
+            obj = create_custom_mesh(boxname + wallname, wall, faces)
+            obj.parent = wall_parent
 
-# Create mesh from data
-cornername="Floor"
-create_custom_mesh(cornername, verts, [faces])
+            wallcount += 1
+        boxcount += 1
+
+    '''
+    Create Floor
+    '''
+    # get image wall data
+    verts = read_from_file(path_to_floor_verts_file)
+    faces = read_from_file(path_to_floor_faces_file)
+
+    # Create mesh from data
+    cornername="Floor"
+    create_custom_mesh(cornername, verts, [faces])
 
 
-'''
-Save to file
-'''
-bpy.ops.wm.save_as_mainfile(filepath="C:\\Users\\Daniel\\Documents\\GitHub\\ApartmentDrawing-To-Blender\\floorplan.blend")
+    '''
+    Save to file
+    '''
+    bpy.ops.wm.save_as_mainfile(filepath=base_path + "\\floorplan.blend")
 
+    '''
+    Send correct exit code
+    '''
+    exit(0)
 
-'''
-TODO:
-# TODO: create materials
-Create door
-Create windows
-Create rooms by splitting the floor
-Create details
-'''
+# Start
+if __name__ == "__main__":
+    main(sys.argv)
+
+    '''
+    TODO:
+    # TODO: create materials
+    Create door
+    Create window
+    Create rooms by splitting the floor
+    Create details
+    '''
