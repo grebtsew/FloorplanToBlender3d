@@ -12,12 +12,18 @@ if __name__ == "__main__":
 
     # Set other paths
     data_path = "Data/"
+    blender_script_path = "Blender/floorplan_to_3dObject_in_blender.py"
 
     # Generate data files
     generate.generate_all_files(image_path, data_path)
 
     # Create blender project
-    check_output(blender_install_path + "--background --python $HOME/background_job.py --text=\"Floorplan\" ", shell=True).decode()
+    check_output([blender_install_path,
+     "--background",
+     "--python",
+     blender_script_path,
+     data_path # Send this as parameter to script
+       ])
 
 
     #https://blender.stackexchange.com/questions/1365/how-can-i-run-blender-from-command-line-or-a-python-script-without-opening-a-gui

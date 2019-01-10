@@ -94,7 +94,6 @@ if __name__ == "__main__":
 
     check_output(["C:\\Program Files\\Blender Foundation\\Blender\\blender.exe ",
      "--background",
-    # "--factory-startup",
      "--python",
-     "Blender/floorplan_to_3dObject_in_blender.py",
+     "Blender/floorplan_to_3dObject_in_blender.py"
        ])
