@@ -1,9 +1,9 @@
 import cv2
 import numpy as np
 
-
-# TODO: detect doors
 # TODO: detect windows
+# TODO: detect doors
+
 # TODO: detect rooms
 # TODO: detect details, text detection
 
@@ -96,7 +96,7 @@ def detectUnpreciseBoxes(detect_img, output_img = None, color = [100,100,0]):
     corners = cv2.cornerHarris(detect_img,2,3,0.04)
     res = cv2.dilate(corners, None, iterations=3)
 
-    res = stats
+    res = corners
     if output_img is not None:
         i = len(res)-1
         while i >= 0:
