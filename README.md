@@ -48,7 +48,6 @@ I share links to copied code here:
 * Room detection : https://stackoverflow.com/questions/54274610/crop-each-of-them-using-opencv-python
 * Watershed : https://docs.opencv.org/3.1.0/d3/db4/tutorial_py_watershed.html
 * Shape detection : https://docs.opencv.org/3.0-beta/doc/py_tutorials/py_feature2d/py_features_harris/py_features_harris.html
-* Wall detection : https://stackoverflow.com/questions/50930033/drawing-lines-and-distance-to-them-on-image-opencv-python
 * Distance in image : https://stackoverflow.com/questions/50930033/drawing-lines-and-distance-to-them-on-image-opencv-python
 * Rect contain : https://stackoverflow.com/questions/33065834/how-to-detect-if-a-point-is-contained-within-a-bounding-rect-opecv-python
 * Line detection : https://docs.opencv.org/3.0-beta/doc/py_tutorials/py_imgproc/py_houghlines/py_houghlines.html
