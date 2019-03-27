@@ -29,8 +29,6 @@ This tutorial takes you through the execution of this program.
 2. Set image file path and blender installation path in "create_blender_project_from_floorplan.py"
 3. Run python script
 
-create_blender_project_from_floorplan.py
-
 ## Old but still working tutorial
 This tutorial takes you through the execution of this program.
 
