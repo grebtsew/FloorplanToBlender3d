@@ -1,7 +1,7 @@
 # Floorplan-To-Blender
 Convert 2d floorplans to Blender3d objects!
 
-[!powerpoint](Docs/powerpoint.gif)
+![powerpoint](Docs/powerpoint.gif)
 
 # About
 The virtualisation of real life object as always been a hot subject. As I started
