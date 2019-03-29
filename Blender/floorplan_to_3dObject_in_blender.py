@@ -10,6 +10,9 @@ Floorplan to Blender
 This code read data from a file and creates a 3d model of that data.
 RUN THIS CODE FROM BLENDER
 
+The new implementation starts blender and executes this script in a new project
+so tutorial below can be ignored if you don't want to do this manually in blender.
+
 HOW TO: (old style)
 
 1. Run create script to create data files for your floorplan image.
@@ -126,7 +129,6 @@ def main(argv):
     # Create mesh from data
     cornername="Floor"
     create_custom_mesh(cornername, verts, [faces])
-
 
     '''
     Save to file

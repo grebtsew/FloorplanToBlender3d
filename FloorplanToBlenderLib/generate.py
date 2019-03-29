@@ -5,11 +5,6 @@ from . import detect
 from . import IO
 from . import transform
 
-
-# TODO: generate doors
-# TODO: generate windows
-# TODO: generate rooms
-
 # Path
 path = "Data/"
 
@@ -21,6 +16,15 @@ def generate_all_files(imgpath):
     generate_floor_file(imgpath)
     generate_walls_file(imgpath)
 
+
+def generate_rooms_file(img_path):
+    # TODO: generate rooms
+    pass
+
+def generate_details_file(img_path):
+    # TODO: generate doors
+    # TODO: generate windows
+    pass
 
 def generate_floor_file(img_path):
     '''

@@ -45,6 +45,7 @@ This tutorial takes you through the execution of this program.
 During the development of this project I have been searching alot and copied code from StackOverflow.
 I share links to copied code here:
 
+* First look at problem : https://mathematica.stackexchange.com/questions/19546/image-processing-floor-plan-detecting-rooms-borders-area-and-room-names-t
 * Room detection : https://stackoverflow.com/questions/54274610/crop-each-of-them-using-opencv-python
 * Watershed : https://docs.opencv.org/3.1.0/d3/db4/tutorial_py_watershed.html
 * Shape detection : https://docs.opencv.org/3.0-beta/doc/py_tutorials/py_feature2d/py_features_harris/py_features_harris.html

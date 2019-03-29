@@ -1,5 +1,7 @@
 import cv2
 import numpy as np
+import sys
+sys.path.insert(0,'..')
 from FloorplanToBlenderLib import * # floorplan to blender lib
 from subprocess import check_output
 import os
@@ -19,7 +21,7 @@ def test():
     Receive image, convert
     '''
     # Read floorplan image
-    img = cv2.imread("Examples/example2.png")
+    img = cv2.imread("../Examples/example2.png")
     image = img
     # grayscale image
     gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
