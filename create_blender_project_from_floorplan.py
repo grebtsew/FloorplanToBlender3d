@@ -37,7 +37,7 @@ if __name__ == "__main__":
     print("")
 
     # Generate data files
-    generate.generate_all_files(image_path)
+    generate.generate_all_files(image_path, True)
 
     print("")
     print("Creates blender project")

@@ -30,7 +30,7 @@ def write_verts_on_2d_image(boxes, blank_image):
     cv2.imshow('show image',blank_image)
     cv2.waitKey(0)
 
-def create_nx4_verts_and_faces(boxes, height = 1, scale = 1):
+def create_nx4_verts_and_faces(boxes, height = 1, scale = 1, ground = 0):
     '''
     Create verts and faces
 
@@ -58,9 +58,9 @@ def create_nx4_verts_and_faces(boxes, height = 1, scale = 1):
                 next = box[0][0]; # link to first pos
 
             # Create all 3d poses for each wall
-            temp_verts.extend([(curr[0]/scale, curr[1]/scale, 0.0)])
+            temp_verts.extend([(curr[0]/scale, curr[1]/scale, ground)])
             temp_verts.extend([(curr[0]/scale, curr[1]/scale, height)])
-            temp_verts.extend([(next[0]/scale, next[1]/scale, 0.0)])
+            temp_verts.extend([(next[0]/scale, next[1]/scale, ground)])
             temp_verts.extend([(next[0]/scale, next[1]/scale, height)])
 
             # add wall verts to verts
