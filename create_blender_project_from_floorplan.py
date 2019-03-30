@@ -1,7 +1,9 @@
 from subprocess import check_output
 from FloorplanToBlenderLib import * # floorplan to blender lib
 import os
-
+from pyfiglet import Figlet
+f = Figlet(font='slant')
+print (f.renderText('Floorplan to Blender3d'))
 
 '''
 Start here
@@ -18,6 +20,8 @@ if __name__ == "__main__":
     program_path = os.path.dirname(os.path.realpath(__file__))
     blender_script_path = "Blender/floorplan_to_3dObject_in_blender.py"
 
+    print('')
+
     # Create some gui
     print( "----- CREATE BLENDER PROJECT FROM FLOORPLAN WITH DIALOG -----" )
     print("Welcome to this program. Please answer the questions below to progress.")
@@ -31,6 +35,12 @@ if __name__ == "__main__":
     var = input("Please enter your blender installation path [default = " +blender_install_path+"]: ")
     if var:
         blender_install_path = var
+
+    print("")
+    var = input("This program is about to run and create blender3d project, continue?  [default = " + "OK"+"]: ")
+    if var:
+        print("Program stopped.")
+        exit(0)
 
     print("")
     print("Generate datafiles in folder: Data")
