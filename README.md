@@ -64,3 +64,20 @@ I share links to copied code here:
 Several of the functions mentioned above is not yet fully developed.
 When all functions are done, I will look closer at an ai approach of the same problem.
 I might also add more ways to use this implementation. Perhaps with gui, pip and containers.
+
+Things on my TODO are:
+* create material
+* detect doors
+* detect windows
+* create several floorplans at once
+* update readme text
+* add related projects to readme
+* add toc to readme
+* add licenses
+* add tutorial with images in readme
+* add more test
+* ai implementation
+* add to container, more reliable!
+
+Please let me know if there are any more functions or questions you need answered!
+/ Grebtsew
