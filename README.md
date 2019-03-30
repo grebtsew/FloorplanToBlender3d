@@ -4,11 +4,12 @@ Convert 2d floorplans to Blender3d objects!
 ![powerpoint](Docs/powerpoint.gif)
 
 # About
-The virtualisation of real life object as always been a hot subject. As I started
+The virtualisation of real life object has always been a hot subject. As I started
 learning about 3d modelling in Blender3d I thought of this idea to use simple
-imaging on floorplan to automatically create corresponding 3d models. It is much easier than it
-sounds and uses a low amount of resources. By utilizing Blender3d, all created
-objects will be easy to transfer to other programs and usages. Such as Unity or Unreal Engine.
+imaging on floorplans to automatically create corresponding 3d models. It is much easier than it
+sounds and uses a low amount of resources, enabling it to be used on phones.
+ By utilizing Blender3d, all created objects will be easy to transfer
+  to other programs and usages. Such as Unity or Unreal Engine.
 
 # How-To
 This piece contains information about how to setup and execute this program.
@@ -26,11 +27,11 @@ Several packages and programs are required to run this program.
 This tutorial takes you through the execution of this program.
 
 1. Receive floorplan as image, from pdf or by using other method (for example paint)
-2. Set image file path and blender installation path in "create_blender_project_from_floorplan.py"
-3. Run python script
+2. Run python script "create_blender_project_from_floorplan.py"
+3. Follow instructions
 
 ## Old but still working tutorial
-This tutorial takes you through the execution of this program.
+This tutorial takes you through the execution of this program in examples.
 
 1. Receive floorplan as image, from pdf or by using other method (for example paint)
 2. Set image file path in "Examples/floorplan_to_datafile.py"
@@ -40,6 +41,12 @@ This tutorial takes you through the execution of this program.
 6. Open Blender text editor
 7. Open "floorplan_to_3dObject_in_blender.py" in blender by pressing the text editor, then "alt+o" and find the file
 8. Run script
+
+# Testing
+Vital and core functionality are tested with pytest. To run tests yourself enter "Testing"-folder and run:
+```cmd
+pytest
+```
 
 # References and Imports
 During the development of this project I have been searching alot and copied code from StackOverflow.

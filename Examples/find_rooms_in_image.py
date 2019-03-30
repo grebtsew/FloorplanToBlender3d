@@ -2,7 +2,6 @@ import cv2
 import numpy as np
 import sys
 sys.path.insert(0,'..')
-
 from FloorplanToBlenderLib import * # floorplan to blender lib
 from subprocess import check_output
 import os
