@@ -20,8 +20,6 @@ if __name__ == "__main__":
     program_path = os.path.dirname(os.path.realpath(__file__))
     blender_script_path = "Blender/floorplan_to_3dObject_in_blender.py"
 
-    print('')
-
     # Create some gui
     print( "----- CREATE BLENDER PROJECT FROM FLOORPLAN WITH DIALOG -----" )
     print("Welcome to this program. Please answer the questions below to progress.")
@@ -45,9 +43,17 @@ if __name__ == "__main__":
     print("")
     print("Generate datafiles in folder: Data")
     print("")
+    print("Clean datafiles")
+    print("")
+
+    IO.clean_data_folder("Data/")
 
     # Generate data files
-    generate.generate_all_files(image_path, True)
+    data_paths = list()
+    # for each input image path!
+    data_paths.append(generate.generate_all_files(image_path, True))
+
+    # TODO: create position and rotation file
 
     print("")
     print("Creates blender project")
@@ -59,7 +65,7 @@ if __name__ == "__main__":
      "--python",
      blender_script_path,
      program_path # Send this as parameter to script
-     ])
+     ] +  data_paths)
 
     print("Project created at: " + program_path + "\\floorplan.blender")
     print("")

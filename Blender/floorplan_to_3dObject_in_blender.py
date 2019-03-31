@@ -3,6 +3,7 @@ import numpy as np
 import json
 import sys
 import math
+from random import randint
 
 '''
 Floorplan to Blender
@@ -52,7 +53,7 @@ def create_custom_mesh(objname, verts, faces, pos = None):
     @Param objname, name of new mesh
     @Param pos, object position [x, y, z]
     @Param vertex, corners
-    @Param buildorder
+    @Param faces, buildorder
     '''
     # Create mesh and object
     myobject, mymesh = init_object(objname)
@@ -71,6 +72,11 @@ def create_custom_mesh(objname, verts, faces, pos = None):
     # rotate to fix mirrored floorplan
     myobject.rotation_euler = (0, math.pi, 0)
 
+    # add material
+    mat = bpy.data.materials.new(name="MaterialName") #set new material to variable
+    myobject.data.materials.append(mat) #add the material to the object
+    mat.diffuse_color = (randint(0, 255),randint(0, 255),randint(0, 255)) #change to random color
+
     return myobject
 
 
@@ -84,16 +90,42 @@ def main(argv):
     Therefore we split data into two files
     '''
 
-    if(len(argv) > 4): # Note YOU need 5 arguments!
-        base_path = argv[4]
+    if(len(argv) > 5): # Note YOU need 6 arguments!
+        program_path = argv[4]
 
-        path_to_wall_faces_file = base_path + "\\Data\\wall_faces"
-        path_to_wall_verts_file = base_path + "\\Data\\wall_verts"
-
-        path_to_floor_faces_file = base_path + "\\Data\\floor_faces"
-        path_to_floor_verts_file = base_path + "\\Data\\floor_verts"
     else:
         exit(0)
+
+    '''
+    Instantiate
+    '''
+    for i in range(5,len(argv)):
+        base_path = argv[i]
+        create_floorplan(base_path, program_path)
+
+    '''
+    Save to file
+    '''
+    bpy.ops.wm.save_as_mainfile(filepath=program_path + "\\floorplan.blend")
+
+    '''
+    Send correct exit code
+    '''
+    exit(0)
+
+
+def create_floorplan(base_path,program_path):
+    base_path = base_path.replace('/','\\')
+
+    path_to_wall_faces_file = program_path +"\\" + base_path + "wall_faces"
+    path_to_wall_verts_file = program_path +"\\" + base_path + "wall_verts"
+
+    path_to_floor_faces_file = program_path +"\\" +base_path + "floor_faces"
+    path_to_floor_verts_file = program_path +"\\" +base_path + "floor_verts"
+
+    path_to_rooms_faces_file = program_path +"\\" + base_path + "rooms_faces"
+    path_to_rooms_verts_file = program_path +"\\" + base_path + "rooms_verts"
+
     '''
     Create Walls
     '''
@@ -131,14 +163,21 @@ def main(argv):
     create_custom_mesh(cornername, verts, [faces])
 
     '''
-    Save to file
+    Create rooms
     '''
-    bpy.ops.wm.save_as_mainfile(filepath=base_path + "\\floorplan.blend")
+    # get image wall data
+    verts = read_from_file(path_to_rooms_verts_file)
+    faces = read_from_file(path_to_rooms_faces_file)
 
-    '''
-    Send correct exit code
-    '''
-    exit(0)
+    # Create parent
+    room_parent, room_parent_mesh = init_object("Rooms")
+
+    for i in range(0,len(verts)):
+        roomname="Room"+str(i)
+
+        obj = create_custom_mesh(roomname, verts[i], faces[i])
+        obj.parent = room_parent
+
 
 # Start
 if __name__ == "__main__":
@@ -146,9 +185,7 @@ if __name__ == "__main__":
 
     '''
     TODO:
-    # TODO: create materials
     Create door
     Create window
-    Create rooms by splitting the floor
     Create details
     '''

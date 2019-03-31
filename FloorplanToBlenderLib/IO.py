@@ -3,6 +3,7 @@ import json
 import os
 from shutil import which
 import configparser
+import shutil
 
 def generate_config_file():
     '''
@@ -51,6 +52,39 @@ def read_from_file(file_path):
     with open(file_path+'.txt', 'r') as f:
         data = json.loads(f.read())
     return data
+
+def clean_data_folder(folder):
+    '''
+    Remove old data files
+    Dont wanna fill memory
+    '''
+    for root, dirs, files in os.walk(folder):
+        for f in files:
+            os.unlink(os.path.join(root, f))
+        for d in dirs:
+            shutil.rmtree(os.path.join(root, d))
+
+def create_new_floorplan_path(path):
+    '''
+    Creates next free name to floorplan data
+    '''
+    res = 0;
+    for root, dirs, files in os.walk(path):
+        for dir in dirs:
+            try:
+                if(int(dir) is not None):
+                    res = int(dir) + 1
+            except:
+                continue
+
+    res = path + str(res) + "/"
+
+    # create dir
+    if not os.path.exists(res):
+        os.makedirs(res)
+
+    return res;
+
 
 def get_current_path():
     '''

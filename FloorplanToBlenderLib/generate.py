@@ -6,16 +6,25 @@ from . import IO
 from . import transform
 
 # Path
+base_path = "Data/"
 path = "Data/"
 
 def generate_all_files(imgpath, info):
     '''
     Generate all data files
     '''
+    global path
+
+    # Get path to save data
+    path = IO.create_new_floorplan_path(base_path)
+
     generate_floor_file(imgpath, info)
     generate_walls_file(imgpath, info)
-    #generate_windows_file(imgpath, info)
-    #generate_rooms_file(imgpath, info)
+    #    generate_windows_file(imgpath, info)
+    #generate_doors_file(imgpath, info)
+    generate_rooms_file(imgpath, info)
+
+    return path;
 
 def generate_rooms_file(img_path, info):
     '''
@@ -33,7 +42,7 @@ def generate_rooms_file(img_path, info):
     faces = []
 
     # Height of waLL
-    height = 1
+    height = 1.1
 
     # Scale pixel value to 3d pos
     scale = 100
@@ -47,19 +56,25 @@ def generate_rooms_file(img_path, info):
     gray_rooms =  cv2.cvtColor(colored_rooms,cv2.COLOR_BGR2GRAY)
 
     # get box positions for rooms
-    boxes, gray_rooms = detect.detectPreciseBoxes(gray_rooms, blank_image)
+    boxes, gray_rooms = detect.detectPreciseBoxes(gray_rooms, gray_rooms)
 
     #Create verts
-    verts = transform.scale_point_to_vector(boxes, scale, height)
+    room_count = 0
+    for box in boxes:
+        verts.extend([transform.scale_point_to_vector(box, scale, height)])
+        room_count+= 1
 
     # create faces
-    count = 0
-    for box in verts:
-        faces.extend([(count)])
-        count += 1
+    for room in verts:
+        count = 0
+        temp = ()
+        for pos in room:
+            temp = temp + (count,)
+            count += 1
+        faces.append([(temp)])
 
     if(info):
-        print("Number of rooms detected : ", count)
+        print("Number of rooms detected : ", room_count)
 
     IO.save_to_file(path+"rooms_verts", verts)
     IO.save_to_file(path+"rooms_faces", faces)
@@ -95,26 +110,28 @@ def generate_windows_file(img_path, info):
     gray_rooms =  cv2.cvtColor(colored_rooms,cv2.COLOR_BGR2GRAY)
 
     # get box positions for rooms
-    boxes, gray_rooms = detect.detectPreciseBoxes(gray_rooms, blank_image)
+    boxes, gray_rooms = detect.detectPreciseBoxes(gray_rooms, gray_rooms)
 
     windows = []
     other = []
     #do a split here, objects next to outside ground are windows, rest are doors or extra space
     for box in boxes:
-        for point in box:
-            '''
-            if close_to_bound(point):
-                for x,y,x1,y1 in box:
-                    windows.append([round((x+x1)/2),round((y+y1)/2)])
-            '''
-            pass
+        print(box)
+        if(len(box) >= 4):
+            x = box[0][0][0]
+            x1 = box[2][0][0]
+            y = box[0][0][1]
+            y1 = box[2][0][1]
+            other.append([round((x+x1)/2),round((y+y1)/2)])
+
+    windows.append([other])
 
     '''
     Windows
     '''
     #Create verts for door
-    verts, faces, window_amount = transform.create_nx4_verts_and_faces(img=windows, height=0.25, scale=scale) # create low piece
-    verts, faces, window_amount = transform.create_nx4_verts_and_faces(img=windows, height=0.25, scale=scale, ground= 0.75) # create heigher piece
+    verts, faces, window_amount = transform.create_nx4_verts_and_faces(windows, height=0.25, scale=scale) # create low piece
+    verts, faces, window_amount = transform.create_nx4_verts_and_faces(windows, height=0.25, scale=scale, ground= 0.75) # create heigher piece
 
     if(info):
         print("Windows created : ", window_amount)
@@ -122,7 +139,7 @@ def generate_windows_file(img_path, info):
     IO.save_to_file(path+"windows_verts", verts)
     IO.save_to_file(path+"windows_faces", faces)
 
-def generate_windows_file(img_path, info):
+def generate_doors_file(img_path, info):
     '''
      generate doors
      generate windows
@@ -153,7 +170,7 @@ def generate_windows_file(img_path, info):
     gray_rooms =  cv2.cvtColor(colored_rooms,cv2.COLOR_BGR2GRAY)
 
     # get box positions for rooms
-    boxes, gray_rooms = detect.detectPreciseBoxes(gray_rooms, blank_image)
+    boxes, gray_rooms = detect.detectPreciseBoxes(gray_rooms, gray_rooms)
 
     doors = []
 
@@ -211,9 +228,9 @@ def generate_floor_file(img_path, info):
         faces.extend([(count)])
         count += 1
 
+
     if(info):
-        print("Approximated apartment size : ", "uncalculated at present time")
-        # TODO: calculate size
+        print("Approximated apartment size : ", cv2.contourArea(contour[0]))
 
     IO.save_to_file(path+"floor_verts", verts)
     IO.save_to_file(path+"floor_faces", faces)

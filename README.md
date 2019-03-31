@@ -66,10 +66,9 @@ When all functions are done, I will look closer at an ai approach of the same pr
 I might also add more ways to use this implementation. Perhaps with gui, pip and containers.
 
 Things on my TODO are:
-* create material
 * detect doors
 * detect windows
-* create several floorplans at once
+* create several floorplans at once, and explain implementation
 * update readme text
 * add related projects to readme
 * add toc to readme
