@@ -22,11 +22,12 @@ rooms, colored_rooms = detect.find_rooms(gray.copy())
 
 doors, colored_doors = detect.find_details(gray.copy())
 
-gray_rooms =  cv2.cvtColor(colored_rooms,cv2.COLOR_BGR2GRAY)
+gray_rooms =  cv2.cvtColor(colored_doors,cv2.COLOR_BGR2GRAY)
 
 # get box positions for rooms
 boxes, gray_rooms = detect.detectPreciseBoxes(gray_rooms, blank_image)
 
+cv2.imshow('colssoroed', img)
 cv2.imshow('coloroed', gray_rooms)
 cv2.waitKey()
 cv2.destroyAllWindows()

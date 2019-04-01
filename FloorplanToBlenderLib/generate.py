@@ -20,7 +20,7 @@ def generate_all_files(imgpath, info):
 
     generate_floor_file(imgpath, info)
     generate_walls_file(imgpath, info)
-    #    generate_windows_file(imgpath, info)
+    generate_windows_file(imgpath, info)
     #generate_doors_file(imgpath, info)
     generate_rooms_file(imgpath, info)
 
@@ -113,28 +113,34 @@ def generate_windows_file(img_path, info):
     boxes, gray_rooms = detect.detectPreciseBoxes(gray_rooms, gray_rooms)
 
     windows = []
-    other = []
     #do a split here, objects next to outside ground are windows, rest are doors or extra space
+
     for box in boxes:
-        print(box)
         if(len(box) >= 4):
             x = box[0][0][0]
             x1 = box[2][0][0]
             y = box[0][0][1]
             y1 = box[2][0][1]
-            other.append([round((x+x1)/2),round((y+y1)/2)])
 
-    windows.append([other])
+            if (abs(x-x1) > abs(y-y1)):
+                windows.append([[[x,round((y+y1)/2)]],[[x1,round((y+y1)/2)]]])
+            else:
+                windows.append([[[round((x+x1)/2),y]],[[round((x+x1)/2),y1]]])
 
     '''
     Windows
     '''
-    #Create verts for door
-    verts, faces, window_amount = transform.create_nx4_verts_and_faces(windows, height=0.25, scale=scale) # create low piece
-    verts, faces, window_amount = transform.create_nx4_verts_and_faces(windows, height=0.25, scale=scale, ground= 0.75) # create heigher piece
+    #Create verts for window
+    v, faces, window_amount1 = transform.create_nx4_verts_and_faces(windows, height=0.25, scale=scale) # create low piece
+    v2, faces, window_amount2 = transform.create_nx4_verts_and_faces(windows, height=1, scale=scale, ground= 0.75) # create heigher piece
+
+    verts = v
+    verts.extend(v2)
+    window_amount = window_amount1 + window_amount2
 
     if(info):
         print("Windows created : ", window_amount)
+
 
     IO.save_to_file(path+"windows_verts", verts)
     IO.save_to_file(path+"windows_faces", faces)
@@ -230,7 +236,7 @@ def generate_floor_file(img_path, info):
 
 
     if(info):
-        print("Approximated apartment size : ", cv2.contourArea(contour[0]))
+        print("Approximated apartment size : ", cv2.contourArea(contour))
 
     IO.save_to_file(path+"floor_verts", verts)
     IO.save_to_file(path+"floor_faces", faces)

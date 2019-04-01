@@ -176,7 +176,7 @@ def find_corners_and_draw_lines(img,corners_threshold, room_closing_max_length):
 
 
 def find_details(img, noise_removal_threshold=50, corners_threshold=0.01,
-               room_closing_max_length=125, gap_in_wall_max_threshold=5000,
+               room_closing_max_length=130, gap_in_wall_max_threshold=5000,
                gap_in_wall_min_threshold=10):
 
     """

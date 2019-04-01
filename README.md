@@ -67,7 +67,9 @@ I might also add more ways to use this implementation. Perhaps with gui, pip and
 
 Things on my TODO are:
 * detect doors
-* detect windows
+* detect windows renew current implementation
+* stitch floorplans with rounding
+* make magical numbers easily changable
 * create several floorplans at once, and explain implementation
 * update readme text
 * add related projects to readme
