@@ -3,7 +3,6 @@ import numpy as np
 import json
 import sys
 import math
-from random import randint
 
 '''
 Floorplan to Blender
@@ -48,7 +47,7 @@ def init_object(name):
     bpy.context.scene.objects.link(myobject)
     return myobject, mymesh
 
-def create_custom_mesh(objname, verts, faces, pos = None):
+def create_custom_mesh(objname, verts, faces, pos = None, mat = None):
     '''
     @Param objname, name of new mesh
     @Param pos, object position [x, y, z]
@@ -73,12 +72,16 @@ def create_custom_mesh(objname, verts, faces, pos = None):
     myobject.rotation_euler = (0, math.pi, 0)
 
     # add material
-    mat = bpy.data.materials.new(name="MaterialName") #set new material to variable
-    myobject.data.materials.append(mat) #add the material to the object
-    mat.diffuse_color = (randint(0, 255),randint(0, 255),randint(0, 255)) #change to random color
-
+    if mat is None: # add random color
+        myobject.data.materials.append(create_mat( np.random.randint(0, 40, size=3))) #add the material to the object
+    else:
+        myobject.data.materials.append(mat) #add the material to the object
     return myobject
 
+def create_mat(rgb_color):
+    mat = bpy.data.materials.new(name="MaterialName") #set new material to variable
+    mat.diffuse_color = rgb_color #change to random color
+    return mat
 
 '''
 Main functionallity here!
@@ -160,7 +163,7 @@ def create_floorplan(base_path,program_path):
 
     # Create mesh from data
     cornername="Floor"
-    create_custom_mesh(cornername, verts, [faces])
+    create_custom_mesh(cornername, verts, [faces], mat=create_mat((40,1,1)))
 
     '''
     Create rooms
@@ -174,7 +177,6 @@ def create_floorplan(base_path,program_path):
 
     for i in range(0,len(verts)):
         roomname="Room"+str(i)
-
         obj = create_custom_mesh(roomname, verts[i], faces[i])
         obj.parent = room_parent
 

@@ -232,7 +232,7 @@ def mark_outside_black(img, mask):
 
 
 def find_rooms(img, noise_removal_threshold=50, corners_threshold=0.01,
-               room_closing_max_length=125,
+               room_closing_max_length=130,
                gap_in_wall_min_threshold=5000):
 
     """

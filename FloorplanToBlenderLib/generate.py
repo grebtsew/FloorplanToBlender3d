@@ -42,7 +42,7 @@ def generate_rooms_file(img_path, info):
     faces = []
 
     # Height of waLL
-    height = 1.1
+    height = 0.999
 
     # Scale pixel value to 3d pos
     scale = 100
