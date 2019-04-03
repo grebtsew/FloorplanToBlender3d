@@ -1,6 +1,12 @@
 import cv2
 import numpy as np
 
+def verts_to_poslist(verts):
+    '''
+    @Param verts of undecided size
+    Convert any verts array to a list of positions
+    '''
+    return chain.from_iterable(verts)
 
 def scale_point_to_vector(boxes, scale = 1, height = 0):
     '''

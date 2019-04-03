@@ -9,7 +9,7 @@ from . import transform
 base_path = "Data/"
 path = "Data/"
 
-def generate_all_files(imgpath, info):
+def generate_all_files(imgpath, info, position=None, rotation= None):
     '''
     Generate all data files
     '''
@@ -18,13 +18,65 @@ def generate_all_files(imgpath, info):
     # Get path to save data
     path = IO.create_new_floorplan_path(base_path)
 
-    generate_floor_file(imgpath, info)
-    generate_walls_file(imgpath, info)
-    generate_windows_file(imgpath, info)
-    #generate_doors_file(imgpath, info)
-    generate_rooms_file(imgpath, info)
+    shape = ()
 
-    return path;
+    new_shape = generate_floor_file(imgpath, info)
+    shape = validate_shape(shape, new_shape)
+    new_shape = generate_walls_file(imgpath, info)
+    shape = validate_shape(shape, new_shape)
+    #verts, height = generate_windows_file(imgpath, info)
+    #verts, height = generate_doors_file(imgpath, info)
+    new_shape = generate_rooms_file(imgpath, info)
+    shape = validate_shape(shape, new_shape)
+    
+    transform = generate_transform_file(imgpath, info, position, rotation)
+
+    return path, (width,height,depth);
+
+def validate_shape(old_shape, new_shape):
+    shape[0] = max(old_shape[0], new_shape[0])
+    shape[1] = max(old_shape[1], new_shape[1])
+    shape[2] = max(old_shape[2], new_shape[2])
+    return shape
+
+def get_shape(verts, scale):
+    posList = transform.verts_to_poslist(verts)
+
+    high =  posList[0]
+    low = posList[0]
+
+    for pos in posList:
+        if pos[0] > high[0]:
+            high[0] = pos[0]
+        if pos[1] > high[1]:
+            high[1] = pos[1]
+        if pos[2] > high[2]:
+            high[2] = pos[2]
+        if pos[0] < low[0]:
+            low[0] = pos[0]W
+        if pos[1] < low[1]:
+            low[1] = pos[1]
+        if pos[2] < low[2]:
+            low[2] = pos[2]
+
+    return scale * (high - low)
+
+def generate_transform_file(imgpath, info, position, rotation)
+    #create map
+    transform = {}
+    if position is None:
+        transform["position"] = (0,0,0)
+    else:
+        transform["position"] = position
+
+    if rotation is None:
+        transform["rotation"] = (0,0,0)
+    else:
+        transform["rotation"] = rotation
+
+    IO.save_to_file(path+"transform", transform)
+
+    return transform
 
 def generate_rooms_file(img_path, info):
     '''
@@ -78,6 +130,8 @@ def generate_rooms_file(img_path, info):
 
     IO.save_to_file(path+"rooms_verts", verts)
     IO.save_to_file(path+"rooms_faces", faces)
+
+    return get_shape(verts, scale)
 
 def generate_windows_file(img_path, info):
     '''
@@ -145,6 +199,8 @@ def generate_windows_file(img_path, info):
     IO.save_to_file(path+"windows_verts", verts)
     IO.save_to_file(path+"windows_faces", faces)
 
+    return get_shape(verts, scale)
+
 def generate_doors_file(img_path, info):
     '''
      generate doors
@@ -196,10 +252,10 @@ def generate_doors_file(img_path, info):
     if(info):
         print("Doors created : ", door_amount)
 
-
     IO.save_to_file(path+"doors_verts", verts)
     IO.save_to_file(path+"doors_faces", faces)
 
+    return get_shape(verts, scale)
 
 def generate_floor_file(img_path, info):
     '''
@@ -241,6 +297,8 @@ def generate_floor_file(img_path, info):
     IO.save_to_file(path+"floor_verts", verts)
     IO.save_to_file(path+"floor_faces", faces)
 
+    return get_shape(verts, scale)
+
 def generate_walls_file(img_path, info):
     '''
     generate wall data file for floorplan
@@ -278,3 +336,5 @@ def generate_walls_file(img_path, info):
     # One solution to get data to blender is to write and read from file.
     IO.save_to_file(path+"wall_verts", verts)
     IO.save_to_file(path+"wall_faces", faces)
+
+    return get_shape(verts, scale)
