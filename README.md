@@ -67,10 +67,12 @@ I might also add more ways to use this implementation. Perhaps with gui, pip and
 
 Things on my TODO are:
 * detect doors
-* detect windows renew current implementation
+* detect windows
+* renew current windows implementation
+* fix structure in code
 * stitch floorplans with rounding
 * make magical numbers easily changable
-* create several floorplans at once, and explain implementation
+* explain implementation of several floorplan
 * update readme text
 * add related projects to readme
 * add toc to readme
@@ -78,7 +80,7 @@ Things on my TODO are:
 * add tutorial with images in readme
 * add more test
 * ai implementation
-* add to container, more reliable!
+* add to docker container, more reliable!
 
 Please let me know if there are any more functions or questions you need answered!
 / Grebtsew

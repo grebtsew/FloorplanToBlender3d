@@ -47,7 +47,7 @@ def init_object(name):
     bpy.context.scene.objects.link(myobject)
     return myobject, mymesh
 
-def create_custom_mesh(objname, verts, faces, pos = None, mat = None):
+def create_custom_mesh(objname, verts, faces, pos = None, rot = None, mat = None):
     '''
     @Param objname, name of new mesh
     @Param pos, object position [x, y, z]
@@ -67,6 +67,9 @@ def create_custom_mesh(objname, verts, faces, pos = None, mat = None):
         myobject.location.x = pos[0]
         myobject.location.y = pos[1]
         myobject.location.z = pos[2]
+
+    if rot is not None:
+        myobject.rotation_euler = rot
 
     # rotate to fix mirrored floorplan
     myobject.rotation_euler = (0, math.pi, 0)
@@ -104,7 +107,7 @@ def main(argv):
     '''
     for i in range(5,len(argv)):
         base_path = argv[i]
-        create_floorplan(base_path, program_path)
+        create_floorplan(base_path, program_path, i)
 
     '''
     Save to file
@@ -117,7 +120,10 @@ def main(argv):
     exit(0)
 
 
-def create_floorplan(base_path,program_path):
+def create_floorplan(base_path,program_path, name=0):
+
+    parent, parent_mesh = init_object("Floorplan"+str(name))
+
     base_path = base_path.replace('/','\\')
 
     path_to_wall_faces_file = program_path +"\\" + base_path + "wall_faces"
@@ -129,8 +135,19 @@ def create_floorplan(base_path,program_path):
     path_to_rooms_faces_file = program_path +"\\" + base_path + "rooms_faces"
     path_to_rooms_verts_file = program_path +"\\" + base_path + "rooms_verts"
 
-    path_to_windows_faces_file = program_path +"\\" + base_path + "windows_faces"
-    path_to_windows_verts_file = program_path +"\\" + base_path + "windows_verts"
+#    path_to_windows_faces_file = program_path +"\\" + base_path + "windows_faces"
+#    path_to_windows_verts_file = program_path +"\\" + base_path + "windows_verts"
+
+    path_to_transform_file = program_path+"\\" + base_path + "transform"
+
+    '''
+    Get transform
+    '''
+    # read from file
+    transform = read_from_file(path_to_transform_file)
+
+    rot = transform["rotation"]
+    pos = transform["position"]
 
     '''
     Create Walls
@@ -151,14 +168,17 @@ def create_floorplan(base_path,program_path):
         for wall in box:
             wallname = "Wall"+str(wallcount)
 
-            obj = create_custom_mesh(boxname + wallname, wall, faces)
+            obj = create_custom_mesh(boxname + wallname, wall, faces, pos=pos, rot=rot)
             obj.parent = wall_parent
 
             wallcount += 1
         boxcount += 1
 
+    wall_parent.parent = parent
+
     '''
     Create windows
+    '''
     '''
     # get image wall data
     verts = read_from_file(path_to_windows_verts_file)
@@ -174,10 +194,13 @@ def create_floorplan(base_path,program_path):
     for window in verts:
         windowname = "Window"+str(windowcount)
 
-        obj = create_custom_mesh(windowname, window[0], faces)
+        obj = create_custom_mesh(windowname, window[0], faces, pos=pos, rot=rot)
         obj.parent = window_parent
 
         windowcount += 1
+
+    window_parent.parent = parent
+    '''
 
     '''
     Create Floor
@@ -188,7 +211,8 @@ def create_floorplan(base_path,program_path):
 
     # Create mesh from data
     cornername="Floor"
-    create_custom_mesh(cornername, verts, [faces], mat=create_mat((40,1,1)))
+    obj = create_custom_mesh(cornername, verts, [faces], mat=create_mat((40,1,1)))
+    obj.parent = parent
 
     '''
     Create rooms
@@ -202,9 +226,10 @@ def create_floorplan(base_path,program_path):
 
     for i in range(0,len(verts)):
         roomname="Room"+str(i)
-        obj = create_custom_mesh(roomname, verts[i], faces[i])
+        obj = create_custom_mesh(roomname, verts[i], faces[i], pos=pos, rot=rot)
         obj.parent = room_parent
 
+    room_parent.parent = parent
 
 # Start
 if __name__ == "__main__":

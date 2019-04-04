@@ -15,6 +15,8 @@ def generate_all_files(imgpath, info, position=None, rotation=None):
     '''
     global path
 
+    print(" ----- Generate ", imgpath, " at pos ", position ," rot ",rotation," -----")
+
     # Get path to save data
     path = IO.create_new_floorplan_path(base_path)
 
@@ -24,7 +26,8 @@ def generate_all_files(imgpath, info, position=None, rotation=None):
     new_shape = generate_rooms_file(imgpath, info)
     shape = validate_shape(shape, new_shape)
 
-    #verts, height = generate_windows_file(imgpath, info)
+    #verts, height = generate_big_windows_file(imgpath, info)
+    #verts, height = generate_small_windows_file(imgpath, info)
     #verts, height = generate_doors_file(imgpath, info)
 
     transform = generate_transform_file(imgpath, info, position, rotation, shape)
@@ -136,7 +139,7 @@ def generate_rooms_file(img_path, info):
 
     return get_shape(verts, scale)
 
-def generate_windows_file(img_path, info):
+def generate_small_windows_file(img_path, info):
     '''
      generate doors
      generate windows
@@ -153,9 +156,6 @@ def generate_windows_file(img_path, info):
     faces = []
 
     # Height of waLL
-
-
-
     height = 1
 
     # Scale pixel value to 3d pos
