@@ -9,7 +9,7 @@ from . import transform
 base_path = "Data/"
 path = "Data/"
 
-def generate_all_files(imgpath, info, position=None, rotation= None):
+def generate_all_files(imgpath, info, position=None, rotation=None):
     '''
     Generate all data files
     '''
@@ -18,22 +18,21 @@ def generate_all_files(imgpath, info, position=None, rotation= None):
     # Get path to save data
     path = IO.create_new_floorplan_path(base_path)
 
-    shape = ()
-
-    new_shape = generate_floor_file(imgpath, info)
-    shape = validate_shape(shape, new_shape)
+    shape = generate_floor_file(imgpath, info)
     new_shape = generate_walls_file(imgpath, info)
     shape = validate_shape(shape, new_shape)
-    #verts, height = generate_windows_file(imgpath, info)
-    #verts, height = generate_doors_file(imgpath, info)
     new_shape = generate_rooms_file(imgpath, info)
     shape = validate_shape(shape, new_shape)
-    
-    transform = generate_transform_file(imgpath, info, position, rotation)
 
-    return path, (width,height,depth);
+    #verts, height = generate_windows_file(imgpath, info)
+    #verts, height = generate_doors_file(imgpath, info)
+
+    transform = generate_transform_file(imgpath, info, position, rotation, shape)
+
+    return path, shape;
 
 def validate_shape(old_shape, new_shape):
+    shape = [0,0,0]
     shape[0] = max(old_shape[0], new_shape[0])
     shape[1] = max(old_shape[1], new_shape[1])
     shape[2] = max(old_shape[2], new_shape[2])
@@ -41,8 +40,7 @@ def validate_shape(old_shape, new_shape):
 
 def get_shape(verts, scale):
     posList = transform.verts_to_poslist(verts)
-
-    high =  posList[0]
+    high = [0,0,0]
     low = posList[0]
 
     for pos in posList:
@@ -53,15 +51,15 @@ def get_shape(verts, scale):
         if pos[2] > high[2]:
             high[2] = pos[2]
         if pos[0] < low[0]:
-            low[0] = pos[0]W
+            low[0] = pos[0]
         if pos[1] < low[1]:
             low[1] = pos[1]
         if pos[2] < low[2]:
             low[2] = pos[2]
 
-    return scale * (high - low)
+    return [high[0] - low[0],high[1] - low[1],high[2] - low[2]]
 
-def generate_transform_file(imgpath, info, position, rotation)
+def generate_transform_file(imgpath, info, position, rotation, shape):
     #create map
     transform = {}
     if position is None:
@@ -73,6 +71,11 @@ def generate_transform_file(imgpath, info, position, rotation)
         transform["rotation"] = (0,0,0)
     else:
         transform["rotation"] = rotation
+
+    if shape is None:
+        transform["shape"] = (0,0,0)
+    else:
+        transform["shape"] = shape
 
     IO.save_to_file(path+"transform", transform)
 
@@ -150,6 +153,9 @@ def generate_windows_file(img_path, info):
     faces = []
 
     # Height of waLL
+
+
+
     height = 1
 
     # Scale pixel value to 3d pos

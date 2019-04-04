@@ -27,9 +27,9 @@ if __name__ == "__main__":
     print("")
 
     # Some input
-    var = input("Please enter your floorplan image path [default = " + image_path+"]: ")
+    var = input("Please enter your floorplan image paths seperated by space [default = " + image_path+"]: ")
     if var:
-        image_path = var
+        image_paths  = var.split()
     var = input("Please enter your blender installation path [default = " +blender_install_path+"]: ")
     if var:
         blender_install_path = var
@@ -48,12 +48,20 @@ if __name__ == "__main__":
 
     IO.clean_data_folder("Data/")
 
+    # Ask how floorplans shall be structured
+
     # Generate data files
     data_paths = list()
+    fshape = None
     # for each input image path!
-    data_paths.append(generate.generate_all_files(image_path, True))
+    for image_path in image_paths:
+        # Calculate positions and rotations here!
 
-    # TODO: create position and rotation file
+        # Generate all data for imagepath
+        fpath, fshape = generate.generate_all_files(image_path, True)
+
+        # add path to send to blender
+        data_paths.append(fpath)
 
     print("")
     print("Creates blender project")

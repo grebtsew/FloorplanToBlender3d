@@ -1,12 +1,40 @@
 import cv2
 import numpy as np
+from itertools import *
+
+def recursive_loop_element(thelist, res):
+    if not thelist:
+        return res
+    else:
+    #    print(thelist[0], res)
+    #    print(type(thelist[0]))
+
+        if isinstance(thelist[0], int):
+    #        print("found int")
+            res.append(thelist[0])
+            return recursive_loop_element(thelist[1:], res)
+        elif isinstance(thelist[0], float):
+        #    print("found float", thelist[1:])
+            res.append(thelist[0])
+            return recursive_loop_element(thelist[1:], res)
+        else:
+            res.extend( recursive_loop_element(thelist[0], []))
+            return  recursive_loop_element(thelist[1:], res)
 
 def verts_to_poslist(verts):
     '''
     @Param verts of undecided size
     Convert any verts array to a list of positions
     '''
-    return chain.from_iterable(verts)
+
+    list_of_elements = recursive_loop_element(verts, [])
+
+    res = []
+    i = 0
+    while(i < len(list_of_elements)-1):
+        res.append([list_of_elements[i],list_of_elements[i+1],list_of_elements[i+2]])
+        i+= 3
+    return res
 
 def scale_point_to_vector(boxes, scale = 1, height = 0):
     '''
