@@ -4,15 +4,24 @@ import numpy as np
 from . import detect
 from . import IO
 from . import transform
+from . import generate
 
-def single():
-    pass
+'''
+This file contains some example usages and creations of multiple floorplans
+'''
+
+def simple_single(image_path):
+    '''
+    Generate a simple floorplan
+    '''
+    fpath, fshape = generate.generate_all_files(image_path, True)
+    return [fpath]
 
 def multiple_simple(image_paths, horizontal=True):
     '''
     Generates new appartments
     @Param image_paths - list of path to images
-    @Param horizontal - if apartments should stack horizontal or not
+    @Param horizontal - if apartments should stack horizontal or vertical
     @Return paths to image data
     '''
     # Generate data files
@@ -25,9 +34,9 @@ def multiple_simple(image_paths, horizontal=True):
         if fshape is not None:
             # Generate all data for imagepath
             if horizontal:
-            fpath, fshape = generate.generate_all_files(image_path, True, position=(0,fshape[1],0))
+                fpath, fshape = generate.generate_all_files(image_path, True, position=(0,fshape[1],0))
             else:
-            fpath, fshape = generate.generate_all_files(image_path, True, position=(fshape[0],0,0))
+                fpath, fshape = generate.generate_all_files(image_path, True, position=(fshape[0],0,0))
 
         else:
             fpath, fshape = generate.generate_all_files(image_path, True)
@@ -38,7 +47,7 @@ def multiple_simple(image_paths, horizontal=True):
 
 def multiple_coord(image_paths):
     '''
-    Generates new appartments
+    Generates new appartments with fixed coordinates!
     @Param image_paths - list of tuples containing [(img_path, pos)]
     @Return paths to image data
     '''
@@ -61,51 +70,4 @@ def multiple_coord(image_paths):
 
         # add path to send to blender
         data_paths.append(fpath)
-    return data_paths
-
-def multiple_dynamic(image_paths):
-    '''
-    Generates new appartments
-    @Param image_paths - list of dynamic tuple, examples [((path, offset), (path), (path)),(),()]
-    @Return paths to image data
-    '''
-    # Generate data files
-    data_paths = list()
-    fshape = None
-    tot_fshape = None
-    # for each input image path!
-    _x = 0
-    for x in image_paths:
-        _y=0
-        if(isinstance(x[0],str)): # img path
-            if fshape is not None:
-                fpath, fshape = generate.generate_all_files(image_path, True, position=(tot_fshape[0],0,0))
-                data_paths.append(fpath)
-                tot_fshape[0]+= fshape[0]
-            else:
-                fpath, fshape = generate.generate_all_files(image_path, True, position=(0,0,0))
-        else:
-
-            for y in x:
-                _z=0
-                if(isinstance(y[0],str)): # img path
-                    if fshape is not None:
-                        fpath, fshape = generate.generate_all_files(image_path, True, position=(0,tot_fshape[1],0))
-                        data_paths.append(fpath)
-                        tot_fshape[1]+= fshape[1]
-                    else:
-                        fpath, fshape = generate.generate_all_files(image_path, True, position=(0,0,0))
-                else:
-                    for z in y:
-                        if(isinstance(z[0],str)): # img path
-                            if fshape is not None:
-                                fpath, fshape = generate.generate_all_files(image_path, True, position=(0,0,tot_fshape[2]))
-                                data_paths.append(fpath)
-                                tot_fshape[2]+= fshape[2]
-                            else:
-                                fpath, fshape = generate.generate_all_files(image_path, True, position=(0,0,0))
-                    _z+=1
-                _y+=1
-        _x+=1
-
     return data_paths

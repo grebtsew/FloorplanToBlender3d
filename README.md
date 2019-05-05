@@ -66,12 +66,8 @@ When all functions are done, I will look closer at an ai approach of the same pr
 I might also add more ways to use this implementation. Perhaps with gui, pip and containers.
 
 Things on my TODO are:
-* detect doors
-* detect windows
-* renew current windows implementation
-* fix structure in code
-* stitch floorplans with rounding
-* make magical numbers easily changable
+* add demo to readme
+* renew current windows/door implementation
 * explain implementation of several floorplan
 * update readme text
 * add related projects to readme

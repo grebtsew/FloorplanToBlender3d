@@ -5,7 +5,6 @@ from pyfiglet import Figlet
 f = Figlet(font='slant')
 print (f.renderText('Floorplan to Blender3d'))
 
-
 '''
 Start here
 '''
@@ -15,7 +14,7 @@ if __name__ == "__main__":
     image_path = "" # path the your image
     blender_install_path = "" # path to blender installation folder
 
-    image_path, blender_install_path, file_structure, mode = IO.config_get_default()
+    image_path, blender_install_path = IO.config_get_default()
 
     # Set other paths (don't need to change these)
     program_path = os.path.dirname(os.path.realpath(__file__))
@@ -52,22 +51,26 @@ if __name__ == "__main__":
 
     IO.clean_data_folder("Data/")
 
+    # Ask how floorplans shall be structured
+    if(len(image_paths) > 1):
+        print("There are currently "+ str(len(image_paths)) + " floorplans to create, they will be put next to eachother, to change their position and/or rotation edit the config file!")
+
+
     # Generate data files
     data_paths = list()
     fshape = None
+    # for each input image path!
+    for image_path in image_paths:
+        # Calculate positions and rotations here!
 
-    # Ask how floorplans shall be structured
-    if(len(image_paths) > 1):
-        print("There are currently "+ str(len(image_paths)) + " floorplans to create.")#, default multi execution is [ "+mode +" ]")
-
-        var = input("Do you want to build horizontal? [Yes] : ")
-        if var:
-            data_paths = execution.multiple_simple(image_paths, False)
+        if fshape is not None:
+            # Generate all data for imagepath
+            fpath, fshape = generate.generate_all_files(image_path, True, position=(0,fshape[1],0))
         else:
-            data_paths = execution.multiple_simple(image_paths, True)
-    else:
-        data_paths = execution.simple_single(image_paths)
+            fpath, fshape = generate.generate_all_files(image_path, True)
 
+        # add path to send to blender
+        data_paths.append(fpath)
 
     print("")
     print("Creates blender project")
