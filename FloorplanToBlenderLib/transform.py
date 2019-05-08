@@ -2,19 +2,28 @@ import cv2
 import numpy as np
 from itertools import *
 
+'''
+Transform
+This file contains functions for transforming data between different formats.
+
+FloorplanToBlender3d
+Copyright (C) 2019 Daniel Westberg
+'''
+
 def recursive_loop_element(thelist, res):
+    '''
+    Recursive loop element
+    A recursive function transforming any sized array to a one dimentional array
+    @Param thelist, incoming list
+    @Param res, resulting list
+    '''
     if not thelist:
         return res
     else:
-    #    print(thelist[0], res)
-    #    print(type(thelist[0]))
-
         if isinstance(thelist[0], int):
-    #        print("found int")
             res.append(thelist[0])
             return recursive_loop_element(thelist[1:], res)
         elif isinstance(thelist[0], float):
-        #    print("found float", thelist[1:])
             res.append(thelist[0])
             return recursive_loop_element(thelist[1:], res)
         else:
@@ -23,10 +32,11 @@ def recursive_loop_element(thelist, res):
 
 def verts_to_poslist(verts):
     '''
-    @Param verts of undecided size
+    Verts to poslist
     Convert any verts array to a list of positions
+    @Param verts of undecided size
+    @Return res, list of position
     '''
-
     list_of_elements = recursive_loop_element(verts, [])
 
     res = []
@@ -38,6 +48,8 @@ def verts_to_poslist(verts):
 
 def scale_point_to_vector(boxes, scale = 1, height = 0):
     '''
+    Scale point to vector
+    scales a point to a vector
     @Param boxes
     @Param scale
     @Param height
@@ -67,7 +79,6 @@ def write_verts_on_2d_image(boxes, blank_image):
 def create_nx4_verts_and_faces(boxes, height = 1, scale = 1, ground = 0):
     '''
     Create verts and faces
-
     @Param boxes,
     @Param height,
     @Param scale,
@@ -115,9 +126,7 @@ def create_verts(boxes, height, scale):
     @Param height, 3d height change
     @Param scale, pixel scale amount
     @Return verts, numpy array of vectors
-    '''
 
-    '''
     Scale and create array of box_verts
     [[box1],[box2],...]
     '''
@@ -157,8 +166,6 @@ def write_boxes_on_2d_image(boxes, blank_image):
 
             # draw line
             cv2.line(blank_image,(curr[0],curr[1]),(next[0],next[1]),(255,0,0),5)
-
-
 
     cv2.imshow('show image',blank_image)
     cv2.waitKey(0)

@@ -7,6 +7,10 @@ from subprocess import check_output
 import os
 import imutils
 
+'''
+Find rooms in image
+'''
+
 img = cv2.imread("../Examples/example.png")
 height, width, channels = img.shape
 blank_image = np.zeros((height,width,3), np.uint8) # output image same size as original

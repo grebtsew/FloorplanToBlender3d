@@ -7,6 +7,9 @@ import math
 '''
 Floorplan to Blender
 
+FloorplanToBlender3d
+Copyright (C) 2019 Daniel Westberg
+
 This code read data from a file and creates a 3d model of that data.
 RUN THIS CODE FROM BLENDER
 

@@ -8,16 +8,14 @@ import os
 import imutils
 
 '''
+Find walls and floors
 This is a test file, used to develop and test new functions
 '''
-
 
 def test():
     '''
     Test function for future use
-    '''
 
-    '''
     Receive image, convert
     '''
     # Read floorplan image

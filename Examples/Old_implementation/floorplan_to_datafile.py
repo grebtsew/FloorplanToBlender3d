@@ -3,6 +3,7 @@ import numpy as np
 import json
 
 '''
+Floorplan to datafile
 This file contains the old implementation
 Where all functions are in this file...
 '''

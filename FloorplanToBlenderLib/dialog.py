@@ -7,6 +7,15 @@ from . import transform
 
 from pyfiglet import Figlet
 
+'''
+Dialog
+This file contains code for handling dialog and can be seen as a gui solution.
+TODO: This is currently unused
+
+FloorplanToBlender3d
+Copyright (C) 2019 Daniel Westberg
+'''
+
 def figlet(text='Floorplan to Blender3d' , font='slant'):
     f = Figlet(font=font)
     print (f.renderText(text))
@@ -19,9 +28,24 @@ def init():
     print("")
 
 def question(text, default):
+    '''
+    @Param text, question string
+    @Param default, possible values
+    @Return input
+    '''
     return input(text + " [default = "+ default +"]: ")
 
+def end_copyright():
+    print("")
+    print("FloorplanToBlender3d Copyright (C) 2019  Daniel Westberg")
+    print("This program comes with ABSOLUTELY NO WARRANTY;")
+    print("This is free software, and you are welcome to redistribute it under certain conditions;")
+    print("")
+
 def dialog_example():
+    '''
+    Code from an example
+    '''
     # Some input
     image_paths = []
     var = input("Please enter your floorplan image paths seperated by space [default = " + image_path+"]: ")

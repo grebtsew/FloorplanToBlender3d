@@ -5,9 +5,13 @@ from pyfiglet import Figlet
 f = Figlet(font='slant')
 print (f.renderText('Floorplan to Blender3d'))
 
-
 '''
-Start here
+Create Blender Project from floorplan
+This file contains a simple example implementation of creations of 3d models from
+floorplans. You will need blender and an image of a floorplan to make this work.
+
+FloorplanToBlender3d
+Copyright (C) 2019 Daniel Westberg
 '''
 if __name__ == "__main__":
 
@@ -84,3 +88,9 @@ if __name__ == "__main__":
     print("Project created at: " + program_path + "\\floorplan.blender")
     print("")
     print("Done, Have a nice day!")
+
+    print("")
+    print("FloorplanToBlender3d Copyright (C) 2019  Daniel Westberg")
+    print("This program comes with ABSOLUTELY NO WARRANTY;")
+    print("This is free software, and you are welcome to redistribute it under certain conditions;")
+    print("")

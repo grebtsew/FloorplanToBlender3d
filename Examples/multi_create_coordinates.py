@@ -6,6 +6,7 @@ f = Figlet(font='slant')
 print (f.renderText('Floorplan to Blender3d'))
 
 '''
+Multi create coordinates
 This is an example of how to create multiple floorplans with coordinates.
 '''
 if __name__ == "__main__":

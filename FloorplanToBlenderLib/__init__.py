@@ -1,4 +1,7 @@
 '''
+FloorplanToBlender3d
+Copyright (C) 2019 Daniel Westberg
+
 This file create python package
 
 Example usage of package :

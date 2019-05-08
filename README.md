@@ -4,7 +4,7 @@ Convert 2d floorplans to Blender3d objects!
 ![powerpoint](Docs/powerpoint.gif)
 
 # About
-The virtualisation of real life object has always been a hot subject. As I started
+The virtualisation of real life object has always been a hot topic for several years. As I started
 learning about 3d modelling in Blender3d I thought of this idea to use simple
 imaging on floorplans to automatically create corresponding 3d models. It is much easier than it
 sounds and uses a low amount of resources, enabling it to be used on phones.
@@ -42,6 +42,16 @@ This tutorial takes you through the execution of this program in examples.
 7. Open "floorplan_to_3dObject_in_blender.py" in blender by pressing the text editor, then "alt+o" and find the file
 8. Run script
 
+# Demo
+See demo below:
+comming up tomorrow
+
+# Other usages
+comming up tomorrow
+
+# Related projects
+comming up tomorrow
+
 # Testing
 Vital and core functionality are tested with pytest. To run tests yourself enter "Testing"-folder and run:
 ```cmd
@@ -60,23 +70,6 @@ I share links to copied code here:
 * Rect contain : https://stackoverflow.com/questions/33065834/how-to-detect-if-a-point-is-contained-within-a-bounding-rect-opecv-python
 * Line detection : https://docs.opencv.org/3.0-beta/doc/py_tutorials/py_imgproc/py_houghlines/py_houghlines.html
 
-# Upcoming
-Several of the functions mentioned above is not yet fully developed.
-When all functions are done, I will look closer at an ai approach of the same problem.
-I might also add more ways to use this implementation. Perhaps with gui, pip and containers.
-
-Things on my TODO are:
-* add demo to readme
-* renew current windows/door implementation
-* explain implementation of several floorplan
-* update readme text
-* add related projects to readme
-* add toc to readme
-* add licenses
-* add tutorial with images in readme
-* add more test
-* ai implementation
-* add to docker container, more reliable!
 
 Please let me know if there are any more functions or questions you need answered!
 / Grebtsew

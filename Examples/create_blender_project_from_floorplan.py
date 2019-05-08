@@ -6,7 +6,9 @@ f = Figlet(font='slant')
 print (f.renderText('Floorplan to Blender3d'))
 
 '''
-Start here
+Create Blender project from floorplan
+This file contains a simple example implementation of creations of 3d models from
+floorplans. You will need blender and an image of a floorplan to make this work.
 '''
 if __name__ == "__main__":
 

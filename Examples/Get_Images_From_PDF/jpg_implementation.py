@@ -1,9 +1,9 @@
-
-
-'''
-Works for jpg
-'''
 import sys
+
+'''
+JPG_implementation
+Retreive jpg images from pdf files
+'''
 
 with open('ivar_planlosningar.pdf',"rb") as file:
     file.seek(0)

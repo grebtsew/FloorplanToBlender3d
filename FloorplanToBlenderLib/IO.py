@@ -5,6 +5,14 @@ from shutil import which
 import configparser
 import shutil
 
+'''
+IO
+This file contains functions for handling files.
+
+FloorplanToBlender3d
+Copyright (C) 2019 Daniel Westberg
+'''
+
 def generate_config_file():
     '''
     Generate new config file, if no exist
@@ -18,11 +26,17 @@ def generate_config_file():
         config.write(configfile)
 
 def config_file_exist(name):
+    '''
+    Check if file exist
+    @Param name
+    @Return boolean
+    '''
     return os.path.isfile(name)
 
 def config_get_default():
     '''
     Read and return default values
+    @Return default values
     '''
     config = configparser.ConfigParser()
 
@@ -58,7 +72,8 @@ def read_from_file(file_path):
 def clean_data_folder(folder):
     '''
     Remove old data files
-    Dont wanna fill memory
+    Don't wanna fill memory
+    @Param folder, path to data folder
     '''
     for root, dirs, files in os.walk(folder):
         for f in files:
@@ -69,6 +84,8 @@ def clean_data_folder(folder):
 def create_new_floorplan_path(path):
     '''
     Creates next free name to floorplan data
+    @Param path, path to floorplan
+    @Return end path
     '''
     res = 0;
     for root, dirs, files in os.walk(path):
@@ -91,9 +108,14 @@ def create_new_floorplan_path(path):
 def get_current_path():
     '''
     Get path to this programs path
+    @Return path to working directory
     '''
     dir_path = os.path.dirname(os.path.realpath(__file__))
     return dir_path
 
 def find_program_path(name):
+    '''
+    Find program path
+    @Param name, name of program to find
+    '''
     return which(name)

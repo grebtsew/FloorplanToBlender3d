@@ -5,13 +5,28 @@ from . import detect
 from . import IO
 from . import transform
 
-# Path
+'''
+Generate
+This file contains code for generate data files, used when creating blender project.
+A temp storage of calculated data and a way to transfer data to the blender script.
+
+FloorplanToBlender3d
+Copyright (C) 2019 Daniel Westberg
+'''
+# TODO: create big window implementation
+
+# Paths to save folder
 base_path = "Data/"
 path = "Data/"
 
 def generate_all_files(imgpath, info, position=None, rotation=None):
     '''
     Generate all data files
+    @Param imgpath
+    @Param info, boolean if should be printed
+    @Param position, vector of float
+    @Param rotation, vector of float
+    @Return path to generated file, shape
     '''
     global path
 
@@ -35,6 +50,12 @@ def generate_all_files(imgpath, info, position=None, rotation=None):
     return path, shape;
 
 def validate_shape(old_shape, new_shape):
+    '''
+    Validate shape, use this to calculate a objects total shape
+    @Param old_shape
+    @Param new_shape
+    @Return total shape
+    '''
     shape = [0,0,0]
     shape[0] = max(old_shape[0], new_shape[0])
     shape[1] = max(old_shape[1], new_shape[1])
@@ -42,6 +63,13 @@ def validate_shape(old_shape, new_shape):
     return shape
 
 def get_shape(verts, scale):
+    '''
+    Get shape
+    Rescale boxes to specified scale
+    @Param verts, input boxes
+    @Param scale to use
+    @Return rescaled boxes
+    '''
     posList = transform.verts_to_poslist(verts)
     high = [0,0,0]
     low = posList[0]
@@ -63,6 +91,16 @@ def get_shape(verts, scale):
     return [high[0] - low[0],high[1] - low[1],high[2] - low[2]]
 
 def generate_transform_file(imgpath, info, position, rotation, shape):
+    '''
+    Generate transform of file
+    A transform contains information about an objects position, rotation.
+    @Param imgpath
+    @Param info, boolean if should be printed
+    @Param position, position vector
+    @Param rotation, rotation vector
+    @Param shape
+    @Return transform
+    '''
     #create map
     transform = {}
     if position is None:
@@ -86,7 +124,10 @@ def generate_transform_file(imgpath, info, position, rotation, shape):
 
 def generate_rooms_file(img_path, info):
     '''
-     generate rooms
+    Generate room data files
+    @Param img_path path to image
+    @Param info, boolean if should be printed
+    @Return shape
     '''
     # Read floorplan image
     img = cv2.imread(img_path)
@@ -141,8 +182,10 @@ def generate_rooms_file(img_path, info):
 
 def generate_small_windows_file(img_path, info):
     '''
-     generate doors
-     generate windows
+    Generate small windows data file
+    @Param img_path, path to image
+    @Param info, boolean if should be printed
+    @Return shape
     '''
     # Read floorplan image
     img = cv2.imread(img_path)
@@ -209,8 +252,10 @@ def generate_small_windows_file(img_path, info):
 
 def generate_doors_file(img_path, info):
     '''
-     generate doors
-     generate windows
+    Generate door data file
+    @Param img_path
+    @Param info, boolean if should be print
+    @Return shape
     '''
     # Read floorplan image
     img = cv2.imread(img_path)
@@ -265,7 +310,10 @@ def generate_doors_file(img_path, info):
 
 def generate_floor_file(img_path, info):
     '''
-    Receive image, convert
+    Generate floor data file
+    @Param img_path, path to image
+    @Param info, boolean if should be printed
+    @Return shape
     '''
     # Read floorplan image
     img = cv2.imread(img_path)
@@ -307,8 +355,10 @@ def generate_floor_file(img_path, info):
 
 def generate_walls_file(img_path, info):
     '''
-    generate wall data file for floorplan
+    Generate wall data file for floorplan
     @Param img_path, path to input file
+    @Param info, boolean if data should be printed
+    @Return shape
     '''
     # Read floorplan image
     img = cv2.imread(img_path)

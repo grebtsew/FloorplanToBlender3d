@@ -7,19 +7,25 @@ from . import transform
 from . import generate
 
 '''
-This file contains some example usages and creations of multiple floorplans
+Execution
+This file contains some example usages and creations of multiple floorplans.
+
+FloorplanToBlender3d
+Copyright (C) 2019 Daniel Westberg
 '''
 
 def simple_single(image_path):
     '''
-    Generate a simple floorplan
+    Generate one simple floorplan
+    @Param image_path path to image
+    @Return path to generated files
     '''
     fpath, fshape = generate.generate_all_files(image_path, True)
     return [fpath]
 
 def multiple_simple(image_paths, horizontal=True):
     '''
-    Generates new appartments
+    Generates several new appartments
     @Param image_paths - list of path to images
     @Param horizontal - if apartments should stack horizontal or vertical
     @Return paths to image data
