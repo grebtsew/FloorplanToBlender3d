@@ -21,7 +21,7 @@ def simple_single(image_path):
     @Return path to generated files
     '''
     fpath, fshape = generate.generate_all_files(image_path, True)
-    return [fpath]
+    return fpath
 
 def multiple_simple(image_paths, horizontal=True):
     '''

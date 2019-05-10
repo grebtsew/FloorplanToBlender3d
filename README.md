@@ -43,14 +43,17 @@ This tutorial takes you through the execution of this program in examples.
 8. Run script
 
 # Demo
-See demo below:
-comming up tomorrow
+Here we demo the program. First of we need a floorplan image to process.
+We use example.png, see below:
+![Floorplanexample](Examples/example.png)
 
-# Other usages
-comming up tomorrow
+Next up we execute our script and answer the questions:
+![gif1](Docs/demo1.gif)
 
-# Related projects
-comming up tomorrow
+Finally we can open the newly created floorplan.blender file and see the result:
+![gif2](Docs/demo2.gif)
+
+Note that this demo only uses default settings. For instance coloring is by default random.
 
 # Testing
 Vital and core functionality are tested with pytest. To run tests yourself enter "Testing"-folder and run:

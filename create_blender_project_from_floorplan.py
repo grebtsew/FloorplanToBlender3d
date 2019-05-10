@@ -70,7 +70,7 @@ if __name__ == "__main__":
         else:
             data_paths = execution.multiple_simple(image_paths, True)
     else:
-        data_paths = execution.simple_single(image_paths)
+        data_paths = [execution.simple_single(image_paths[0])]
 
 
     print("")
