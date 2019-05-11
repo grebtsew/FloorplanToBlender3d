@@ -17,7 +17,8 @@ Convert 2d floorplans to Blender3d objects!
 - [Demo](#demo)
 - [Testing](#testing)
 - [References and Imports](#References-and-Imports)
-
+- [Contribute](#contribute)
+- [License](#license)
 <!-- tocstop -->
 
 </details>
@@ -37,11 +38,11 @@ This part contains information about how to setup and execute this program.
 ## Install
 Several packages and programs are required to run this program.
 
-* Python3
-* python-cv (OpenCV)
-* numpy
-* configparser
-* json
+* `Python3`
+* `python-cv` (OpenCV)
+* `numpy`
+* `configparser`
+* `json`
 
 If you have `Python3 pip` installed you can install required packages by running:
 
@@ -65,7 +66,7 @@ This tutorial takes you through the execution of this program in examples.
 4. Edit path in `floorplan_to_datafile.py` to generated data files.
 5. Start blender
 6. Open Blender text editor
-7. Open `floorplan_to_3dObject_in_blender.py` in blender by pressing the text editor, then ´alt+o´ and find the file
+7. Open `floorplan_to_3dObject_in_blender.py` in blender by pressing the text editor, then `alt+o` and find the file
 8. Run script
 
 # Demo
