@@ -1,20 +1,42 @@
-# Floorplan-To-Blender
+# Floorplan To Blender3d
+
+![license](https://img.shields.io/aur/license/yaourt.svg)
+
 Convert 2d floorplans to Blender3d objects!
 
 ![powerpoint](Docs/powerpoint.gif)
 
+<details>
+  <summary><strong>Table of Contents</strong> (click to expand)</summary>
+
+<!-- toc -->
+
+- [About](#about)
+- [How-To](#how-to)
+- [Install](##install)
+- [Run](##run)
+- [Run Old but still working](##Run (Old but still working!))
+- [Demo](#demo)
+- [Testing](#testing)
+- [References and Imports](#references and imports)
+
+<!-- tocstop -->
+
+</details>
+
 # About
-The virtualisation of real life object has always been a hot topic for several years. As I started
-learning about 3d modelling in Blender3d I thought of this idea to use simple
+The virtualisation of real life object has been a hot topic for several years. As I started
+learning about 3d modelling in [Blender3d](https://www.blender.org/) I thought of this idea to use simple
 imaging on floorplans to automatically create corresponding 3d models. It is much easier than it
-sounds and uses a low amount of resources, enabling it to be used on phones.
+sounds and uses a low amount of resources, enabling it to be used on low hardware.
  By utilizing Blender3d, all created objects will be easy to transfer
-  to other programs and usages. Such as Unity or Unreal Engine.
+  to any other 3d rendering program. Such as [Unity](https://unity.com/), [Unreal Engine](https://www.unrealengine.com/en-US/)
+ or [CAD](https://www.autodesk.com/solutions/cad-software).
 
 # How-To
-This piece contains information about how to setup and execute this program.
+This part contains information about how to setup and execute this program.
 
-## Requirements
+## Install
 Several packages and programs are required to run this program.
 
 * Python3
@@ -23,23 +45,29 @@ Several packages and programs are required to run this program.
 * configparser
 * json
 
-## Tutorial
+If you have ´Python3 pip´ installed you can install required packages by running:
+
+´´´bash
+ pip install -r requirements.txt
+´´´
+
+## Run
 This tutorial takes you through the execution of this program.
 
 1. Receive floorplan as image, from pdf or by using other method (for example paint)
-2. Run python script "create_blender_project_from_floorplan.py"
+2. Run python script ´create_blender_project_from_floorplan.py´
 3. Follow instructions
 
-## Old but still working tutorial
+## Run (Old but still working!)
 This tutorial takes you through the execution of this program in examples.
 
 1. Receive floorplan as image, from pdf or by using other method (for example paint)
-2. Set image file path in "Examples/floorplan_to_datafile.py"
-3. Run "floorplan_to_datafile.py" to create data files for your floorplan.
-4. Edit path in "floorplan_to_datafile.py" to generated data files.
+2. Set image file path in ´Examples/floorplan_to_datafile.py´
+3. Run ´floorplan_to_datafile.py´ to create data files for your floorplan.
+4. Edit path in ´floorplan_to_datafile.py´ to generated data files.
 5. Start blender
 6. Open Blender text editor
-7. Open "floorplan_to_3dObject_in_blender.py" in blender by pressing the text editor, then "alt+o" and find the file
+7. Open ´floorplan_to_3dObject_in_blender.py´ in blender by pressing the text editor, then ´alt+o´ and find the file
 8. Run script
 
 # Demo
@@ -63,7 +91,7 @@ pytest
 
 # References and Imports
 During the development of this project I have been searching alot and copied code from StackOverflow.
-I share links to copied code here:
+I share links to copied code and other contributors here:
 
 * First look at problem : https://mathematica.stackexchange.com/questions/19546/image-processing-floor-plan-detecting-rooms-borders-area-and-room-names-t
 * Room detection : https://stackoverflow.com/questions/54274610/crop-each-of-them-using-opencv-python
@@ -72,7 +100,14 @@ I share links to copied code here:
 * Distance in image : https://stackoverflow.com/questions/50930033/drawing-lines-and-distance-to-them-on-image-opencv-python
 * Rect contain : https://stackoverflow.com/questions/33065834/how-to-detect-if-a-point-is-contained-within-a-bounding-rect-opecv-python
 * Line detection : https://docs.opencv.org/3.0-beta/doc/py_tutorials/py_imgproc/py_houghlines/py_houghlines.html
+* Readme tips: https://github.com/matiassingers/awesome-readme
 
+# Contribute
 
-Please let me know if there are any more functions or questions you need answered!
-/ Grebtsew
+Let me know if you want to contribute to this project, also if you want me to add more
+functions or answer questions, let me know!
+
+# License
+[GNU GENERAL PUBLIC LICENSE](license) Version 3, 29 June 2007
+
+COPYRIGHT @ Grebtsew 2019
