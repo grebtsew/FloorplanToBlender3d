@@ -1,4 +1,6 @@
-# ![logo](Docs/logo.png)
+<p align="center">
+  <img width="460" height="300" src="Docs/logo.png">
+</p>
 
 Convert 2d floorplans to Blender3d objects!
 
