@@ -11,12 +11,12 @@ Convert 2d floorplans to Blender3d objects!
 
 - [About](#about)
 - [How-To](#how-to)
-- [Install](##install)
+- [Install](#install)
 - [Run](#run)
 - [Run Old but still working](#run (Old but still working!))
 - [Demo](#demo)
 - [Testing](#testing)
-- [References and Imports](#references and imports)
+- [References and Imports](#references)
 
 <!-- tocstop -->
 
