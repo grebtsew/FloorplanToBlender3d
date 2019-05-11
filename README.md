@@ -16,7 +16,7 @@ Convert 2d floorplans to Blender3d objects!
 - [Run Old but still working](#run (Old but still working!))
 - [Demo](#demo)
 - [Testing](#testing)
-- [References and Imports](#references)
+- [References and Imports](#References-and-Imports)
 
 <!-- tocstop -->
 
@@ -43,29 +43,29 @@ Several packages and programs are required to run this program.
 * configparser
 * json
 
-If you have ´Python3 pip´ installed you can install required packages by running:
+If you have `Python3 pip` installed you can install required packages by running:
 
-´´´bash
+```bash
  pip install -r requirements.txt
-´´´
+```
 
 ## Run
 This tutorial takes you through the execution of this program.
 
 1. Receive floorplan as image, from pdf or by using other method (for example paint)
-2. Run python script ´create_blender_project_from_floorplan.py´
+2. Run python script `create_blender_project_from_floorplan.py`
 3. Follow instructions
 
 ## Run (Old but still working!)
 This tutorial takes you through the execution of this program in examples.
 
 1. Receive floorplan as image, from pdf or by using other method (for example paint)
-2. Set image file path in ´Examples/floorplan_to_datafile.py´
+2. Set image file path in `Examples/floorplan_to_datafile.py`
 3. Run ´floorplan_to_datafile.py´ to create data files for your floorplan.
-4. Edit path in ´floorplan_to_datafile.py´ to generated data files.
+4. Edit path in `floorplan_to_datafile.py` to generated data files.
 5. Start blender
 6. Open Blender text editor
-7. Open ´floorplan_to_3dObject_in_blender.py´ in blender by pressing the text editor, then ´alt+o´ and find the file
+7. Open `floorplan_to_3dObject_in_blender.py` in blender by pressing the text editor, then ´alt+o´ and find the file
 8. Run script
 
 # Demo
