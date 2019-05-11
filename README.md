@@ -1,4 +1,4 @@
-# Floorplan To Blender3d
+# ![logo](Docs/logo.png)
 
 Convert 2d floorplans to Blender3d objects!
 
@@ -102,7 +102,6 @@ I share links to copied code and other contributors here:
 * Readme tips: https://github.com/matiassingers/awesome-readme
 
 # Contribute
-
 Let me know if you want to contribute to this project, also if you want me to add more
 functions or answer questions, let me know!
 
