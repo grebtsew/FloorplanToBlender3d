@@ -50,6 +50,11 @@ If you have `Python3 pip` installed you can install required packages by running
  pip install -r requirements.txt
 ```
 
+Clone or download this repo:
+```git 
+git clone https://github.com/grebtsew/FloorplanToBlender3d.git 
+````
+
 ## Run
 This tutorial takes you through the execution of this program.
 
