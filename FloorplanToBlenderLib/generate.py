@@ -13,7 +13,8 @@ A temp storage of calculated data and a way to transfer data to the blender scri
 FloorplanToBlender3d
 Copyright (C) 2019 Daniel Westberg
 '''
-# TODO: create big window implementation
+# TODO: create big window implementation (nicer windows!)
+# TODO: write window and door detection and use the generators for them below!
 
 # Paths to save folder
 base_path = "Data/"

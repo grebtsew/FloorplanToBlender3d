@@ -2,3 +2,8 @@ python-cv
 numpy
 configparser
 json
+bpy
+imutils
+pyfiglet
+configparser
+shutil

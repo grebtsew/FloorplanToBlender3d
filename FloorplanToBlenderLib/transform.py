@@ -121,7 +121,7 @@ def create_nx4_verts_and_faces(boxes, height = 1, scale = 1, ground = 0):
 
 def create_verts(boxes, height, scale):
     '''
-    Simplified converts 2d poses to 3d poses, and adds a hight position
+    Simplified converts 2d poses to 3d poses, and adds a height position
     @Param boxes, 2d boxes as numpy array
     @Param height, 3d height change
     @Param scale, pixel scale amount

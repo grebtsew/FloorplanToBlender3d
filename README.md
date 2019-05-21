@@ -38,11 +38,8 @@ This part contains information about how to setup and execute this program.
 ## Install
 Several packages and programs are required to run this program.
 
+* `Blender3d`
 * `Python3`
-* `python-cv` (OpenCV)
-* `numpy`
-* `configparser`
-* `json`
 
 If you have `Python3 pip` installed you can install required packages by running:
 
@@ -50,9 +47,22 @@ If you have `Python3 pip` installed you can install required packages by running
  pip install -r requirements.txt
 ```
 
+Or install them manually by running :
+
+`pip install`
+* `bpy` (python for blender)
+* `python-cv` (OpenCV)
+* `numpy`
+* `configparser`
+* `json`
+* `imutils`
+* `pyfiglet`
+* `shutil`
+* `configparser`
+
 Clone or download this repo:
-```git 
-git clone https://github.com/grebtsew/FloorplanToBlender3d.git 
+```git
+git clone https://github.com/grebtsew/FloorplanToBlender3d.git
 ````
 
 ## Run
