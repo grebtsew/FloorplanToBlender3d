@@ -6,21 +6,21 @@ import numpy as np
 # Calculate (actual) size of appartment
 # TODO: text detection
 
-'''
+"""
 Detect
 This file contains functions used when detecting and calculating shapes in images.
 
 FloorplanToBlender3d
 Copyright (C) 2019 Daniel Westberg
-'''
+"""
 
 def wall_filter(gray):
-    '''
+    """
     Filter walls
     Filter out walls from a grayscale image
     @Param image
     @Return image of walls
-    '''
+    """
     ret, thresh = cv2.threshold(gray,0,255,cv2.THRESH_BINARY_INV+cv2.THRESH_OTSU)
 
     # noise removal
@@ -37,105 +37,16 @@ def wall_filter(gray):
 
     return unknown
 
-def detectCorners(detect_img, output_img = None, color = [255,0,0] ):
-    '''
-    Find each corner in image
-    @Param detect_img image to detect @mandatory
-    @Param output_img image to save to
-    @Param color to set on output
-    @Return corner(array of float), output image
-    '''
-    corners = cv2.goodFeaturesToTrack(detect_img, 1000, 0.1, 1)
-    corners = np.int0(corners)
-
-    if output_img is not None:
-        for corner in corners:
-            x,y = corner.ravel()
-            cv2.circle(output_img,(x,y),3,255,-1)
-    return corners, output_img
-
-def Watermark(detect_img, output_img = None, color = [255,0,0]):
-    '''
-    Watershed
-    Watermark image
-    @Param detect_img image to detect @mandatory
-    @Param output_img image to save to
-    @Param color to set on output
-    @Return markers
-    @source https://docs.opencv.org/3.1.0/d3/db4/tutorial_py_watershed.html
-    '''
-    ret, markers = cv2.connectedComponents(detect_img)
-
-    markers = markers+1
-    markers[unknown==255] = 0
-    if output_img is not None:
-        markers = cv2.watershed(output_img,markers)
-        output_img[markers == -1] = color
-    return markers
-
-def detectCenterBoxes(detect_img, output_img = None, color = [100,100,0]):
-    '''
-    Get center of objects
-    Detect boxes of shapes with focus on centering shape, useful to surround a shape.
-    Not precise.
-    @Param detect_img image to detect from @mandatory
-    @Param output_img image for output
-    @Param color to set on output
-    @Return corners(array of float), output image
-    @source https://docs.opencv.org/3.0-beta/doc/py_tutorials/py_feature2d/py_features_harris/py_features_harris.html
-    '''
-
-    # find centroids
-    ret, labels, stats, centroids = cv2.connectedComponentsWithStats(detect_img,4)
-
-    # define the criteria to stop and refine the corners
-    criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 100, 0.001)
-    corners = cv2.cornerSubPix(detect_img,np.float32(centroids),(5,5),(-1,-1),criteria)
-
-    # Now draw them
-    res = np.hstack((centroids,corners))
-    res = np.int0(res)
-    if output_img is not None:
-        output_img[res[:,1],res[:,0]]=[0,0,255]
-        output_img[res[:,3],res[:,2]] = [0,255,0]
-
-        i = len(res)-1
-        print(res)
-        while i >= 0:
-            cv2.rectangle(output_img,(int(res[i][0]),int(res[i][1])),(int(res[i][2]),int(res[i][3])),color,3)
-            i -= 1
-    return res, output_img
-
-
-def detectUnpreciseBoxes(detect_img, output_img = None, color = [100,100,0]):
-    '''
-    Detect corners boxes in image with low precision
-    @Param detect_img image to detect from @mandatory
-    @Param output_img image for output
-    @Param color to set on output
-    @Return boxes, output image
-    '''
-
-    corners = cv2.cornerHarris(detect_img,2,3,0.04)
-    res = cv2.dilate(corners, None, iterations=3)
-
-    res = corners
-    if output_img is not None:
-        i = len(res)-1
-        while i >= 0:
-            cv2.rectangle(output_img,(int(res[i][0]),int(res[i][1])),(int(res[i][2]),int(res[i][3])),color,3)
-            i -= 1
-    return res, output_img
 
 def detectPreciseBoxes(detect_img, output_img = None, color = [100,100,0]):
-    '''
+    """
     Detect corners with boxes in image with high precision
     @Param detect_img image to detect from @mandatory
     @Param output_img image for output
     @Param color to set on output
     @Return corners(list of boxes), output image
     @source https://stackoverflow.com/questions/50930033/drawing-lines-and-distance-to-them-on-image-opencv-python
-    '''
+    """
     res = []
 
     im, contours, hierarchy = cv2.findContours(detect_img,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
@@ -155,13 +66,13 @@ def detectPreciseBoxes(detect_img, output_img = None, color = [100,100,0]):
     return res, output_img
 
 def remove_noise(img, noise_removal_threshold):
-    '''
+    """
     Remove noise from image and return mask
     Help function for finding room
     @Param img @mandatory image to remove noise from
     @Param noise_removal_threshold @mandatory threshold for noise
     @Return return new mask of image
-    '''
+    """
     img[img < 128] = 0
     img[img > 128] = 255
     _, contours, _ = cv2.findContours(~img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
@@ -173,14 +84,14 @@ def remove_noise(img, noise_removal_threshold):
     return mask
 
 def find_corners_and_draw_lines(img, corners_threshold, room_closing_max_length):
-    '''
+    """
     Finds corners and draw lines from them
     Help function for finding room
     @Param image input image
     @Param corners_threshold threshold for corner distance
     @Param room_closing_max_length threshold for room max size
     @Return output image
-    '''
+    """
     # Detect corners (you can play with the parameters here)
     kernel = np.ones((1,1),np.uint8)
     dst = cv2.cornerHarris(img ,2,3,0.04)
@@ -207,58 +118,14 @@ def find_corners_and_draw_lines(img, corners_threshold, room_closing_max_length)
     return img
 
 
-def find_details(img, noise_removal_threshold=50, corners_threshold=0.01,
-               room_closing_max_length=130, gap_in_wall_max_threshold=5000,
-               gap_in_wall_min_threshold=10):
-
-    """
-    I have copied and changed this function some...
-
-    origin from
-    https://stackoverflow.com/questions/54274610/crop-each-of-them-using-opencv-python
-
-    @Param img: grey scale image of rooms, already eroded and doors removed etc.
-    @Param noise_removal_threshold: Minimal area of blobs to be kept.
-    @Param corners_threshold: Threshold to allow corners. Higher removes more of the house.
-    @Param room_closing_max_length: Maximum line length to add to close off open doors.
-    @Param gap_in_wall_threshold: Minimum number of pixels to identify component as room instead of hole in the wall.
-    @Return: rooms: list of numpy arrays containing boolean masks for each detected room
-             colored_house: A colored version of the input image, where each room has a random color.
-    """
-    assert 0 <= corners_threshold <= 1
-    # Remove noise left from door removal
-
-    mask = remove_noise(img, noise_removal_threshold)
-    img = ~mask
-
-    find_corners_and_draw_lines(img,corners_threshold,room_closing_max_length)
-
-    img, mask = mark_outside_black(img, mask)
-
-    # Find the connected components in the house
-    ret, labels = cv2.connectedComponents(img)
-    img = cv2.cvtColor(img,cv2.COLOR_GRAY2RGB)
-    unique = np.unique(labels)
-    details = []
-    for label in unique:
-        component = labels == label
-        if img[component].sum() == 0 or np.count_nonzero(component) < gap_in_wall_min_threshold or np.count_nonzero(component) > gap_in_wall_max_threshold:
-            color = 0
-        else:
-            details.append(component)
-            color = np.random.randint(0, 255, size=3)
-
-        img[component] = color
-
-    return details, img
 
 def mark_outside_black(img, mask):
-    '''
+    """
     Mark white background as black
     @Param @mandatory img image input
     @Param @mandatory mask mask to use
     @Return image, mask
-    '''
+    """
     # Mark the outside of the house as black
     _, contours, _ = cv2.findContours(~img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     contour_sizes = [(cv2.contourArea(contour), contour) for contour in contours]
@@ -314,14 +181,14 @@ def find_rooms(img, noise_removal_threshold=50, corners_threshold=0.01,
 
 
 def detectAndRemovePreciseBoxes(detect_img, output_img = None, color = [255, 255, 255]):
-    '''
+    """
     Remove contours of detected walls from image
     @Param detect_img image to detect from @mandatory
     @Param output_img image for output
     @Param color to set on output
     @Return list of boxes, actual image
     @source https://stackoverflow.com/questions/50930033/drawing-lines-and-distance-to-them-on-image-opencv-python
-    '''
+    """
 
     res = []
 
@@ -342,14 +209,14 @@ def detectAndRemovePreciseBoxes(detect_img, output_img = None, color = [255, 255
     return res, output_img
 
 def detectOuterContours(detect_img, output_img = None, color = [255, 255, 255]):
-    '''
-    Get the outer side of image
+    """
+    Get the outer side of floorplan, used to get ground
     @Param detect_img image to detect from @mandatory
     @Param output_img image for output
     @Param color to set on output
     @Return approx, box
     @Source https://stackoverflow.com/questions/50930033/drawing-lines-and-distance-to-them-on-image-opencv-python
-    '''
+    """
     ret, thresh = cv2.threshold(detect_img, 230, 255, cv2.THRESH_BINARY_INV)
 
     img_, contours, hierarchy = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
@@ -368,25 +235,76 @@ def detectOuterContours(detect_img, output_img = None, color = [255, 255, 255]):
 
 
 def rectContains(rect,pt):
-    '''
+    """
     Count if Rect contains point
     @Param rect rectangle
     @Param pt point
     @Return boolean
     @source: https://stackoverflow.com/questions/33065834/how-to-detect-if-a-point-is-contained-within-a-bounding-rect-opecv-python
-    '''
+    """
     return rect[0] < pt[0] < rect[0]+rect[2] and rect[1] < pt[1] < rect[1]+rect[3]
 
 
+'''
+Currently none used code below here!, outcommented to avoid confusion with contributors.
+'''
+'''
+def find_details(img, noise_removal_threshold=50, corners_threshold=0.01,
+               room_closing_max_length=130, gap_in_wall_max_threshold=5000,
+               gap_in_wall_min_threshold=10):
+
+    """
+    !!! Currently not used in IMPLEMENTATION !!!
+    I have copied and changed this function some...
+
+    origin from
+    https://stackoverflow.com/questions/54274610/crop-each-of-them-using-opencv-python
+
+    @Param img: grey scale image of rooms, already eroded and doors removed etc.
+    @Param noise_removal_threshold: Minimal area of blobs to be kept.
+    @Param corners_threshold: Threshold to allow corners. Higher removes more of the house.
+    @Param room_closing_max_length: Maximum line length to add to close off open doors.
+    @Param gap_in_wall_threshold: Minimum number of pixels to identify component as room instead of hole in the wall.
+    @Return: rooms: list of numpy arrays containing boolean masks for each detected room
+             colored_house: A colored version of the input image, where each room has a random color.
+    """
+    assert 0 <= corners_threshold <= 1
+    # Remove noise left from door removal
+
+    mask = remove_noise(img, noise_removal_threshold)
+    img = ~mask
+
+    find_corners_and_draw_lines(img,corners_threshold,room_closing_max_length)
+
+    img, mask = mark_outside_black(img, mask)
+
+    # Find the connected components in the house
+    ret, labels = cv2.connectedComponents(img)
+    img = cv2.cvtColor(img,cv2.COLOR_GRAY2RGB)
+    unique = np.unique(labels)
+    details = []
+    for label in unique:
+        component = labels == label
+        if img[component].sum() == 0 or np.count_nonzero(component) < gap_in_wall_min_threshold or np.count_nonzero(component) > gap_in_wall_max_threshold:
+            color = 0
+        else:
+            details.append(component)
+            color = np.random.randint(0, 255, size=3)
+
+        img[component] = color
+
+    return details, img
+
 def detectLines(detect_img, output_img = None, color = [255, 255, 255]):
-    '''
+    """
+    !!! NOT USED IN IMPLEMENTATION !!!
     Detect lines in image
     @Param detect_img image to detect from @mandatory
     @Param output_img image for output
     @Param color to set on output
     @Return (list of lines), output image
     @Source: https://docs.opencv.org/3.0-beta/doc/py_tutorials/py_imgproc/py_houghlines/py_houghlines.html
-    '''
+    """
 
     edges = cv2.Canny(detect_img,50,120)
     minLineLength = 20
@@ -401,3 +319,99 @@ def detectLines(detect_img, output_img = None, color = [255, 255, 255]):
                 cv2.line(output_img,(x1,y1),(x2,y2),color,2)
 
     return lines, output_img
+
+
+def detectCorners(detect_img, output_img = None, color = [255,0,0] ):
+    """
+    !!! NOT USED IN IMPLEMENTATION !!!
+    Find each corner in image
+    @Param detect_img image to detect @mandatory
+    @Param output_img image to save to
+    @Param color to set on output
+    @Return corner(array of float), output image
+    """
+    corners = cv2.goodFeaturesToTrack(detect_img, 1000, 0.1, 1)
+    corners = np.int0(corners)
+
+    if output_img is not None:
+        for corner in corners:
+            x,y = corner.ravel()
+            cv2.circle(output_img,(x,y),3,255,-1)
+    return corners, output_img
+
+def Watermark(detect_img, output_img = None, color = [255,0,0]):
+    """
+    !!! NOT USED IN IMPLEMENTATION !!!
+    Watershed
+    Watermark image
+    @Param detect_img image to detect @mandatory
+    @Param output_img image to save to
+    @Param color to set on output
+    @Return markers
+    @source https://docs.opencv.org/3.1.0/d3/db4/tutorial_py_watershed.html
+    """
+    ret, markers = cv2.connectedComponents(detect_img)
+
+    markers = markers+1
+    markers[unknown==255] = 0
+    if output_img is not None:
+        markers = cv2.watershed(output_img,markers)
+        output_img[markers == -1] = color
+    return markers
+
+def detectCenterBoxes(detect_img, output_img = None, color = [100,100,0]):
+    """
+    !!! NOT USED IN IMPLEMENTATION !!!
+    Get center of objects
+    Detect boxes of shapes with focus on centering shape, useful to surround a shape.
+    Not precise.
+    @Param detect_img image to detect from @mandatory
+    @Param output_img image for output
+    @Param color to set on output
+    @Return corners(array of float), output image
+    @source https://docs.opencv.org/3.0-beta/doc/py_tutorials/py_feature2d/py_features_harris/py_features_harris.html
+    """
+
+    # find centroids
+    ret, labels, stats, centroids = cv2.connectedComponentsWithStats(detect_img,4)
+
+    # define the criteria to stop and refine the corners
+    criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 100, 0.001)
+    corners = cv2.cornerSubPix(detect_img,np.float32(centroids),(5,5),(-1,-1),criteria)
+
+    # Now draw them
+    res = np.hstack((centroids,corners))
+    res = np.int0(res)
+    if output_img is not None:
+        output_img[res[:,1],res[:,0]]=[0,0,255]
+        output_img[res[:,3],res[:,2]] = [0,255,0]
+
+        i = len(res)-1
+        print(res)
+        while i >= 0:
+            cv2.rectangle(output_img,(int(res[i][0]),int(res[i][1])),(int(res[i][2]),int(res[i][3])),color,3)
+            i -= 1
+    return res, output_img
+
+
+def detectUnpreciseBoxes(detect_img, output_img = None, color = [100,100,0]):
+    """
+    !!! NOT USED IN IMPLEMENTATION !!!
+    Detect corners boxes in image with low precision
+    @Param detect_img image to detect from @mandatory
+    @Param output_img image for output
+    @Param color to set on output
+    @Return boxes, output image
+    """
+
+    corners = cv2.cornerHarris(detect_img,2,3,0.04)
+    res = cv2.dilate(corners, None, iterations=3)
+
+    res = corners
+    if output_img is not None:
+        i = len(res)-1
+        while i >= 0:
+            cv2.rectangle(output_img,(int(res[i][0]),int(res[i][1])),(int(res[i][2]),int(res[i][3])),color,3)
+            i -= 1
+    return res, output_img
+'''
