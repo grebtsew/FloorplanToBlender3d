@@ -7,26 +7,39 @@ import cv2 as cv
 import numpy as np
 import time
 
-def match(image, template, threshold=0.8):
+def match(image, template, name, threshold=0.99):
     """
     Match and show result
     """
     img_rgb = image
     img_gray = cv.cvtColor(img_rgb, cv.COLOR_BGR2GRAY)
 
-    w,h = template.shape[::-1]
-    res = cv.matchTemplate(img_gray,template,cv.TM_CCOEFF_NORMED) # Test different algorithms here
 
+    test(img_gray,template,cv.TM_CCOEFF_NORMED, threshold, "TM_CCOEFF_NORMED "+ name)
+    test(img_gray,template,cv.TM_CCORR_NORMED, threshold, "TM_CCORR_NORMED" + name )
+    test(img_gray,template,cv.TM_SQDIFF_NORMED, threshold,"TM_SQDIFF_NORMED" + name )
+    cv.imshow(name, template)
+
+def test(img_gray, template, alg, threshold, name):
+    res = cv.matchTemplate(img_gray,template,alg)
     loc = np.where( res >= threshold)
+    w,h = template.shape[::-1]
+    show(loc, name, w,h)
 
+
+def show(loc, name, w, h, max=100):
     i = 0
     for pt in zip(*loc[::-1]):
         print(i)
         cv.rectangle(img_rgb, pt, (pt[0] + w, pt[1] + h), (0,0,255), 2)
+        if i > max:
+            print("Max "+str(max)+" reached!")
+            break
         i += 1
 
-    cv.imshow('res',img_rgb)
+    cv.imshow(name,img_rgb)
     cv.waitKey(0) # will wait here for key presses
+
 
 
 img_rgb = cv.imread('../example.png')
@@ -36,8 +49,8 @@ door_template = cv.imread('window.png',0) # window.png door.png text_test.png
 text_template = cv.imread('text_test.png',0) # window.png door.png text_test.png
 
 print("window")
-match(img_rgb, window_template)
+match(img_rgb, window_template, "window")
 print("door")
-match(img_rgb, door_template)
+match(img_rgb, door_template, "door")
 print("text")
-match(img_rgb, text_template)
+match(img_rgb, text_template, "text")
