@@ -60,7 +60,7 @@ def detectPreciseBoxes(detect_img, output_img = None, color = [100,100,0]):
         epsilon = 0.001*cv2.arcLength(largest_contour,True)
         approx = cv2.approxPolyDP(largest_contour,epsilon,True)
         if output_img is not None:
-            final = cv2.drawContours(output_img, [approx], 0, [100, 200, 0])
+            final = cv2.drawContours(output_img, [approx], 0, color)
         res.append(approx)
 
     return res, output_img
@@ -248,7 +248,7 @@ def rectContains(rect,pt):
 '''
 Currently none used code below here!, outcommented to avoid confusion with contributors.
 '''
-'''
+
 def find_details(img, noise_removal_threshold=50, corners_threshold=0.01,
                room_closing_max_length=130, gap_in_wall_max_threshold=5000,
                gap_in_wall_min_threshold=10):
@@ -294,7 +294,7 @@ def find_details(img, noise_removal_threshold=50, corners_threshold=0.01,
         img[component] = color
 
     return details, img
-
+'''
 def detectLines(detect_img, output_img = None, color = [255, 255, 255]):
     """
     !!! NOT USED IN IMPLEMENTATION !!!

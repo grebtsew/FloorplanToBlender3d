@@ -4,8 +4,8 @@ import numpy as np
 
 
 
-def find_rooms(img, noise_removal_threshold=25, corners_threshold=0.1,
-               room_closing_max_length=100, gap_in_wall_threshold=500):
+def find_rooms(img, noise_removal_threshold=1, corners_threshold=0.001,
+               room_closing_max_length=10, gap_in_wall_threshold=500000):
     """
 
     :param img: grey scale image of rooms, already eroded and doors removed etc.

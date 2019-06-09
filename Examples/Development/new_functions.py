@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 import sys
-sys.path.insert(0,'..')
+sys.path.insert(0,'../..')
 from FloorplanToBlenderLib import * # floorplan to blender lib
 from subprocess import check_output
 import os
@@ -19,7 +19,7 @@ def test():
     Receive image, convert
     '''
     # Read floorplan image
-    img = cv2.imread("../Examples/example2.png")
+    img = cv2.imread("../example.png")
     image = img
     # grayscale image
     gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
@@ -60,13 +60,13 @@ def test():
     cimg = image # numpy function
 
     circles = cv2.HoughCircles(img, cv2.HOUGH_GRADIENT, 1, 10, np.array([]), 100, 30, 1, 30)
-
+    """
     if circles is not None: # Check if circles have been found and only then iterate over these and add them to the image
         a, b, c = circles.shape
         for i in range(b):
             cv2.circle(cimg, (circles[0][i][0], circles[0][i][1]), circles[0][i][2], (0, 0, 255), 3, cv2.LINE_AA)
             cv2.circle(cimg, (circles[0][i][0], circles[0][i][1]), 2, (0, 255, 0), 3, cv2.LINE_AA)  # draw center of circle
-
+    """
 
     cv2.imshow('detected circles',img)
     cv2.imshow('detected circ2s',gray)
@@ -178,19 +178,24 @@ for (threshName, threshMethod) in methods:
 
 '''
     Detect door
-    # create wall image (filter out small objects from image)
-    wall_img = detect.wall_filter(gray)
+'''
+img = cv2.imread("../example.png")
 
-    # detect walls
+gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+
+# create wall image (filter out small objects from image)
+wall_img = detect.wall_filter(gray)
+
+# detect walls
 #    boxes, img = detect.detectPreciseBoxes(wall_img)
 
-    # detect outer Contours (simple floor or roof solution)
-    #contour, img = detectOuterContours(gray)
+# detect outer Contours (simple floor or roof solution)
+#contour, img = detectOuterContours(gray)
 
-    #gray = cv2.bilateralFilter(gray, 11, 17, 17)
-    #edged = cv2.Canny(gray, 30, 200)
+#gray = cv2.bilateralFilter(gray, 11, 17, 17)
+#edged = cv2.Canny(gray, 30, 200)
 
-    res, out = detect.detectAndRemovePreciseBoxes(wall_img, output_img = gray )
+res, out = detect.detectAndRemovePreciseBoxes(wall_img, output_img = gray )
 
 
 gray = cv2.GaussianBlur(gray, (5, 5), 0)
@@ -218,8 +223,7 @@ for c in cnts:
         cv2.rectangle(gray, (x,y), (x+w,y+h), (0,255,0), 2)
         total += 1
 
-cv2.imshow("Gray", image)
+cv2.imshow("Gray", img)
 cv2.imshow("Gwray", gray)
 
 cv2.waitKey(0)
-'''
