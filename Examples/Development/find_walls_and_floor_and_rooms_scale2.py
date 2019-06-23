@@ -46,7 +46,7 @@ def test(path):
     Detect Floor
     '''
     # detect outer Contours (simple floor or roof solution)
-    contour, img = detect.detectOuterContours(gray, blank_image, color=(255,0,0))
+    #contour, img = detect.detectOuterContours(gray, blank_image, color=(255,0,0))
 
     # grayscale
     gray = ~wall_temp
@@ -54,14 +54,14 @@ def test(path):
     '''
     Detect rooms
     '''
-    rooms, colored_rooms = detect.find_rooms(gray.copy())
-    gray_rooms =  cv2.cvtColor(colored_rooms,cv2.COLOR_BGR2GRAY)
-    boxes, blank_image = detect.detectPreciseBoxes(gray_rooms, blank_image, color=(0,100,200))
+    #rooms, colored_rooms = detect.find_rooms(gray.copy(), noise_removal_threshold=50, corners_threshold=0.01, room_closing_max_length=100, gap_in_wall_min_threshold=5000)
+    #gray_rooms =  cv2.cvtColor(colored_rooms,cv2.COLOR_BGR2GRAY)
+    #boxes, blank_image = detect.detectPreciseBoxes(gray_rooms, blank_image, color=(0,100,200))
 
     '''
     Detect details
     '''
-    doors, colored_doors = detect.find_details(gray.copy())
+    doors, colored_doors = detect.find_details(gray.copy(), noise_removal_threshold=50, corners_threshold=0.1, room_closing_max_length=150, gap_in_wall_max_threshold=2000, gap_in_wall_min_threshold=100)
     gray_details = cv2.cvtColor(colored_doors,cv2.COLOR_BGR2GRAY)
     boxes, blank_image = detect.detectPreciseBoxes(gray_details, blank_image, color=(0,200,100))
 
@@ -70,4 +70,4 @@ def test(path):
     cv2.destroyAllWindows()
 
 
-test("../example.png")
+test("../example2.png")
