@@ -1,9 +1,7 @@
-python-cv
-numpy
-configparser
-json
-bpy
-imutils
-pyfiglet
-configparser
-shutil
+opencv-python==3.4.1.15
+numpy==1.16.2
+configparser==3.5.0
+future-fstrings==1.2.0
+# bpy==1.2.3
+imutils==0.5.2
+pyfiglet==0.7.6

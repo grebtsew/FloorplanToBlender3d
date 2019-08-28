@@ -71,6 +71,9 @@ def get_shape(verts, scale):
     @Param scale to use
     @Return rescaled boxes
     '''
+    if len(verts) == 0:
+        return [0,0,0]
+
     posList = transform.verts_to_poslist(verts)
     high = [0,0,0]
     low = posList[0]

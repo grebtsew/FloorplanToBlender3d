@@ -77,12 +77,24 @@ if __name__ == "__main__":
     print("Creates blender project")
     print("")
 
-    # Create blender project
-    check_output([blender_install_path,
+    '''
+    #Debug print
+    print(str([blender_install_path,
+    "-noaudio", # this is an ubuntu hax fix
      "--background",
      "--python",
      blender_script_path,
      program_path # Send this as parameter to script
+     ] +  data_paths))
+     '''
+
+    # Create blender project
+    check_output([blender_install_path,
+    #"-noaudio ", # this is an ubuntu hax fix
+     "--background",
+     "--python",
+     blender_script_path,
+     program_path, # Send this as parameter to script
      ] +  data_paths)
 
     print("Project created at: " + program_path + "\\floorplan.blender")

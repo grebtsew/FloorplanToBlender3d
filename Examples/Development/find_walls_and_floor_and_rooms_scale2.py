@@ -1,4 +1,7 @@
+
 """
+https://www132.lunapic.com/editor/
+
 Small demo program of detections
 If someone want to just use the same detections
 """
@@ -70,4 +73,4 @@ def test(path):
     cv2.destroyAllWindows()
 
 
-test("../example2.png")
+test("downscale2.png")

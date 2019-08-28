@@ -70,4 +70,4 @@ def test(path):
     cv2.destroyAllWindows()
 
 
-test("../example.png")
+test("test.png")
