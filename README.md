@@ -35,7 +35,7 @@ sounds and uses a low amount of resources, enabling it to be used on low hardwar
 # How-To
 This part contains information about how to setup and execute this program.
 
-## Run on Docker
+## Install on Docker
 Firstly you need to install a suitable docker on your pc.
 
 Build docker image from dockerfile by running in this folder. 
@@ -63,7 +63,7 @@ Some useful docker commands:
  docker rmi $(docker images)
 ```
 
-## Install
+## Install on Os
 Several packages and programs are required to run this program.
 
 * `Blender3d`
