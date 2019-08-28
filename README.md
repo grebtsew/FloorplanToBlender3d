@@ -35,6 +35,34 @@ sounds and uses a low amount of resources, enabling it to be used on low hardwar
 # How-To
 This part contains information about how to setup and execute this program.
 
+## Run on Docker
+Firstly you need to install a suitable docker on your pc.
+
+Build docker image from dockerfile by running in this folder. 
+NOTE: This step can take a long time.
+```bash
+ docker build . --tag=floorplan_to_blender:1.0
+```
+To start the image run:
+```bash
+ docker run -it floorplan_to_blender:1.0 bash
+```
+This will take you into your virtual environment where you can safely test the implementation.
+I will add volumes and fix issues with this readme file and dockerfile on friday 30/8-19.
+
+Some useful docker commands:
+```bash
+
+  # Get into a running container
+ docker exec -it container_name bash
+ 
+ # Stop all containers
+ docker rm -f $(docker ps -aq)
+ 
+ # Remove all images
+ docker rmi $(docker images)
+```
+
 ## Install
 Several packages and programs are required to run this program.
 
@@ -50,15 +78,11 @@ If you have `Python3 pip` installed you can install required packages by running
 Or install them manually by running :
 
 `pip install`
-* `bpy` (python for blender)
-* `python-cv` (OpenCV)
+* `opecv-python` (OpenCV)
 * `numpy`
 * `configparser`
-* `json`
 * `imutils`
 * `pyfiglet`
-* `shutil`
-* `configparser`
 
 Clone or download this repo:
 ```git
