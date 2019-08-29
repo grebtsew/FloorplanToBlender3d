@@ -53,12 +53,13 @@ __NOTE__: This step can take a long time.
 ```
 
 This will take you into your virtual environment where you can safely test the implementation.
+
 4. To run the program, enter the container and run:
 ```bash
   python3 create_blender_project_from_floorplan.py
 ```
-Blender is installed on path `/usr/local/blender/blender`, you can change the config.ini file with __nano__ inside the container.
-You can retrive the generated .blender file with __scp__ or using __volumes__.
+Blender is installed on path `/usr/local/blender/blender`, the path can be changed in the config.ini file with __nano__ inside the container.
+The generated .blender file can be retreived with __scp__ or using __volumes__.
 
 5. Some useful docker commands:
 ```bash
