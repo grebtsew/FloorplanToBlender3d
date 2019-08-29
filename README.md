@@ -24,8 +24,8 @@
 </details>
 
 # About
-The virtualisation of real life object has been a hot topic for several years. As I started
-learning about 3d modelling in [Blender3d](https://www.blender.org/) I thought of this idea to use simple
+The virtualisation of real life objects has been a hot topic for several years. As I started
+learning about 3d modelling in [Blender3d](https://www.blender.org/) I thought of the idea to use simple
 imaging on floorplans to automatically create corresponding 3d models. It is much easier than it
 sounds and uses a low amount of resources, enabling it to be used on low hardware.
  By utilizing Blender3d, all created objects will be easy to transfer

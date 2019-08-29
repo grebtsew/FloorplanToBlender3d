@@ -24,9 +24,9 @@ RUN apt-get update && \
 	apt-get -y autoremove && \
 	rm -rf /var/lib/apt/lists/*
 
-
 # Install blender
 
+ENV BLENDER_PATH /usr/local/blender/blender
 ENV BLENDER_MAJOR 2.79
 ENV BLENDER_VERSION 2.79
 ENV BLENDER_BZ2_URL https://mirror.clarkson.edu/blender/release/Blender$BLENDER_MAJOR/blender-$BLENDER_VERSION-linux-glibc219-x86_64.tar.bz2
@@ -39,10 +39,9 @@ RUN mkdir /usr/local/blender && \
 RUN pip3 install --upgrade setuptools
 RUN pip3 install -r ${PROGAM_PATH}/requirements.txt
 
-
 # Volume to get data after
 VOLUME /media
 VOLUME ${PROGAM_PATH}
 
-#CMD [ "python", "/create_blender_project_from_floorplan.py" ]
+#CMD [ "python3", "/create_blender_project_from_floorplan.py" ]
 WORKDIR ${PROGAM_PATH}

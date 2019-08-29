@@ -90,14 +90,14 @@ if __name__ == "__main__":
 
     # Create blender project
     check_output([blender_install_path,
-    #"-noaudio ", # this is an ubuntu hax fix
+     "-noaudio", # this is a dockerfile ubuntu hax fix
      "--background",
      "--python",
      blender_script_path,
      program_path, # Send this as parameter to script
      ] +  data_paths)
 
-    print("Project created at: " + program_path + "\\floorplan.blender")
+    print("Project created at: " + program_path + "/floorplan.blender")
     print("")
     print("Done, Have a nice day!")
 

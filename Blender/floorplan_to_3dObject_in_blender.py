@@ -98,9 +98,8 @@ def main(argv):
     All walls are square
     Therefore we split data into two files
     '''
-
-    if(len(argv) > 5): # Note YOU need 6 arguments!
-        program_path = argv[4]
+    if(len(argv) > 6): # Note YOU need 7 arguments!
+        program_path = argv[5]
 
     else:
         exit(0)
@@ -108,14 +107,14 @@ def main(argv):
     '''
     Instantiate
     '''
-    for i in range(5,len(argv)):
+    for i in range(6,len(argv)):
         base_path = argv[i]
         create_floorplan(base_path, program_path, i)
 
     '''
     Save to file
     '''
-    bpy.ops.wm.save_as_mainfile(filepath=program_path + "\\floorplan.blend")
+    bpy.ops.wm.save_as_mainfile(filepath=program_path + "/floorplan.blend")
 
     '''
     Send correct exit code
@@ -127,21 +126,21 @@ def create_floorplan(base_path,program_path, name=0):
 
     parent, parent_mesh = init_object("Floorplan"+str(name))
 
-    base_path = base_path.replace('/','\\')
+    #base_path = base_path.replace('/','\\')
 
-    path_to_wall_faces_file = program_path +"\\" + base_path + "wall_faces"
-    path_to_wall_verts_file = program_path +"\\" + base_path + "wall_verts"
+    path_to_wall_faces_file = program_path +"/" + base_path + "wall_faces"
+    path_to_wall_verts_file = program_path +"/" + base_path + "wall_verts"
 
-    path_to_floor_faces_file = program_path +"\\" +base_path + "floor_faces"
-    path_to_floor_verts_file = program_path +"\\" +base_path + "floor_verts"
+    path_to_floor_faces_file = program_path +"/" +base_path + "floor_faces"
+    path_to_floor_verts_file = program_path +"/" +base_path + "floor_verts"
 
-    path_to_rooms_faces_file = program_path +"\\" + base_path + "rooms_faces"
-    path_to_rooms_verts_file = program_path +"\\" + base_path + "rooms_verts"
+    path_to_rooms_faces_file = program_path +"/" + base_path + "rooms_faces"
+    path_to_rooms_verts_file = program_path +"/" + base_path + "rooms_verts"
 
 #    path_to_windows_faces_file = program_path +"\\" + base_path + "windows_faces"
 #    path_to_windows_verts_file = program_path +"\\" + base_path + "windows_verts"
 
-    path_to_transform_file = program_path+"\\" + base_path + "transform"
+    path_to_transform_file = program_path+"/" + base_path + "transform"
 
     '''
     Get transform
