@@ -1,5 +1,9 @@
 FROM ubuntu:18.04
 
+# Welcome to this DockerFile for the Floorplan To Blender3d project
+# All steps of the installation are described below
+
+# Create program install folder
 ENV PROGAM_PATH /home/floorplan_to_blender
 RUN mkdir -p ${PROGAM_PATH}
 

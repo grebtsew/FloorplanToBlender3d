@@ -36,37 +36,50 @@ sounds and uses a low amount of resources, enabling it to be used on low hardwar
 This part contains information about how to setup and execute this program.
 
 ## Install on Docker
-Firstly you need to install a suitable docker on your pc.
+Firstly you need to install a suitable docker environment on your device.
+This DockerFile is using Ubuntu:18.04 so make sure your docker environment is to linux containers.
 
-Build docker image from dockerfile by running in this folder. 
-NOTE: This step can take a long time.
+1. Download or clone this repository.
+
+2. Build docker image from dockerfile by running:
+__NOTE__: This step can take a long time.
 ```bash
  docker build . --tag=floorplan_to_blender:1.0
 ```
-To start the image run:
+
+3. To start the image run:
 ```bash
  docker run -it floorplan_to_blender:1.0 bash
 ```
-This will take you into your virtual environment where you can safely test the implementation.
-I will add volumes and fix issues with this readme file and dockerfile on friday 30/8-19.
 
-Some useful docker commands:
+This will take you into your virtual environment where you can safely test the implementation.
+4. To run the program, enter the container and run:
+```bash
+  python3 create_blender_project_from_floorplan.py
+```
+Blender is installed on path `/usr/local/blender/blender`, you can change the config.ini file with __nano__ inside the container.
+You can retrive the generated .blender file with __scp__ or using __volumes__.
+
+5. Some useful docker commands:
 ```bash
 
   # Get into a running container
  docker exec -it container_name bash
- 
+
  # Stop all containers
  docker rm -f $(docker ps -aq)
- 
+
  # Remove all images
  docker rmi $(docker images)
 ```
 
-## Install on Os
-Several packages and programs are required to run this program.
+## Install on OS
+This tutorial will describe how to install this implementation directly on your device.
+If you are a Linux/Ubuntu user, look at DockerFile for better instructions.
 
-* `Blender3d`
+These are the programs that are required to run this implementation.
+
+* [Blender3d](https://www.blender.org/)
 * `Python3`
 
 If you have `Python3 pip` installed you can install required packages by running:
@@ -119,7 +132,7 @@ Next up we execute our script and answer the questions:
 Finally we can open the newly created floorplan.blender file and see the result:
 ![gif2](Docs/demo2.gif)
 
-Note that this demo only uses default settings. For instance coloring is by default random.
+__Note__: this demo only uses default settings. For instance coloring is by default random.
 
 # Testing
 Vital and core functionality are tested with pytest. To run tests yourself enter "Testing"-folder and run:
