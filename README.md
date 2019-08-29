@@ -78,7 +78,7 @@ If you have `Python3 pip` installed you can install required packages by running
 Or install them manually by running :
 
 `pip install`
-* `opecv-python` (OpenCV)
+* `opencv-python` (OpenCV)
 * `numpy`
 * `configparser`
 * `imutils`
