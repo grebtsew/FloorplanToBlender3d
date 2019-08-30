@@ -11,13 +11,15 @@
 
 - [About](#about)
 - [How-To](#how-to)
-- [Install](#install)
+- [Install on Docker](#install-on-Docker)
+- [Install on OS](#install-on-OS)
 - [Run](#run)
 - [Run Old but still working](#run (Old but still working!))
 - [Demo](#demo)
 - [Testing](#testing)
 - [References and Imports](#References-and-Imports)
 - [Contribute](#contribute)
+- [Known Issues](#Known-Issues)
 - [License](#license)
 <!-- tocstop -->
 
@@ -35,13 +37,21 @@ sounds and uses a low amount of resources, enabling it to be used on low hardwar
 # How-To
 This part contains information about how to setup and execute this program.
 
+__NOTE__: Using other versions of the required programs and libraries than specified in this file might require changes in the implementation. It is only guaranteed that this implementation will work if the assigned versions of all requirements are used.
+At this time it is known that:
+* If a later `Blender` version is used, several changes has to done in all files in the `/Blender` folder.
+* If the latest `OpenCV` library for python is used, several changes has to be done in the `/FloorplanToBlender3d/detect.py` file.
+Please create an issue if you encounter any problems with this implementation.
+
+__NOTE__: To avoid any version related problems use the Docker implementation.
+
 ## Install on Docker
-Firstly you need to install a suitable docker environment on your device.
-This DockerFile is using Ubuntu:18.04 so make sure your docker environment is to linux containers.
+Firstly you need to install a suitable [Docker](https://www.docker.com/) environment on your device.
+This project contains a `DockerFile` which uses the `Ubuntu 18.04` image so make sure your docker environment is set to linux containers.
 
 1. Download or clone this repository.
 
-2. Build docker image from dockerfile by running:
+2. Build docker image from DockerFile by running:
 __NOTE__: This step can take a long time.
 ```bash
  docker build . --tag=floorplan_to_blender:1.0
@@ -80,8 +90,8 @@ If you are a Linux/Ubuntu user, look at DockerFile for better instructions.
 
 These are the programs that are required to run this implementation.
 
-* [Blender3d](https://www.blender.org/)
-* `Python3`
+* [Blender3d 2.79](https://www.blender.org/)
+* `Python 3.6.5`
 
 If you have `Python3 pip` installed you can install required packages by running:
 
@@ -92,11 +102,12 @@ If you have `Python3 pip` installed you can install required packages by running
 Or install them manually by running :
 
 `pip install`
-* `opencv-python` (OpenCV)
-* `numpy`
-* `configparser`
-* `imutils`
-* `pyfiglet`
+* `opencv-python==3.4.1.15` (OpenCV)
+* `numpy==1.16.2`
+* `configparser==3.5.0`
+* `future-fstrings==1.2.0`
+* `imutils==0.5.2`
+* `pyfiglet==0.7.6`
 
 Clone or download this repo:
 ```git
@@ -133,7 +144,7 @@ Next up we execute our script and answer the questions:
 Finally we can open the newly created floorplan.blender file and see the result:
 ![gif2](Docs/demo2.gif)
 
-__Note__: this demo only uses default settings. For instance coloring is by default random.
+__Note__: This demo only uses default settings. For instance coloring is by default random.
 
 # Testing
 Vital and core functionality are tested with pytest. To run tests yourself enter "Testing"-folder and run:
@@ -157,6 +168,11 @@ I share links to copied code and other contributors here:
 # Contribute
 Let me know if you want to contribute to this project, also if you want me to add more
 functions or answer questions, let me know!
+
+# Known Issues
+These are some known issues with the current implementation:
+* Floorplan images needs to be quite small for detections to work at this time. If you plan on using a large image, consider downscaling it.
+* Required programs and libraries might change in future versions, this might require some changes in this implementation for it to work. If you insist on not using the versions specified in [this](#install-on-OS) Readme file, a coding effort might be required.
 
 # License
 [GNU GENERAL PUBLIC LICENSE](license) Version 3, 29 June 2007
