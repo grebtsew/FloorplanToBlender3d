@@ -3,10 +3,48 @@ import cv2 as cv
 import numpy as np
 import argparse
 import random as rng
+import sys
+try:
+    sys.path.insert(0,'../..')
+    from FloorplanToBlenderLib import * # floorplan to blender lib
+except ImportError:
+    from FloorplanToBlenderLib import * # floorplan to blender lib
+
 
 rng.seed(12345)
 
 src = cv.imread("../example.png")
+
+
+
+img = src
+image = img
+# grayscale image
+gray = cv.cvtColor(img,cv.COLOR_BGR2GRAY)
+
+# Resulting image
+height, width, channels = img.shape
+blank_image = np.zeros((height,width,3), np.uint8) # output image same size as original
+
+# create wall image (filter out small objects from image)
+wall_img = detect.wall_filter(gray)
+wall_temp = wall_img
+'''
+Detect Wall
+'''
+# detect walls
+boxes, img = detect.detectPreciseBoxes(wall_img, blank_image)
+
+cv.imshow('wall Image', wall_img)
+
+cv.imshow('wallbox Image', blank_image)
+
+contour, img = detect.detectOuterContours(gray, blank_image, color=(255,0,0))
+
+
+
+#src = img
+
 
 
 # Show source image
