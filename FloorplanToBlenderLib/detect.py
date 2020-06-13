@@ -49,7 +49,7 @@ def detectPreciseBoxes(detect_img, output_img = None, color = [100,100,0]):
     """
     res = []
 
-    im, contours, hierarchy = cv2.findContours(detect_img,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
+    contours, hierarchy = cv2.findContours(detect_img,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
     #area = sorted(contours, key=cv2.contourArea, reverse=True)
 
     largest_contour_area = 0
@@ -75,7 +75,7 @@ def remove_noise(img, noise_removal_threshold):
     """
     img[img < 128] = 0
     img[img > 128] = 255
-    _, contours, _ = cv2.findContours(~img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    contours, _ = cv2.findContours(~img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     mask = np.zeros_like(img)
     for contour in contours:
         area = cv2.contourArea(contour)
@@ -127,7 +127,7 @@ def mark_outside_black(img, mask):
     @Return image, mask
     """
     # Mark the outside of the house as black
-    _, contours, _ = cv2.findContours(~img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    contours, _ = cv2.findContours(~img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     contour_sizes = [(cv2.contourArea(contour), contour) for contour in contours]
     biggest_contour = max(contour_sizes, key=lambda x: x[0])[1]
     mask = np.zeros_like(mask)
@@ -192,7 +192,7 @@ def detectAndRemovePreciseBoxes(detect_img, output_img = None, color = [255, 255
 
     res = []
 
-    im, contours, hierarchy = cv2.findContours(detect_img,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
+    contours, hierarchy = cv2.findContours(detect_img,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
     #area = sorted(contours, key=cv2.contourArea, reverse=True)
 
     largest_contour_area = 0
@@ -219,7 +219,7 @@ def detectOuterContours(detect_img, output_img = None, color = [255, 255, 255]):
     """
     ret, thresh = cv2.threshold(detect_img, 230, 255, cv2.THRESH_BINARY_INV)
 
-    img_, contours, hierarchy = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    contours, hierarchy = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
     largest_contour_area = 0
     for cnt in contours:
