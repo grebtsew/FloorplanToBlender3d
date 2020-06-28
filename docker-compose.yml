@@ -3,18 +3,19 @@ version: '3'
 #
 #The purpose of this docker-compose file is to simplify the usage of docker on this environment.
 #Note that TARGET folder will contain result, and images can be shared with the container in Images folder!
+#Use this by running:
+#
+#docker-compose run FloorplanToBlender
 #
 
 services:
   FloorplanToBlender:
-    build: ./
+    build: ./ # to speed things up you can pull docker image: grebtsew/floorplan-to-blender # and remove this row
     container_name: floorplan-to-blender
-    image: floorplan-to-blender:1.0
+    image: floorplan-to-blender:1.0 # grebtsew/floorplan-to-blender
     stdin_open: true 
     tty: true
     volumes:
         - ./Target:/home/floorplan_to_blender/Target
         - ./Images:/home/floorplan_to_blender/Images
         - ./Data:/home/floorplan_to_blender/Data
-    
-    

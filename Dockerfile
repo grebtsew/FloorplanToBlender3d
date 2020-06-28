@@ -32,7 +32,6 @@ RUN apt-get update && \
 	rm -rf /var/lib/apt/lists/*
 
 # Install blender
-
 ENV BLENDER_PATH /usr/local/blender/blender
 ENV BLENDER_MAJOR 2.82
 ENV BLENDER_VERSION 2.82

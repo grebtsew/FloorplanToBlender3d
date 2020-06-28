@@ -97,7 +97,7 @@ if __name__ == "__main__":
      program_path, # Send this as parameter to script
      ] +  data_paths)
 
-    print("Project created at: " + program_path + "/floorplan.blender")
+    print("Project created at: " + program_path + "/Target/floorplan.blender")
     print("")
     print("Done, Have a nice day!")
 

@@ -6,13 +6,9 @@ Requirements for running different python scripts will be added in requirements.
 # TODO list
 Tasks below is ordered by time needed + difficulty.
 
-* Push built docker image to dockerhub.
-
-* Change blender script remove box and set save path and set save format with switch
+* AR idea with demo
 
 * Unity idea with demo
-
-* AR idea with demo
 
 * Do some examples in Docs with links and toc
 

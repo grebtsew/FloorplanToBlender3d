@@ -98,6 +98,12 @@ def main(argv):
     All walls are square
     Therefore we split data into two files
     '''
+
+    # Remove starting object cube
+    # Select all
+    objs = bpy.data.objects
+    objs.remove(objs["Cube"], do_unlink=True)
+
     if(len(argv) > 6): # Note YOU need 7 arguments!
         program_path = argv[5]
 
