@@ -116,3 +116,6 @@ dmypy.json
 # Ignore data files and blender files
 Target/
 Data/
+
+# Ignore jupyter
+.ipynb_checkpoints

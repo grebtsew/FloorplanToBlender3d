@@ -1,7 +1,4 @@
-pytest # for test only
-imutils # for dev only
-matplotlib # for dev only
-opencv-python==3.4.1.15 # Update!
+opencv-python==4.2.0.34 
 numpy==1.16.2
 configparser==3.5.0
 future-fstrings==1.2.0

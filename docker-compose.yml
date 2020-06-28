@@ -1,11 +1,20 @@
 version: '3'
 
-services:
+#
+#The purpose of this docker-compose file is to simplify the usage of docker on this environment.
+#Note that TARGET folder will contain result, and images can be shared with the container in Images folder!
+#
 
+services:
   FloorplanToBlender:
     build: ./
     container_name: floorplan-to-blender
     image: floorplan-to-blender:1.0
+    stdin_open: true 
+    tty: true
     volumes:
         - ./Target:/home/floorplan_to_blender/Target
         - ./Images:/home/floorplan_to_blender/Images
+        - ./Data:/home/floorplan_to_blender/Data
+    
+    
