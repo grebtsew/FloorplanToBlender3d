@@ -47,7 +47,7 @@ def read_from_file(file_path):
 def init_object(name):
     mymesh = bpy.data.meshes.new(name)
     myobject = bpy.data.objects.new(name, mymesh)
-    bpy.context.scene.objects.link(myobject)
+    bpy.context.collection.objects.link(myobject)
     return myobject, mymesh
 
 def create_custom_mesh(objname, verts, faces, pos = None, rot = None, mat = None):
@@ -79,7 +79,7 @@ def create_custom_mesh(objname, verts, faces, pos = None, rot = None, mat = None
 
     # add material
     if mat is None: # add random color
-        myobject.data.materials.append(create_mat( np.random.randint(0, 40, size=3))) #add the material to the object
+        myobject.data.materials.append(create_mat( np.random.randint(0, 40, size=4))) #add the material to the object
     else:
         myobject.data.materials.append(mat) #add the material to the object
     return myobject
@@ -213,7 +213,7 @@ def create_floorplan(base_path,program_path, name=0):
 
     # Create mesh from data
     cornername="Floor"
-    obj = create_custom_mesh(cornername, verts, [faces], mat=create_mat((40,1,1)))
+    obj = create_custom_mesh(cornername, verts, [faces], mat=create_mat((40,1,1,1)))
     obj.parent = parent
 
     '''
