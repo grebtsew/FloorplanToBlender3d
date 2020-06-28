@@ -113,8 +113,9 @@ def main(argv):
 
     '''
     Save to file
+    TODO add several save modes!
     '''
-    bpy.ops.wm.save_as_mainfile(filepath=program_path + "/floorplan.blend")
+    bpy.ops.wm.save_as_mainfile(filepath=program_path + "/Target" +"/floorplan.blend")
 
     '''
     Send correct exit code
@@ -137,6 +138,7 @@ def create_floorplan(base_path,program_path, name=0):
     path_to_rooms_faces_file = program_path +"/" + base_path + "rooms_faces"
     path_to_rooms_verts_file = program_path +"/" + base_path + "rooms_verts"
 
+# TODO add window, doors here!
 #    path_to_windows_faces_file = program_path +"\\" + base_path + "windows_faces"
 #    path_to_windows_verts_file = program_path +"\\" + base_path + "windows_verts"
 

@@ -112,3 +112,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Ignore data files and blender files
+Target/
+Data/

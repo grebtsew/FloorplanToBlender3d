@@ -47,7 +47,7 @@ RUN pip3 install -r ${PROGAM_PATH}/requirements.txt
 
 # Volume to get data after
 VOLUME /media
-VOLUME ${PROGAM_PATH}
+VOLUME ${PROGAM_PATH}/target
 
 #CMD [ "python3", "/create_blender_project_from_floorplan.py" ]
 WORKDIR ${PROGAM_PATH}

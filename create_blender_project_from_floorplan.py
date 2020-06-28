@@ -22,7 +22,7 @@ if __name__ == "__main__":
     image_path, blender_install_path, file_structure, mode = IO.config_get_default()
 
     # Set other paths (don't need to change these)
-    program_path = os.path.dirname(os.path.realpath(__file__))
+    program_path = os.path.dirname(os.path.realpath(__file__)) 
     blender_script_path = "Blender/floorplan_to_3dObject_in_blender.py"
 
     # Create some gui

@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+
+  FloorplanToBlender:
+    build: ./
+    container_name: floorplan-to-blender
+    image: floorplan-to-blender:1.0
+    volumes:
+        - ./Target:/home/floorplan_to_blender/Target
+        - ./Images:/home/floorplan_to_blender/Images
