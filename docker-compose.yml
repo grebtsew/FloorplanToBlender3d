@@ -10,12 +10,13 @@ version: '3'
 
 services:
   FloorplanToBlender:
-    build: ./ # to speed things up you can pull docker image: grebtsew/floorplan-to-blender # and remove this row
+    #build: ./  # to speed things up you can pull docker image:  # and remove this row
     container_name: floorplan-to-blender
-    image: floorplan-to-blender:1.0 # grebtsew/floorplan-to-blender
+    image: grebtsew/floorplan-to-blender # grebtsew/floorplan-to-blender
     stdin_open: true 
     tty: true
     volumes:
         - ./Target:/home/floorplan_to_blender/Target
         - ./Images:/home/floorplan_to_blender/Images
         - ./Data:/home/floorplan_to_blender/Data
+        - ./Docs:/home/floorplan_to_blender/Docs

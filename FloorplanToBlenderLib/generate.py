@@ -48,7 +48,7 @@ def generate_all_files(imgpath, info, position=None, rotation=None):
 
     transform = generate_transform_file(imgpath, info, position, rotation, shape)
 
-    return path, shape;
+    return path, shape
 
 def validate_shape(old_shape, new_shape):
     '''

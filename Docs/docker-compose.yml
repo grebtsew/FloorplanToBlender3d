@@ -1,0 +1,10 @@
+version: '3'
+services:
+  floorplan-to-blender-docs:
+    build: ../
+    container_name: floorplan-to-blender-docs
+    command: "jupyter notebook /home/floorplan_to_blender/ --port=8888 --ip=0.0.0.0 --allow-root --no-browser --NotebookApp.token=''" 
+    ports: 
+      - 8888:8888
+    volumes: 
+      - "./:/home/floorplan_to_blender/Docs"
