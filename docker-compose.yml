@@ -9,7 +9,7 @@ version: '3'
 #
 
 services:
-  FloorplanToBlender:
+  ftb:
     #build: ./  # to speed things up you can pull docker image:  # and remove this row
     container_name: floorplan-to-blender
     image: grebtsew/floorplan-to-blender # grebtsew/floorplan-to-blender

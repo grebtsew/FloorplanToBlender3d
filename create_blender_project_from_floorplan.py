@@ -105,4 +105,5 @@ if __name__ == "__main__":
     print("FloorplanToBlender3d Copyright (C) 2019  Daniel Westberg")
     print("This program comes with ABSOLUTELY NO WARRANTY;")
     print("This is free software, and you are welcome to redistribute it under certain conditions;")
+    
     print("")

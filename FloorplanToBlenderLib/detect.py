@@ -107,14 +107,14 @@ def find_corners_and_draw_lines(img, corners_threshold, room_closing_max_length)
 
             if x2[0] - x1[0] < room_closing_max_length:
                 color = 0
-                cv2.line(img, (x1, y), (x2, y), color, 1)
+                cv2.line(img, (x1[0], y), (x2[0], y), color, 1)
 
     for x,col in enumerate(corners.T):
         y_same_x = np.argwhere(col)
         for y1, y2 in zip(y_same_x[:-1], y_same_x[1:]):
             if y2[0] - y1[0] < room_closing_max_length:
                 color = 0
-                cv2.line(img, (x, y1), (x, y2), color, 1)
+                cv2.line(img, (x, y1[0]), (x, y2[0]), color, 1)
     return img
 
 
@@ -294,124 +294,3 @@ def find_details(img, noise_removal_threshold=50, corners_threshold=0.01,
         img[component] = color
 
     return details, img
-'''
-def detectLines(detect_img, output_img = None, color = [255, 255, 255]):
-    """
-    !!! NOT USED IN IMPLEMENTATION !!!
-    Detect lines in image
-    @Param detect_img image to detect from @mandatory
-    @Param output_img image for output
-    @Param color to set on output
-    @Return (list of lines), output image
-    @Source: https://docs.opencv.org/3.0-beta/doc/py_tutorials/py_imgproc/py_houghlines/py_houghlines.html
-    """
-
-    edges = cv2.Canny(detect_img,50,120)
-    minLineLength = 20
-    maxLineGap = 50
-    lines = cv2.HoughLinesP(edges,1,np.pi/180,100,minLineLength,maxLineGap)
-    i = len(lines)-1
-
-    if output_img is not None:
-        while i > 0:
-            i -= 1;
-            for x1,y1,x2,y2 in lines[i]:
-                cv2.line(output_img,(x1,y1),(x2,y2),color,2)
-
-    return lines, output_img
-
-
-def detectCorners(detect_img, output_img = None, color = [255,0,0] ):
-    """
-    !!! NOT USED IN IMPLEMENTATION !!!
-    Find each corner in image
-    @Param detect_img image to detect @mandatory
-    @Param output_img image to save to
-    @Param color to set on output
-    @Return corner(array of float), output image
-    """
-    corners = cv2.goodFeaturesToTrack(detect_img, 1000, 0.1, 1)
-    corners = np.int0(corners)
-
-    if output_img is not None:
-        for corner in corners:
-            x,y = corner.ravel()
-            cv2.circle(output_img,(x,y),3,255,-1)
-    return corners, output_img
-
-def Watermark(detect_img, output_img = None, color = [255,0,0]):
-    """
-    !!! NOT USED IN IMPLEMENTATION !!!
-    Watershed
-    Watermark image
-    @Param detect_img image to detect @mandatory
-    @Param output_img image to save to
-    @Param color to set on output
-    @Return markers
-    @source https://docs.opencv.org/3.1.0/d3/db4/tutorial_py_watershed.html
-    """
-    ret, markers = cv2.connectedComponents(detect_img)
-
-    markers = markers+1
-    markers[unknown==255] = 0
-    if output_img is not None:
-        markers = cv2.watershed(output_img,markers)
-        output_img[markers == -1] = color
-    return markers
-
-def detectCenterBoxes(detect_img, output_img = None, color = [100,100,0]):
-    """
-    !!! NOT USED IN IMPLEMENTATION !!!
-    Get center of objects
-    Detect boxes of shapes with focus on centering shape, useful to surround a shape.
-    Not precise.
-    @Param detect_img image to detect from @mandatory
-    @Param output_img image for output
-    @Param color to set on output
-    @Return corners(array of float), output image
-    @source https://docs.opencv.org/3.0-beta/doc/py_tutorials/py_feature2d/py_features_harris/py_features_harris.html
-    """
-
-    # find centroids
-    ret, labels, stats, centroids = cv2.connectedComponentsWithStats(detect_img,4)
-
-    # define the criteria to stop and refine the corners
-    criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 100, 0.001)
-    corners = cv2.cornerSubPix(detect_img,np.float32(centroids),(5,5),(-1,-1),criteria)
-
-    # Now draw them
-    res = np.hstack((centroids,corners))
-    res = np.int0(res)
-    if output_img is not None:
-        output_img[res[:,1],res[:,0]]=[0,0,255]
-        output_img[res[:,3],res[:,2]] = [0,255,0]
-
-        i = len(res)-1
-        print(res)
-        while i >= 0:
-            cv2.rectangle(output_img,(int(res[i][0]),int(res[i][1])),(int(res[i][2]),int(res[i][3])),color,3)
-            i -= 1
-    return res, output_img
-
-
-def detectUnpreciseBoxes(detect_img, output_img = None, color = [100,100,0]):
-    """
-    !!! NOT USED IN IMPLEMENTATION !!!
-    Detect corners boxes in image with low precision
-    @Param detect_img image to detect from @mandatory
-    @Param output_img image for output
-    @Param color to set on output
-    @Return boxes, output image
-    """
-
-    corners = cv2.cornerHarris(detect_img,2,3,0.04)
-    res = cv2.dilate(corners, None, iterations=3)
-
-    res = corners
-    if output_img is not None:
-        i = len(res)-1
-        while i >= 0:
-            cv2.rectangle(output_img,(int(res[i][0]),int(res[i][1])),(int(res[i][2]),int(res[i][3])),color,3)
-            i -= 1
-    return res, output_img
-'''

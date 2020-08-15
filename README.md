@@ -2,7 +2,15 @@
   <img width="460" height="300" src="Images/logo.png">
 </p>
 
-![powerpoint](Images/powerpoint.gif)
+![license](https://img.shields.io/github/license/grebtsew/FloorplanToBlender3d)
+![dockerhub](https://img.shields.io/badge/dockerhub-active-green)
+![size](https://img.shields.io/github/repo-size/grebtsew/FloorplanToBlender3d)
+![watcher](https://img.shields.io/github/watchers/grebtsew/FloorplanToBlender3d?style=social)
+![commit](https://img.shields.io/github/last-commit/grebtsew/FloorplanToBlender3d)
+<!-- TODO Add more relevant badges! -->
+
+
+![Demo](Images/powerpoint.gif)
 
 <details>
   <summary><strong>Table of Contents</strong> (click to expand)</summary>
@@ -15,6 +23,7 @@
   - [Run locally on OS](#run-locally-on-os)
     - [Run Tutorial](#run-tutorial)
 - [Demos](#demos)
+- [Documentation](#documentation)
 - [Testing](#testing)
 - [References and Imports](#References-and-Imports)
 - [Contribute](#contribute)
@@ -23,6 +32,7 @@
 <!-- tocstop -->
 
 </details>
+
 
 # About
 The virtualisation of real life objects has been a hot topic for several years. As I started
@@ -59,7 +69,7 @@ This project is linked to [Docker Hub](https://hub.docker.com/r/grebtsew/floorpl
 
 To pull and run the container together in a one line command run:
 ```bash
- docker-compose run FloorplanToBlender
+ docker-compose run ftb
 ```
 
 ## Run locally on OS
@@ -68,7 +78,7 @@ If you are a `Linux/Ubuntu` user, look at `Dockerfile` for better instructions.
 
 These are the programs that are required to run this implementation.
 
-* [Blender3d >  2.79](https://www.blender.org/)
+* [Blender3d >  2.82](https://www.blender.org/)
 * `Python >== 3.6.5`
 
 With a suiteable `blender`, `python` and `python pip` installed you can have `Python3 pip` install all required  packages by running:
@@ -109,6 +119,9 @@ Finally we can open the newly created floorplan.blender file and see the result:
 ![gif2](Images/demo2.gif)
 
 <span style="color:blue">**NOTE**</span>: This demo only uses default settings. For instance coloring is by default random.
+
+# Documentation
+For more information and tutorial of how to use the ftb library do checkout [docs](Docs/README.md)!
 
 # Testing
 Vital and core functionality are tested with pytest. To run tests yourself enter `Testing`-folder and run:
