@@ -19,6 +19,7 @@ def find_rooms(img, noise_removal_threshold=1, corners_threshold=0.001,
     :return: rooms: list of numpy arrays containing boolean masks for each detected room
              colored_house: A colored version of the input image, where each room has a random color.
     """
+
     assert 0 <= corners_threshold <= 1
     # Remove noise left from door removal
 
@@ -47,14 +48,15 @@ def find_rooms(img, noise_removal_threshold=1, corners_threshold=0.001,
 
             if x2[0] - x1[0] < room_closing_max_length:
                 color = 0
-                cv2.line(img, (x1, y), (x2, y), color, 1)
+           
+                cv2.line(img, (x1[0], y), (x2[0], y), color, 1)
 
     for x,col in enumerate(corners.T):
         y_same_x = np.argwhere(col)
         for y1, y2 in zip(y_same_x[:-1], y_same_x[1:]):
             if y2[0] - y1[0] < room_closing_max_length:
                 color = 0
-                cv2.line(img, (x, y1), (x, y2), color, 1)
+                cv2.line(img, (x, y1[0]), (x, y2[0]), color, 1)
 
 
     # Mark the outside of the house as black
@@ -88,5 +90,6 @@ example_image_path = os.path.dirname(os.path.realpath(__file__))+"/../../../Imag
 img = cv2.imread(example_image_path, 0)
 rooms, colored_house = find_rooms(img.copy())
 cv2.imshow('result', colored_house)
+print(rooms)
 cv2.waitKey()
 cv2.destroyAllWindows()

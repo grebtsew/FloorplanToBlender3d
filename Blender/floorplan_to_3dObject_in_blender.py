@@ -45,11 +45,35 @@ def read_from_file(file_path):
     return data
 
 def init_object(name):
+    # Create new blender object and return references to mesh and object
     mymesh = bpy.data.meshes.new(name)
     myobject = bpy.data.objects.new(name, mymesh)
-    myobject.mode = 'OBJECT'
     bpy.context.collection.objects.link(myobject)
     return myobject, mymesh
+
+def average(lst): 
+    return sum(lst) / len(lst) 
+
+def get_mesh_center(verts):
+    # Calculate center location of a mesh from verts
+    x=[]
+    y=[]
+    z=[]
+
+    for vert in verts:
+        x.append(vert[0])
+        y.append(vert[1])
+        z.append(vert[2])
+
+    return [average(x), average(y), average(z)]
+
+def subtract_center_verts(verts1, verts2):
+    # Remove verts1 from all verts in verts2, return result, verts1 & verts2 must have same shape!
+    for i in range(0, len(verts2)):
+        verts2[i][0] -= verts1[0]
+        verts2[i][1] -= verts1[1]
+        verts2[i][2] -= verts1[2]
+    return verts2
 
 def create_custom_mesh(objname, verts, faces, pos = None, rot = None, mat = None):
     '''
@@ -61,31 +85,34 @@ def create_custom_mesh(objname, verts, faces, pos = None, rot = None, mat = None
     # Create mesh and object
     myobject, mymesh = init_object(objname)
 
+    # Rearrange verts to put pivot point in center of mesh
+    # Find center of verts
+    center = get_mesh_center(verts)
+    # Subtract center from verts before creation
+    proper_verts = subtract_center_verts(center,verts)
+
     # Generate mesh data
-    mymesh.from_pydata(verts, [], faces)
+    mymesh.from_pydata(proper_verts, [], faces)
     # Calculate the edges
     mymesh.update(calc_edges=True)
 
-    # Set Location
+    # Move object to input verts location
+    myobject.location.x = center[0]
+    myobject.location.y = center[1]
+    myobject.location.z = center[2]
+
+    # Move to Custom Location
     if pos is not None:
-        myobject.location.x = pos[0]
-        myobject.location.y = pos[1]
-        myobject.location.z = pos[2]
+        myobject.location.x += pos[0]
+        myobject.location.y += pos[1]
+        myobject.location.z += pos[2]
 
     if rot is not None:
         myobject.rotation_euler = rot
 
-    # rotate to fix mirrored floorplan
-    myobject.rotation_euler = (0, math.pi, 0)
-
-    # Add contraint for pivot point
-    #copy_loc_con = ob.constraints.new(type='PIVOT')
-    #copy_loc_con.target = myobject
-    #constraint = myobject.constraint_add('PIVOT')
-    #constraint.pivot = myobject.location
-    #constraint.show_expanded = False
-    #constraint.mute = True
-
+    # add contraint for pivot point
+    #pivot = myobject.constraints.new(type='PIVOT')
+    
     # add material
     if mat is None: # add random color
         myobject.data.materials.append(create_mat( np.random.randint(0, 40, size=4))) #add the material to the object
@@ -123,7 +150,6 @@ def main(argv):
     '''
     Instantiate
     '''
-    # Set pivot point mode
     for i in range(6,len(argv)):
         base_path = argv[i]
         create_floorplan(base_path, program_path, i)
@@ -144,7 +170,7 @@ def main(argv):
 def create_floorplan(base_path,program_path, name=0):
 
     parent, parent_mesh = init_object("Floorplan"+str(name))
-
+    
     #base_path = base_path.replace('/','\\')
 
     path_to_wall_faces_file = program_path +"/" + base_path + "wall_faces"
@@ -170,6 +196,21 @@ def create_floorplan(base_path,program_path, name=0):
 
     rot = transform["rotation"]
     pos = transform["position"]
+
+    # Calculate and move floorplan shape to center
+    cen = transform["shape"]
+    center = [int(cen[0]/2),int(cen[1]/2),-int(cen[2]/2)]
+
+    # reposition entire floorplan
+    parent.location.x += center[0]
+    parent.location.y -= center[1]
+    parent.location.z -= center[2]
+
+    # rotate to fix mirrored floorplan
+    parent.rotation_euler = (0, math.pi, 0)
+
+    # Set Cursor start
+    bpy.context.scene.cursor.location = (0,0,0)
 
     '''
     Create Walls
@@ -197,33 +238,7 @@ def create_floorplan(base_path,program_path, name=0):
         boxcount += 1
 
     wall_parent.parent = parent
-
-    '''
-    Create windows
-    '''
-    '''
-    # get image wall data
-    verts = read_from_file(path_to_windows_verts_file)
-    faces = read_from_file(path_to_windows_faces_file)
-
-    # Create mesh from data
-    boxcount = 0
-    windowcount = 0
-
-    # Create parent
-    window_parent, window_parent_mesh = init_object("Windows")
-
-    for window in verts:
-        windowname = "Window"+str(windowcount)
-
-        obj = create_custom_mesh(windowname, window[0], faces, pos=pos, rot=rot)
-        obj.parent = window_parent
-
-        windowcount += 1
-
-    window_parent.parent = parent
-    '''
-
+   
     '''
     Create Floor
     '''
@@ -233,7 +248,7 @@ def create_floorplan(base_path,program_path, name=0):
 
     # Create mesh from data
     cornername="Floor"
-    obj = create_custom_mesh(cornername, verts, [faces], mat=create_mat((40,1,1,1)))
+    obj = create_custom_mesh(cornername, verts, [faces], pos=pos, mat=create_mat((40,1,1,1)))
     obj.parent = parent
 
     '''
@@ -262,4 +277,5 @@ if __name__ == "__main__":
     Create door
     Create window
     Create details
+    Save as param
     '''
