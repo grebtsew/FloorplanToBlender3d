@@ -7,7 +7,7 @@
 ![size](https://img.shields.io/github/repo-size/grebtsew/FloorplanToBlender3d)
 ![watcher](https://img.shields.io/github/watchers/grebtsew/FloorplanToBlender3d?style=social)
 ![commit](https://img.shields.io/github/last-commit/grebtsew/FloorplanToBlender3d)
-
+<!-- TODO Add more relevant badges! -->
 
 
 ![Demo](Images/powerpoint.gif)
@@ -23,6 +23,7 @@
   - [Run locally on OS](#run-locally-on-os)
     - [Run Tutorial](#run-tutorial)
 - [Demos](#demos)
+- [Documentation](#documentation)
 - [Testing](#testing)
 - [References and Imports](#References-and-Imports)
 - [Contribute](#contribute)
@@ -118,6 +119,9 @@ Finally we can open the newly created floorplan.blender file and see the result:
 ![gif2](Images/demo2.gif)
 
 <span style="color:blue">**NOTE**</span>: This demo only uses default settings. For instance coloring is by default random.
+
+# Documentation
+For more information and tutorial of how to use the ftb library do checkout [docs](Docs/README.md)!
 
 # Testing
 Vital and core functionality are tested with pytest. To run tests yourself enter `Testing`-folder and run:
