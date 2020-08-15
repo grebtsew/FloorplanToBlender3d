@@ -47,6 +47,7 @@ def read_from_file(file_path):
 def init_object(name):
     mymesh = bpy.data.meshes.new(name)
     myobject = bpy.data.objects.new(name, mymesh)
+    myobject.mode = 'OBJECT'
     bpy.context.collection.objects.link(myobject)
     return myobject, mymesh
 
@@ -76,6 +77,14 @@ def create_custom_mesh(objname, verts, faces, pos = None, rot = None, mat = None
 
     # rotate to fix mirrored floorplan
     myobject.rotation_euler = (0, math.pi, 0)
+
+    # Add contraint for pivot point
+    #copy_loc_con = ob.constraints.new(type='PIVOT')
+    #copy_loc_con.target = myobject
+    #constraint = myobject.constraint_add('PIVOT')
+    #constraint.pivot = myobject.location
+    #constraint.show_expanded = False
+    #constraint.mute = True
 
     # add material
     if mat is None: # add random color
@@ -110,18 +119,21 @@ def main(argv):
     else:
         exit(0)
 
+
     '''
     Instantiate
     '''
+    # Set pivot point mode
     for i in range(6,len(argv)):
         base_path = argv[i]
         create_floorplan(base_path, program_path, i)
 
     '''
     Save to file
-    TODO add several save modes!
+    TODO add several save modes here!
     '''
     bpy.ops.wm.save_as_mainfile(filepath=program_path + "/Target" +"/floorplan.blend")
+   
 
     '''
     Send correct exit code
