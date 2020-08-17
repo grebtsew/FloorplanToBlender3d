@@ -75,7 +75,7 @@ def subtract_center_verts(verts1, verts2):
         verts2[i][2] -= verts1[2]
     return verts2
 
-def create_custom_mesh(objname, verts, faces, pos = None, rot = None, mat = None):
+def create_custom_mesh(objname, verts, faces, pos = None, rot = None, mat = None, cen = None):
     '''
     @Param objname, name of new mesh
     @Param pos, object position [x, y, z]
@@ -96,10 +96,14 @@ def create_custom_mesh(objname, verts, faces, pos = None, rot = None, mat = None
     # Calculate the edges
     mymesh.update(calc_edges=True)
 
+    parent_center = [0,0,0]
+    if cen is not None:
+        parent_center = [int(cen[0]/2),int(cen[1]/2),int(cen[2])]
+
     # Move object to input verts location
-    myobject.location.x = center[0]
-    myobject.location.y = center[1]
-    myobject.location.z = center[2]
+    myobject.location.x = center[0] - parent_center[0]
+    myobject.location.y = center[1] - parent_center[1]
+    myobject.location.z = center[2] - parent_center[2]
 
     # Move to Custom Location
     if pos is not None:
@@ -199,12 +203,6 @@ def create_floorplan(base_path,program_path, name=0):
 
     # Calculate and move floorplan shape to center
     cen = transform["shape"]
-    center = [int(cen[0]/2),int(cen[1]/2),-int(cen[2]/2)]
-
-    # reposition entire floorplan
-    parent.location.x += center[0]
-    parent.location.y -= center[1]
-    parent.location.z -= center[2]
 
     # rotate to fix mirrored floorplan
     parent.rotation_euler = (0, math.pi, 0)
@@ -231,7 +229,7 @@ def create_floorplan(base_path,program_path, name=0):
         for wall in box:
             wallname = "Wall"+str(wallcount)
 
-            obj = create_custom_mesh(boxname + wallname, wall, faces, pos=pos, rot=rot)
+            obj = create_custom_mesh(boxname + wallname, wall, faces, pos=pos, rot=rot, cen=cen)
             obj.parent = wall_parent
 
             wallcount += 1
@@ -248,7 +246,7 @@ def create_floorplan(base_path,program_path, name=0):
 
     # Create mesh from data
     cornername="Floor"
-    obj = create_custom_mesh(cornername, verts, [faces], pos=pos, mat=create_mat((40,1,1,1)))
+    obj = create_custom_mesh(cornername, verts, [faces], pos=pos, mat=create_mat((40,1,1,1)), cen=cen)
     obj.parent = parent
 
     '''
@@ -263,7 +261,7 @@ def create_floorplan(base_path,program_path, name=0):
 
     for i in range(0,len(verts)):
         roomname="Room"+str(i)
-        obj = create_custom_mesh(roomname, verts[i], faces[i], pos=pos, rot=rot)
+        obj = create_custom_mesh(roomname, verts[i], faces[i], pos=pos, rot=rot, cen=cen)
         obj.parent = room_parent
 
     room_parent.parent = parent
