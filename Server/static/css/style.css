@@ -1,0 +1,60 @@
+
+
+.collapsible {
+    background-color: blue;
+    color: white;
+    cursor: pointer;
+    padding: 18px;
+    width: 100%;
+    border: none;
+    text-align: left;
+    outline: none;
+    font-size: 15px;
+  }
+  
+  .active, .collapsible:hover {
+    background-color: #555;
+  }
+  
+  .content {
+    padding: 0 18px;
+    display: none;
+    overflow: hidden;
+    background-color: #f1f1f1;
+  }
+  
+  .slidecontainer {
+    width: 100%;
+    background: blue;
+  }
+  
+  .slider {
+    -webkit-appearance: none;
+    width: 200px;
+    height: 25px;
+    background: slategray;
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+  }
+  
+  .slider:hover {
+    opacity: 1;
+  }
+  
+  .slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    background: blue;
+    cursor: pointer;
+  }
+  
+  .slider::-moz-range-thumb {
+    width: 25px;
+    height: 25px;
+    background: blue;
+    cursor: pointer;
+  }
