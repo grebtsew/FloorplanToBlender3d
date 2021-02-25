@@ -10,13 +10,13 @@ class FileHandler():
 
 class ConfigHandler():
 
-    def __init__(self, path="config.ini"):
+    def __init__(self, path="config/config.ini"):
         self.path = path
         self.config = self.readconfig_file()
 
     def readconfig_file(self):
         config = configparser.ConfigParser()
-        config.read("config.ini")
+        config.read(self.path)
         return config
 
     def __str__(self):
@@ -31,7 +31,6 @@ class ConfigHandler():
         res = []
         for options in self.config.options(section):
             res.append(self.config.get(section, options))
-
         return res
 
     def get(self, section, value):

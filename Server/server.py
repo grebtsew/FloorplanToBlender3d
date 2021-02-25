@@ -1,16 +1,19 @@
 from threading import Thread
-import http.server
-import socketserver
 from functools import partial
 import json
+from urllib.parse import urlparse
+from urllib.parse import parse_qs
+
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
+from api.post import Post
+from api.put import Put
+from api.get import Get
 
 class S(BaseHTTPRequestHandler):
-    connection_list = []
 
-    def __init__(self, speaker, *args, **kwargs):
-        self.speaker = speaker
+    def __init__(self, shared, *args, **kwargs):
+        self.shared = shared
         super().__init__(*args, **kwargs)
 
     def _set_response(self):
@@ -20,7 +23,7 @@ class S(BaseHTTPRequestHandler):
                          'POST, PUT, OPTIONS, HEAD, GET')
         self.send_header("Access-Control-Allow-Headers", "X-Requested-With")
         self.send_header("Access-Control-Allow-Headers", "Content-Type")
-        self.send_header('Content-type', 'text/html')
+        self.send_header('Content-type', 'application/json')
         self.end_headers()
 
     def do_HEAD(self):
@@ -29,35 +32,28 @@ class S(BaseHTTPRequestHandler):
     def do_OPTIONS(self):
         self._set_response()
 
-     def do_GET(self):
-        try:
-            if self.path.endswith(".html"):
-                f = open(curdir + sep + self.path, 'rb') #self.path has /test.html
-#note that this potentially makes every file on your computer readable by the internet
+    def do_GET(self):
+        parsed_path = urlparse(self.path)
+        client = (self.client_address,self.address_string())
+        function = parse_qs(parsed_path.query)['func'][0]
+        message = getattr(Get(client=client,shared_variables=self.shared), function)(self, parsed_path)
+        self._set_response()
+        self.wfile.write(bytes(message, encoding="utf-8"))
 
-                self.send_response(200)
-                self.send_header('Content-type',    'text/html')
-                self.end_headers()
-                self.wfile.write(f.read())
-                f.close()
-                return
-
-        except IOError:
-            self.send_error(404,'File Not Found: %s' % self.path)
 
     def do_PUT(self):
-        ctype, pdict = cgi.parse_header(self.headers.getheader('content-type'))
-        if ctype == 'multipart/form-data':
-            postvars = cgi.parse_multipart(self.rfile, pdict)
-        elif ctype == 'application/x-www-form-urlencoded':
-            length = int(self.headers.getheader('content-length'))
-            postvars = cgi.parse_qs(self.rfile.read(length), keep_blank_values=1)
-        else:
-            postvars = {}
+        #ctype, pdict = cgi.parse_header(self.headers.getheader('content-type'))
+        #if ctype == 'multipart/form-data':
+        #    postvars = cgi.parse_multipart(self.rfile, pdict)
+        #elif ctype == 'application/x-www-form-urlencoded':
+        #    length = int(self.headers.getheader('content-length'))
+        #    postvars = cgi.parse_qs(self.rfile.read(length), keep_blank_values=1)
+        #else:
+        #    postvars = {}
+        self._set_response()
 
     def do_POST(self):
-        # print(self.client_address,self.headers)
-
+        print(self.client_address,self.headers)
         if self.headers['Content-Length']:
 
             # <--- Gets the size of data
@@ -65,45 +61,28 @@ class S(BaseHTTPRequestHandler):
             # <--- Gets the data itself
             post_data = self.rfile.read(content_length)
             
-            # decode incoming data // see if password is correct here!
+            client = (self.client_address,self.headers)
+            # decode incoming data 
             try:
-
                 data = json.loads(post_data.decode('utf-8'))
                 
-                if data['api_crypt']:
-                    if data['api_crypt'] == self.CRYPT:
+                Post(client,self.shared).globals()[data["func"]](data)
 
-                        # detemine source data
-                        if not self.client_address[0] in self.connection_list:
-                            self.speaker.say("New Server Connection From Address " + str(
-                                self.client_address[0]) + " PORT " + str(self.client_address[1]))
-                            self.connection_list.append(self.client_address[0])
-
-                        if data["api_text"]:
-                            self.speaker.say(data["api_text"])
-
-                        if data["api_rate"]:
-                            self.speaker.setSpeed(float(data["api_rate"]))
-                        
-                        if data["api_volume"]:
-                            self.speaker.setVolume(float(data["api_volume"]))
-            except Exception as e:
-                print("SERVER RECEIVE ERROR: ",str(e))
+            except ValueError as e:
+                print("RECIEVED POST REQUEST WITH BAD JSON: ",str(e))
         self._set_response()
 
 
-class server(Thread):
-
-    PORT = 8000
-
-    def __init__(self, speaker):
+class Server(Thread):
+    def __init__(self, shared):
         super().__init__()
-        self.speaker = speaker
+        self.shared = shared
 
     def run(self):
-        server_address = ('localhost', self.PORT)
-        httpd = HTTPServer(server_address, partial(S, self.speaker))
+        server_address = (self.shared.restapiHost, int(self.shared.restapiPort))
+        httpd = HTTPServer(server_address, partial(S, self.shared))
         try:
+            print("REST API SERVER up and serving at ", self.shared.restapiHost, self.shared.restapiPort)
             httpd.serve_forever()
         except KeyboardInterrupt:
             pass

@@ -1,5 +1,5 @@
 """
-The process class represents a thread handling incoming requests
+The process class represents a thread handling stuff in new threads
 """
 import threading
 
