@@ -24,8 +24,20 @@ class Get(Api):
         """Return all files currently managed by server"""
         return str(self.shared.all_files)
 
-#    IMAGES = 1
-#    OBJECTS = 2
-#    PROCESSES = 3
-#    IMAGE = 4
-#    OBJECT = 5
+    def images(self, *args):
+        return str(self.shared.images)
+
+    def objects(self, *args):
+        return str(self.shared.objects)
+
+    def processes(self, *args):
+        return str(self.shared.processes)
+
+    def image(self, api_ref, data, *args):
+        """Return imagefile of id specified in data"""
+        return ""
+
+    def object(self, api_ref, data, *args):
+        """Return objectfile of id specified in data"""
+        return ""
+
