@@ -20,6 +20,11 @@ class Get(Api):
             '',
             ])
         
+    def help(self, *args):
+        """Return all possible methods and requirements"""
+        # TODO: this!
+        return ""
+
     def all(self, *args):
         """Return all files currently managed by server"""
         return str(self.shared.all_files)

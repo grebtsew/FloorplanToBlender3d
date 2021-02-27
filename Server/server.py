@@ -17,6 +17,9 @@ class S(BaseHTTPRequestHandler):
         self.shared = shared
         super().__init__(*args, **kwargs)
 
+    def make_client(self):
+        return(self.client_address,self.address_string(), 0)
+
     def _set_response(self):
         self.send_response(200, "OK")
         self.send_header('Access-Control-Allow-Origin', '*')
@@ -35,40 +38,41 @@ class S(BaseHTTPRequestHandler):
 
     def do_GET(self):
         parsed_path = urlparse(self.path)
-        client = (self.client_address,self.address_string())
         try:
             function = parse_qs(parsed_path.query)['func'][0]
         except Exception as e:
             message = "RECIEVED GET REQUEST WITH BAD QUERY: "+str(e)
             print(message)
         finally:
-            message = getattr(Get(client=client,shared_variables=self.shared), function)(self, parsed_path)
+            message = getattr(Get(client=self.make_client(),shared_variables=self.shared), function)(self, parsed_path)
         self._set_response()
         self.wfile.write(bytes(message, encoding="utf-8"))
 
 
     def do_PUT(self):
-        
-        ctype, pdict = cgi.parse_header(self.headers.getheader('Content-Type'))
-        print(ctype, pdict)
+        parsed_path = urlparse(self.path)
+        params = parse_qs(parsed_path.query)
+        ctype = self.headers['Content-Type']
+
         if ctype == 'multipart/form-data':
             content_length = int(self.headers['Content-Length'])
-            put_data = self.rfile.read(content_length)
-            try:
-                data = json.loads(put_data.decode('utf-8'))
-                function = data['func']
-                message = getattr(Put(client=client,shared_variables=self.shared), function)(self, data)
+            file = self.rfile.read(content_length)
+            if file != None:
 
-            except ValueError as e:
-                message = "RECIEVED POST REQUEST WITH BAD JSON: "+str(e)
-                print(message)
+                try:
+                    function = params['func'][0]
+                    message = getattr(Put(client=self.make_client(),shared_variables=self.shared), function)(self, params, file)
 
+                except ValueError as e:
+                    message = "RECIEVED POST REQUEST WITH BAD JSON: "+str(e)
+                    print(message)
+            else:
+                message = "NO FILE PROVIDED!"
         else:
-            message = "RECIEVED PUT REQUEST WITH BAD CTYPE: "+str(ctype)
+            message = "RECIEVED PUT REQUEST WITH BAD CTYPE: "+ctype
             print(message)
         self._set_response()
         self.wfile.write(bytes(message, encoding="utf-8"))
-
 
     def do_POST(self):
         if self.headers['Content-Length']:
@@ -76,14 +80,12 @@ class S(BaseHTTPRequestHandler):
             content_length = int(self.headers['Content-Length'])
             post_data = self.rfile.read(content_length)
             
-            client = (self.client_address,self.headers)
             # decode incoming data 
             try:
                 data = json.loads(post_data.decode('utf-8'))
-                
                 function = data['func']
-                response = getattr(Post(client=client,shared_variables=self.shared), function)(self, data)
-                
+                response = getattr(Post(client=self.make_client(),shared_variables=self.shared), function)(self, data)
+
             except ValueError as e:
                 response = "RECIEVED POST REQUEST WITH BAD JSON: "+str(e)
                 print(response)

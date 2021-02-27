@@ -1,37 +1,39 @@
 from api.api import Api
 
 class Put(Api):
+    # TODO: fix data variable format instead for indexing lists!
 
-    def create_file(self):
-        """
-        form = cgi.FieldStorage(
-            fp=self.rfile,
-            headers=self.headers,
-            environ={'REQUEST_METHOD': 'PUT',
-                     'CONTENT_TYPE': self.headers['Content-Type'],
-                     })
-        print("\nform:", str(form))
-        print("\nform['file'].filename:", form['file'].filename)
-        filename = form['file'].filename
-        data = form['file'].file.read()
-        open("/tmp/%s" % filename, "wb").write(data)
-        print('\ndata:', data)
-        """
+    def create_file(self, data, file):
+        """Write incoming data to file"""
+        file_path = self.shared.parentPath+"/"+self.shared.imagesPath + "/" + data['id'][0] + data['format'][0]
+        open(file_path, "wb").write(file)
 
-    def send(self, api_ref, data, *args):
+    def create(self, api_ref, data, file, *args):
         # id and hash correct exist?
-        if((data['id'],data['hash'], False) in self.shared.all_ids ):
-        
+        if((data['id'][0],data['hash'][0], False) in self.shared.all_ids ):
+
             # image format supported?
+            if data['format'][0] in self.shared.supported_image_formats:
+                
+                self.create_file(data, file)
+
+                # update saved file status
+                index = self.shared.all_ids.index((data['id'][0],data['hash'][0], False))
+                self.shared.all_ids[index] = (data['id'][0],data['hash'][0], True)
+                message = "File uploaded!"
+                
+                # TODO trigger index update for gui?!
+            else:
+                message = "Image format not supported!"
             
-            # insert (data['id'],data['hash'], True)
-            message = "File uploaded!"
-        elif((data['id'],data['hash'], True) in self.shared.all_ids ):
+        elif((data['id'][0],data['hash'][0], True) in self.shared.all_ids ):
             message = "File with same name already exist!"
         else:
             message = "Wrong ID or HASH!"
         return message
 
-    def sendcreate(self, *args):
+    def createandtransform(self,api_ref, data,file,  *args):
         """send image to server and start transform process"""
-        return str(self.shared.images)
+        message = self.create(data,file)
+        # TODO add transform process here!
+        return message
