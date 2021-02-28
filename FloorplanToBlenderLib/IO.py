@@ -45,7 +45,7 @@ def config_get_default():
     config.read('config.ini')
     return config['DEFAULT']['image_path'], config['DEFAULT']['blender_installation_path'], config['DEFAULT']['file_structure'], config['DEFAULT']['mode']
 
-def save_to_file(file_path, data):
+def save_to_file(file_path, data, show=True):
     '''
     Save to file
     Saves our resulting array as json in file.
@@ -55,7 +55,8 @@ def save_to_file(file_path, data):
     with open(file_path+'.txt', 'w') as f:
         f.write(json.dumps(data))
 
-    print("Created file : " + file_path + ".txt")
+    if show:
+        print("Created file : " + file_path + ".txt")
 
 def read_from_file(file_path):
     '''

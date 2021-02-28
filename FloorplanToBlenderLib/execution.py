@@ -14,13 +14,13 @@ FloorplanToBlender3d
 Copyright (C) 2019 Daniel Westberg
 '''
 
-def simple_single(image_path):
+def simple_single(image_path, show=True):
     '''
     Generate one simple floorplan
     @Param image_path path to image
     @Return path to generated files
     '''
-    fpath, fshape = generate.generate_all_files(image_path, True)
+    fpath, _ = generate.generate_all_files(image_path, show)
     return fpath
 
 def multiple_simple(image_paths, horizontal=True):

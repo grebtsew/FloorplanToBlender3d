@@ -18,12 +18,16 @@ class Get(Api):
             'sys_version=%s' % api_ref.sys_version,
             'protocol_version=%s' % api_ref.protocol_version,
             '',
+            'supported_image_formats=%s' % "('.png', '.jpg', '.jpeg', '.tiff', '.bmp', '.gif')",
+            'supported_blender_formats=%s' % "('.obj','.x3d', '.gltf', '.blend','.webm','.blend','.vrml','.usd','.udim','.stl','.svg','.dxf','.fbx','.3ds')"
             ])
-        
-    def help(self, *args):
-        """Return all possible methods and requirements"""
-        # TODO: this!
-        return ""
+
+    def process(self, api_ref, data):
+        p = self.shared.get_process(data['pid'])
+        if p is None:
+            return "Process does not exist!"
+        else:
+            return p
 
     def all(self, *args):
         """Return all files currently managed by server"""

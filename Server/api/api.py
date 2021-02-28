@@ -14,5 +14,8 @@ class Api():
         else:
             self.client = self.shared.client_list(client)
 
+    def help(self, *args):
+        return [func for func in dir(self) if callable(getattr(self, func))]
+
     def __getattr__(self, attr):
         return "Function undefined "+str(attr)

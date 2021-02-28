@@ -20,6 +20,7 @@ Copyright (C) 2019 Daniel Westberg
 base_path = "Data/"
 path = "Data/"
 
+
 def generate_all_files(imgpath, info, position=None, rotation=None):
     '''
     Generate all data files
@@ -31,7 +32,8 @@ def generate_all_files(imgpath, info, position=None, rotation=None):
     '''
     global path
 
-    print(" ----- Generate ", imgpath, " at pos ", position ," rot ",rotation," -----")
+    if info:
+        print(" ----- Generate ", imgpath, " at pos ", position ," rot ",rotation," -----")
 
     # Get path to save data
     path = IO.create_new_floorplan_path(base_path)
@@ -122,7 +124,7 @@ def generate_transform_file(imgpath, info, position, rotation, shape):
     else:
         transform["shape"] = shape
 
-    IO.save_to_file(path+"transform", transform)
+    IO.save_to_file(path+"transform", transform, info)
 
     return transform
 
@@ -179,8 +181,8 @@ def generate_rooms_file(img_path, info):
     if(info):
         print("Number of rooms detected : ", room_count)
 
-    IO.save_to_file(path+"rooms_verts", verts)
-    IO.save_to_file(path+"rooms_faces", faces)
+    IO.save_to_file(path+"rooms_verts", verts, info)
+    IO.save_to_file(path+"rooms_faces", faces, info)
 
     return get_shape(verts, scale)
 
@@ -249,8 +251,8 @@ def generate_small_windows_file(img_path, info):
         print("Windows created : ", window_amount)
 
 
-    IO.save_to_file(path+"windows_verts", verts)
-    IO.save_to_file(path+"windows_faces", faces)
+    IO.save_to_file(path+"windows_verts", verts, info)
+    IO.save_to_file(path+"windows_faces", faces, info)
 
     return get_shape(verts, scale)
 
@@ -307,8 +309,8 @@ def generate_doors_file(img_path, info):
     if(info):
         print("Doors created : ", door_amount)
 
-    IO.save_to_file(path+"doors_verts", verts)
-    IO.save_to_file(path+"doors_faces", faces)
+    IO.save_to_file(path+"doors_verts", verts, info)
+    IO.save_to_file(path+"doors_faces", faces, info)
 
     return get_shape(verts, scale)
 
@@ -352,8 +354,8 @@ def generate_floor_file(img_path, info):
     if(info):
         print("Approximated apartment size : ", cv2.contourArea(contour))
 
-    IO.save_to_file(path+"floor_verts", verts)
-    IO.save_to_file(path+"floor_faces", faces)
+    IO.save_to_file(path+"floor_verts", verts, info)
+    IO.save_to_file(path+"floor_faces", faces, info)
 
     return get_shape(verts, scale)
 
@@ -394,7 +396,7 @@ def generate_walls_file(img_path, info):
         print("Walls created : ", wall_amount)
 
     # One solution to get data to blender is to write and read from file.
-    IO.save_to_file(path+"wall_verts", verts)
-    IO.save_to_file(path+"wall_faces", faces)
+    IO.save_to_file(path+"wall_verts", verts, info)
+    IO.save_to_file(path+"wall_faces", faces, info)
 
     return get_shape(verts, scale)

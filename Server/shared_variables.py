@@ -13,7 +13,7 @@ class shared_variables():
     all_ids = []
     all_processes = []
     supported_image_formats = ('.png', '.jpg', '.jpeg', '.tiff', '.bmp', '.gif')
-    supported_blender_formats = ('.obj','.x3d','.webm','.vrml','.usd','.udim','.stl','.svg','.dxf','.fbx','.3ds')
+    supported_blender_formats = ('.obj','.x3d', '.gltf','.webm','.blend','.vrml','.usd','.udim','.stl','.svg','.dxf','.fbx','.3ds')
     
     def __init__(self):
         self.init_config()
@@ -21,9 +21,18 @@ class shared_variables():
         self.reindex_files()
         self.init_ids()
 
-    def get_image_path(id):
+    def get_process(self, pid):
+        for process in self.all_processes:
+            if process["in"] == pid:
+                return process
+        return None
+
+    def get_image_path(self,id):
         """return full path to file with id, return None if can't be found"""
-        pass
+        for image in self.images:
+            if id in image:
+                return self.parentPath+"/"+self.imagesPath + "/" + image
+        return None
 
     def reindex_files(self):
         # TODO: make this better by saving dicts
@@ -86,17 +95,13 @@ class shared_variables():
         images = []
         objects = []
         
-        for root, dirs, files in os.walk(startpath):
-            #level = root.replace(startpath, '').count(os.sep)
-            #indent = ' ' * 4 * (level)
-            #print('{}{}/'.format(indent, os.path.basename(root)))
-            #subindent = ' ' * 4 * (level + 1)
+        for _ , _ , files in os.walk(startpath):
+           
             for f in files:
-                #print('{}{}'.format(subindent, f))
                 if(f.lower().endswith(self.supported_image_formats)):
                     images.append(f)
                 if(f.lower().endswith(self.supported_blender_formats)):
-                    object.append(f)
+                    objects.append(f)
                 all_files.append(f)
         return all_files, images, objects
 
@@ -105,6 +110,12 @@ class shared_variables():
         
         if not os.path.exists(self.parentPath):
             os.makedirs(self.parentPath)
+        
+        if not os.path.exists(self.parentPath+"/target"):
+            os.makedirs(self.parentPath+"/target")
+
+        if not os.path.exists(self.parentPath+"/data"):
+            os.makedirs(self.parentPath+"/data")
         
         if not os.path.exists(self.parentPath+"/"+self.imagesPath):
             os.makedirs(self.parentPath+"/"+self.imagesPath)
@@ -117,7 +128,8 @@ class shared_variables():
         conf = ConfigHandler()
         [self.flaskHost, self.flaskPort] = conf.get_all("Website") 
         self.flaskurl = "http://"+self.flaskHost+":{0}".format(self.flaskPort)
-        [self.restapiHost, self.restapiPort] = conf.get_all("RestApi")
+        self.restapiHost = conf.get("RestApi", "HOST")
+        self.restapiPort = conf.get("RestApi", "PORT")
 
         self.parentPath = conf.get("Storage","PARENT")
         self.imagesPath = conf.get("Storage","IMAGES")

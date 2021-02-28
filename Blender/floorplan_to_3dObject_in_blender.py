@@ -144,9 +144,9 @@ def main(argv):
     objs = bpy.data.objects
     objs.remove(objs["Cube"], do_unlink=True)
 
-    if(len(argv) > 6): # Note YOU need 7 arguments!
+    if(len(argv) > 7): # Note YOU need 8 arguments!
         program_path = argv[5]
-
+        target = argv[6]
     else:
         exit(0)
 
@@ -154,7 +154,7 @@ def main(argv):
     '''
     Instantiate
     '''
-    for i in range(6,len(argv)):
+    for i in range(7,len(argv)):
         base_path = argv[i]
         create_floorplan(base_path, program_path, i)
 
@@ -162,8 +162,7 @@ def main(argv):
     Save to file
     TODO add several save modes here!
     '''
-    bpy.ops.wm.save_as_mainfile(filepath=program_path + "/Target" +"/floorplan.blend")
-   
+    bpy.ops.wm.save_as_mainfile(filepath=program_path + target) #"/floorplan.blend"
 
     '''
     Send correct exit code

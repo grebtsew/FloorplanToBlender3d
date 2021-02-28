@@ -3,6 +3,7 @@ import pywavefront
 import os
 import requests
 import json as jsonlib
+import time
 
 """
 This files purpose of this file is to test core functionallity of the server.
@@ -95,7 +96,7 @@ if __name__ == "__main__":
     print(response.text)
     print("Test Passed!")
     print("DONE!")
-    
+
     # send POST command to create .obj from image id
     json = {'func': 'transform', 'id':id, 'format':'.obj'}
     print("----- POST transform image "+id+" into 3d model of format .obj ----- ")
@@ -104,19 +105,44 @@ if __name__ == "__main__":
     print(response.text)
     print("DONE!")
 
-    # send PUT and create object
-    json = {'func': 'sendandcreate', 'id':id, 'format':'.jpg', 'create':'.obj'}
-
-    # get status from creation process
+    # send GET all processes
     json = {'func': 'processes'}
+    print("----- GET all processes ----- ")
+    response = requests.get(url, params=json)
+    print(response)
+    print(response.text)
+    print("DONE!")
+
+    # send GET one process 
+    pid = 0
+    json = {'func': 'process', 'pid':pid}
+    print("----- GET "+str(pid)+" process ----- ")
+    response = requests.get(url, params=json)
+    print(response)
+    print(response.text)
+    print("DONE!")
+
+    # send PUT and create object
+    with open(path_to_test_image, 'rb') as infile:
+        json = {'func': 'createandtransform', 'id':id, 'format':'.jpg', 'output':'.obj'}
+        headers = {'Content-Type': 'multipart/form-data'}
+        response = requests.put(url, data=infile, params=json, headers=headers)
+    print(response)
+    print(response.text)
+    print("Test Passed!")
+    print("DONE!")
 
     # get download and show image
     json = {'func': 'image', 'id': id}
 
+
     # get download and show .obj file
     json = {'func': 'object', 'id': id}
+    
 
     #scene = pywavefront.Wavefront('something.obj')
 
-    # send post to remove file & object
+    # send post to remove file & object!
     json = {'func': 'remove', 'id': id}
+
+    # send get help for post, put and get!

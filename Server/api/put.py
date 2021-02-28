@@ -22,7 +22,8 @@ class Put(Api):
                 self.shared.all_ids[index] = (data['id'][0],data['hash'][0], True)
                 message = "File uploaded!"
                 
-                # TODO trigger index update for gui?!
+                # trigger index update for gui!
+                self.shared.reindex_files()
             else:
                 message = "Image format not supported!"
             
@@ -35,5 +36,15 @@ class Put(Api):
     def createandtransform(self,api_ref, data,file,  *args):
         """send image to server and start transform process"""
         message = self.create(data,file)
-        # TODO add transform process here!
+
+        _id = self.shared.get_id(data['id'])
+        if _id is not None and _id[2]:
+            if(data['format'] in self.shared.supported_blender_formats):
+                Create(data=data, shared_variables = self.shared).start()
+                message += "TransformProcess started! Query Process Status for more Information."
+            else:
+                message += "Output Format not supported!"
+        else:
+            message += "File doesn't exist!"
+            self.shared.bad_client_event(self.client)
         return message
