@@ -6,7 +6,7 @@ import json as jsonlib
 import time
 
 """
-This files purpose of this file is to test core functionallity of the server.
+The purpose of this file is to test core functionallity of the server.
 We also test some common problems.
 """
 path_to_test_image="../Images/example.png"
@@ -134,15 +134,44 @@ if __name__ == "__main__":
 
     # get download and show image
     json = {'func': 'image', 'id': id}
+    print("----- GET File process ----- ")
+    response = requests.get(url, params=json)
+    print(response)
+    open(path_to_result_folder+"/"+id+".png", "wb").write(response.text)
+    print("File downloaded!") 
+    print("DONE!")
 
+    print("Showing image!")   
+    image = cv2.imread(path_to_result_folder+"/"+id+".png")
+    cv2.imshow("gathered image", image)
+    cv2.waitKey(1)
 
     # get download and show .obj file
-    json = {'func': 'object', 'id': id}
+    json = {'func': 'object', 'id': id, 'format':'.obj'} # returns .blend if no format set!
+    print("----- GET Object process ----- ")
+    response = requests.get(url, params=json)
+    print(response)
+    open(path_to_result_folder+"/"+id+json["format"], "wb").write(response.text)
+    print("File downloaded!") 
+    print("DONE!")
     
-
-    #scene = pywavefront.Wavefront('something.obj')
+    print("Showing 3d modell!")
+    scene = pywavefront.Wavefront(path_to_result_folder+"/"+id+json["format"])
 
     # send post to remove file & object!
     json = {'func': 'remove', 'id': id}
+    print("----- Removing our id from server ----- ")
+    #response = requests.post(url, params=json)
+    #print(response)
+    #print(response.text)
+    print("File id removed!") 
+    print("DONE!")
+    
 
     # send get help for post, put and get!
+    json = {'func': 'help'}
+    print("----- Sending help request to get,post,put ----- ")
+    #response = requests.get(url, params=json)
+    #response = requests.post(url, params=json)
+    #response = requests.put(url, params=json)
+    

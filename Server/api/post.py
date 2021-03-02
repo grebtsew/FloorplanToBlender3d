@@ -20,8 +20,6 @@ class Post(Api):
     def remove(self, api_ref, data, *args):
         """Remove existing file id"""
         fs = FileHandler()
-        # Target
-        fs.remove("./storage/target/"+data["id"]+".blend")
         # Data
         fs.remove("./storage/data/"+data["id"]+"0/")
         # Image

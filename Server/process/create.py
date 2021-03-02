@@ -1,10 +1,6 @@
 """
 The process class represents a thread handling stuff in new threads
 """
-
-import shutil
-
-from cv2 import data
 from config.file_handler import FileHandler
 from process.process import Process
 from subprocess import check_output
@@ -23,6 +19,7 @@ class Create(Process):
         self.process["task"]= data['func']
         self.process["in"]= data['id']
         self.process["cstate"]= 4 #set amount of state -1 here, useful for gui later!
+        # TODO: check if "format field exist!"
         self.process["format"] = data["format"]
         # we will overwrite old objects!
         self.update("out", data['id']+data['format'])
@@ -44,7 +41,13 @@ class Create(Process):
 
         #print(program_path, blender_script_path)
 
-        IO.clean_data_folder(self.process["in"])
+        IO.clean_data_folder("./storage/data/"+self.process["in"])
+
+        # Remove target file if it already exists! 
+        # Else we will get a bad rename!
+        fh = FileHandler()
+        fh.remove("./storage/target/"+self.process["in"]+".blend")
+        
 
         self.process["state"] = self.process["state"]+1
         self.update("status", "Image processing calculations")
@@ -53,7 +56,7 @@ class Create(Process):
         # TODO: fix this to work for several instances at once!
         generate.base_path="./storage/data/"+self.process["in"]
         generate.path="./storage/data/"+self.process["in"]
-        target_path="./storage/target/"+self.process["in"]+".blend"
+        target_path="./storage/objects/"+self.process["in"]+".blend"
 
         data_paths = list()
         data_paths = [execution.simple_single(image_path, False)]
@@ -90,16 +93,14 @@ class Create(Process):
          "--background", 
          "--python", 
          "../Blender/blender_export_any.py",
-         "./storage/target/"+self.process["in"]+".blend",
+         "./storage/objects/"+self.process["in"]+".blend",
          self.process["format"],
         "./storage/objects/"+self.process["out"]])
 
         self.process["state"] = self.process["state"]+1
         self.update("status", "Cleanup")
         
-        # Remove target
-        fh = FileHandler()
-        fh.remove("./storage/target/"+self.process["in"]+".blend")
+        # Don't remove target!
         # Remove data
         # TODO: handle multiple floorplan removeal
         fh.remove("./storage/data/"+self.process["in"]+"0/")

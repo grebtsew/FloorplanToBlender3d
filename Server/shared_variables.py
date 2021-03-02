@@ -111,9 +111,6 @@ class shared_variables():
         if not os.path.exists(self.parentPath):
             os.makedirs(self.parentPath)
         
-        if not os.path.exists(self.parentPath+"/target"):
-            os.makedirs(self.parentPath+"/target")
-
         if not os.path.exists(self.parentPath+"/data"):
             os.makedirs(self.parentPath+"/data")
         

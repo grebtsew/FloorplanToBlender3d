@@ -3,8 +3,6 @@ from functools import partial
 import json
 from urllib.parse import urlparse
 from urllib.parse import parse_qs
-import cgi
-
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
 from api.post import Post
@@ -80,7 +78,6 @@ class S(BaseHTTPRequestHandler):
             content_length = int(self.headers['Content-Length'])
             post_data = self.rfile.read(content_length)
             
-            # decode incoming data 
             try:
                 data = json.loads(post_data.decode('utf-8'))
                 function = data['func']

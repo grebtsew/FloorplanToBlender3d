@@ -42,11 +42,18 @@ class Get(Api):
     def processes(self, *args):
         return str(self.shared.processes)
 
+    def returnFile(self, path, api_ref):
+        with open(path, "rb") as file:
+            api_ref.wfile.write(file)
+            return "File returned."
+
     def image(self, api_ref, data, *args):
         """Return imagefile of id specified in data"""
-        return ""
-
+        # check that file exist
+        return self.returnFile(self.shared.get_image_path(data["id"]), api_ref)
+        
     def object(self, api_ref, data, *args):
         """Return objectfile of id specified in data"""
-        return ""
+        # check if file exist
+        return self.returnFile(self.shared.get_object_path(data["id"]), api_ref)
 
