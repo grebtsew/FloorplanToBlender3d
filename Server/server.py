@@ -1,9 +1,10 @@
 from threading import Thread
 from functools import partial
-import json
 from urllib.parse import urlparse
 from urllib.parse import parse_qs
 from http.server import BaseHTTPRequestHandler, HTTPServer
+
+import json
 
 from api.post import Post
 from api.put import Put
@@ -17,6 +18,13 @@ class S(BaseHTTPRequestHandler):
 
     def make_client(self):
         return(self.client_address,self.address_string(), 0)
+
+    def transform_dict(self, d):
+        """Solve issue with all items are lists from query parser!"""
+        res = dict()
+        for key, item in d.items():
+            res[key] = item[0]
+        return res
 
     def _set_response(self):
         self.send_response(200, "OK")
@@ -37,19 +45,22 @@ class S(BaseHTTPRequestHandler):
     def do_GET(self):
         parsed_path = urlparse(self.path)
         try:
-            function = parse_qs(parsed_path.query)['func'][0]
+            parsed_data=self.transform_dict(parse_qs(parsed_path.query))
+            function = parsed_data['func']
         except Exception as e:
             message = "RECIEVED GET REQUEST WITH BAD QUERY: "+str(e)
-            print(message)
         finally:
-            message = getattr(Get(client=self.make_client(),shared_variables=self.shared), function)(self, parsed_path)
-        self._set_response()
-        self.wfile.write(bytes(message, encoding="utf-8"))
-
+            message = getattr(Get(client=self.make_client(),shared_variables=self.shared), function)(self, parsed_data, parsed_path)
+        
+        try:
+            self._set_response()
+            self.wfile.write(bytes(message, encoding="utf-8"))
+        except ConnectionAbortedError as e:
+            return # This occurs when server is sending file and client isn't waiting for extra message.
 
     def do_PUT(self):
         parsed_path = urlparse(self.path)
-        params = parse_qs(parsed_path.query)
+        params = self.transform_dict(parse_qs(parsed_path.query))
         ctype = self.headers['Content-Type']
 
         if ctype == 'multipart/form-data':
@@ -58,8 +69,8 @@ class S(BaseHTTPRequestHandler):
             if file != None:
 
                 try:
-                    function = params['func'][0]
-                    message = getattr(Put(client=self.make_client(),shared_variables=self.shared), function)(self, params, file)
+                    function = params['func']
+                    message, _ = getattr(Put(client=self.make_client(),shared_variables=self.shared), function)(self, params, file)
 
                 except ValueError as e:
                     message = "RECIEVED POST REQUEST WITH BAD JSON: "+str(e)
@@ -74,7 +85,6 @@ class S(BaseHTTPRequestHandler):
 
     def do_POST(self):
         if self.headers['Content-Length']:
-            response = ""
             content_length = int(self.headers['Content-Length'])
             post_data = self.rfile.read(content_length)
             
@@ -90,7 +100,6 @@ class S(BaseHTTPRequestHandler):
         self._set_response()
         self.wfile.write(bytes(response, encoding="utf-8"))
         
-
 class Server(Thread):
     def __init__(self, shared):
         super().__init__()

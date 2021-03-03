@@ -32,7 +32,7 @@ class Post(Api):
         """Transform Image to Object"""
         _id = self.shared.get_id(data['id'])
         if _id is not None and _id[2]:
-            if(data['format'] in self.shared.supported_blender_formats):
+            if(data['oformat'] in self.shared.supported_blender_formats):
                 Create(data=data, shared_variables = self.shared).start()
                 message = "TransformProcess started! Query Process Status for more Information."
             else:

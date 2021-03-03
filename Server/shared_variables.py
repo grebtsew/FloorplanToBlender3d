@@ -7,13 +7,15 @@ import random
 import os
 import hashlib
 
+# TODO make threadsafe!
+
 class shared_variables():
     client_list = []
     all_files = []
     all_ids = []
     all_processes = []
     supported_image_formats = ('.png', '.jpg', '.jpeg', '.tiff', '.bmp', '.gif')
-    supported_blender_formats = ('.obj','.x3d', '.gltf','.webm','.blend','.vrml','.usd','.udim','.stl','.svg','.dxf','.fbx','.3ds')
+    supported_blender_formats = ('.obj','.x3d', '.gltf','.mtl','.webm','.blend','.vrml','.usd','.udim','.stl','.svg','.dxf','.fbx','.3ds')
     
     def __init__(self):
         self.init_config()
@@ -21,9 +23,15 @@ class shared_variables():
         self.reindex_files()
         self.init_ids()
 
+    def get_object_path(self, id, format=".blend"):
+        for file in self.objects:
+            if str(id+format) == file:
+                return self.parentPath+"/"+self.objectsPath + "/"+id+format
+        return None
+        
     def get_process(self, pid):
-        for process in self.all_processes:
-            if process["in"] == pid:
+        for process in self.all_processes:    
+            if str(process["pid"]) == pid:
                 return process
         return None
 
@@ -45,7 +53,10 @@ class shared_variables():
             suffix = file_dot_array[len(file_dot_array)-1]
             file_no_suffix = file.replace(suffix,"")
             # This will let us know that file already exists!
-            self.all_ids.append((file_no_suffix, self.hash_generator(file_no_suffix), True))
+            tmp=(file_no_suffix, self.hash_generator(file_no_suffix), True)
+            if tmp not in self.all_ids:
+                self.all_ids.append(tmp)
+            
 
     def bad_client_event(self, client):
         """The purpose of this method is to protect server from harmful requests,

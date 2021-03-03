@@ -20,9 +20,9 @@ class Create(Process):
         self.process["in"]= data['id']
         self.process["cstate"]= 4 #set amount of state -1 here, useful for gui later!
         # TODO: check if "format field exist!"
-        self.process["format"] = data["format"]
+        self.process["format"] = data["oformat"]
         # we will overwrite old objects!
-        self.update("out", data['id']+data['format'])
+        self.update("out", data['id']+data['oformat'])
         
     def run(self):
         # This is where the new thread will start
@@ -46,7 +46,9 @@ class Create(Process):
         # Remove target file if it already exists! 
         # Else we will get a bad rename!
         fh = FileHandler()
-        fh.remove("./storage/target/"+self.process["in"]+".blend")
+        tmp = "./storage/objects/"+self.process["in"]+".blend"
+        if os.path.isfile(tmp):
+            fh.remove(tmp)
         
 
         self.process["state"] = self.process["state"]+1
@@ -107,3 +109,6 @@ class Create(Process):
 
         self.process["state"] = self.process["state"]+1
         self.update("status", "Done")
+
+        # Reindex here
+        self.shared.reindex_files()
