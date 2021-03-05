@@ -43,9 +43,9 @@ class shared_variables():
         return None
 
     def reindex_files(self):
-        # TODO: make this better by saving dicts
         self.all_files, self.images, self.objects  = self.list_files(self.parentPath)
 
+        
     def init_ids(self):
         # initialize ids
         for file in self.all_files:
@@ -56,7 +56,9 @@ class shared_variables():
             tmp=(file_no_suffix, self.hash_generator(file_no_suffix), True)
             if tmp not in self.all_ids:
                 self.all_ids.append(tmp)
-            
+
+    def get_id_files(self, id):
+        return [os.path.join(dp, f) for dp, dn, filenames in os.walk("./storage") for f in filenames if f.replace(os.path.splitext(f)[1],"") == id]
 
     def bad_client_event(self, client):
         """The purpose of this method is to protect server from harmful requests,

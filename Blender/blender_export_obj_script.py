@@ -1,6 +1,9 @@
 import bpy
-import os
 import sys
+
+"""
+Used to open a .blender file and export it as .obj file.
+"""
 
 # Start
 if __name__ == "__main__":

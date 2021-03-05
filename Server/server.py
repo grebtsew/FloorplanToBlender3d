@@ -50,7 +50,10 @@ class S(BaseHTTPRequestHandler):
         except Exception as e:
             message = "RECIEVED GET REQUEST WITH BAD QUERY: "+str(e)
         finally:
-            message = getattr(Get(client=self.make_client(),shared_variables=self.shared), function)(self, parsed_data, parsed_path)
+            if "__" in function:
+                message = "Function unavailable!"
+            else:
+                message = getattr(Get(client=self.make_client(),shared_variables=self.shared), function)(self, parsed_data, parsed_path)
         
         try:
             self._set_response()
@@ -70,15 +73,25 @@ class S(BaseHTTPRequestHandler):
 
                 try:
                     function = params['func']
-                    message, _ = getattr(Put(client=self.make_client(),shared_variables=self.shared), function)(self, params, file)
+                    if "__" in function:
+                        message = "Function unavailable!"
+                    else:            
+                        message, _ = getattr(Put(client=self.make_client(),shared_variables=self.shared), function)(self, params, file)
 
                 except ValueError as e:
                     message = "RECIEVED POST REQUEST WITH BAD JSON: "+str(e)
                     print(message)
+            
             else:
                 message = "NO FILE PROVIDED!"
+        elif ctype == 'html/text':
+            function = params['func']
+            if "__" in function:
+                message = "Function unavailable!"
+            else:                    
+                message = getattr(Put(client=self.make_client(),shared_variables=self.shared), function)(self, params)
         else:
-            message = "RECIEVED PUT REQUEST WITH BAD CTYPE: "+ctype
+            message = "RECIEVED PUT REQUEST WITH BAD CTYPE: "+str(ctype)
             print(message)
         self._set_response()
         self.wfile.write(bytes(message, encoding="utf-8"))
@@ -91,7 +104,11 @@ class S(BaseHTTPRequestHandler):
             try:
                 data = json.loads(post_data.decode('utf-8'))
                 function = data['func']
-                response = getattr(Post(client=self.make_client(),shared_variables=self.shared), function)(self, data)
+                
+                if "__" in function:
+                    response = "Function unavailable!"
+                else:
+                    response = getattr(Post(client=self.make_client(),shared_variables=self.shared), function)(self, data)
 
             except ValueError as e:
                 response = "RECIEVED POST REQUEST WITH BAD JSON: "+str(e)

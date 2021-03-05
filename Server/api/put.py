@@ -8,6 +8,12 @@ def create_file(ref, data, file):
 
 class Put(Api):
     
+    def __init__(self,  client,  shared_variables) :
+        super().__init__(client, shared_variables)
+        # All all viable functions here!
+        self.dispatched_calls["create"] = self.create
+        self.dispatched_calls["createandtransform"] = self.createandtransform
+    
     def create(self, api_ref, data, file, *args):
         # id and hash correct exist?
         status = True

@@ -35,3 +35,9 @@ class Process(threading.Thread):
         self.process[field] = value
         index = self.shared.all_processes.index(self.process)
         self.shared.all_processes[index] = self.process
+    
+    def onFinished(self):
+        """Called when a process finishes, here we want to place
+        the process into the finished processes storage and start another 
+        thread if any are pending"""
+        pass

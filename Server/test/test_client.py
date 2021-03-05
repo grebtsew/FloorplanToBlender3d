@@ -9,10 +9,10 @@ import time
 The purpose of this file is to test core functionallity of the server.
 We also test some common problems.
 """
-path_to_test_image="../Images/example.png"
+path_to_test_image="../../Images/example.png"
 path_to_result_folder="./test-result"
 
-show = False
+show = True
 
 url="http://127.0.0.1:8000"
 
@@ -182,9 +182,9 @@ if __name__ == "__main__":
     print("----- GET Object process ----- ")
     response = requests.get(url, params=json)
     print(response)
-    obj_path = path_to_result_folder+"/"+id+json["oformat"]
+    oobj_path = path_to_result_folder+"/"+id+json["oformat"]
 
-    file = open(obj_path, "wb")
+    file = open(oobj_path, "wb")
     file.write(response.content)
     file.close()
 
@@ -201,26 +201,67 @@ if __name__ == "__main__":
     print("File downloaded!") 
     print("DONE!")
     
-    #if show:
-    print("Showing 3d modell!")
-    # run a blender script that loads our object and start
-        
-    exit(0)
+    if show:
+        print("Showing 3d modell!")
+        # run a blender script that loads our object and start
+        from OBJFileLoader.objviewer import show_obj
+        print(oobj_path)
+        show_obj(oobj_path)
 
+    
     # send post to remove file & object!
     json = {'func': 'remove', 'id': id}
     print("----- Removing our id from server ----- ")
-    #response = requests.post(url, params=json)
-    #print(response)
-    #print(response.text)
+    response = requests.post(url, data=jsonlib.dumps(json))
+    print(response)
+    print(response.text)
     print("File id removed!") 
     print("DONE!")
     
+    # Remove second file aswell!
+    json = {'func': 'remove', 'id': id2}
+    response = requests.post(url, data=jsonlib.dumps(json))
+    
+
 
     # send get help for post, put and get!
     json = {'func': 'help'}
-    print("----- Sending help request to get,post,put ----- ")
-    #response = requests.get(url, params=json)
-    #response = requests.post(url, params=json)
-    #response = requests.put(url, params=json)
+    print("----- Sending help request to get ----- ")
+    response = requests.get(url, params=json)
+    print(response.text)
+    print("----- Sending help request to post ----- ")
+    response = requests.post(url, data=jsonlib.dumps(json))
+    print(response.text)
+    print("----- Sending help request to put ----- ")
+    headers = {'Content-Type': 'html/text'}
+    response = requests.put(url, headers=headers, data=b'not empty', params=json)
+    print(response.text)
+
+    # Remove all created files!
+    import shutil
+    shutil.rmtree("./test-result") 
+    
+
+
+    # Test call bad methods
+    json = {'func': 'this_function_does_not_exist'}
+    print("----- Sending bad function invoke none existing function ----- ")
+    response = requests.get(url, params=json)
+    print(response)
+    print(response.text)
+    print("Done")
+
+    # Test call bad methods
+    json = {'func': '__str__'}
+    print("----- Sending bad function invoke unavailable function ----- ")
+    response = requests.get(url, params=json)
+    print(response)
+    print(response.text)
+    print("Done")
+
+
+    print("")
+    print("ALL DONE, have a nice day!")
+    print("")
+    
     

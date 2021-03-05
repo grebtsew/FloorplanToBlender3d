@@ -19,6 +19,18 @@ def returnFile( path, api_ref):
 
 class Get(Api):
 
+    def __init__(self,  client ,  shared_variables ) :
+        super().__init__(client, shared_variables)
+        # All all viable functions here!
+        self.dispatched_calls["info"] = self.info
+        self.dispatched_calls["all"] = self.all
+        self.dispatched_calls["image"] = self.image
+        self.dispatched_calls["object"] = self.object
+        self.dispatched_calls["images"] = self.images
+        self.dispatched_calls["objects"] = self.objects
+        self.dispatched_calls["process"] = self.process
+        self.dispatched_calls["processes"] = self.processes
+
     def info(self, api_ref, parsed_data, parsed_path,*args):
         return '\n'.join([
             'CLIENT VALUES:',

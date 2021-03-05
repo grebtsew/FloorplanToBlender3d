@@ -4,7 +4,15 @@ from process.create import Create
 from config.file_handler import FileHandler
 
 class Post(Api):
-    
+
+    def __init__(self, client ,  shared_variables ):
+        super().__init__(client, shared_variables)
+        # All all viable functions here!
+        self.dispatched_calls["create"] = self.create
+        self.dispatched_calls["remove"] = self.remove
+        self.dispatched_calls["transform"] = self.transform
+        
+
     def create(self, *args):
         """Create new specific file name/id and hash"""
         tmp_id = None
@@ -20,12 +28,13 @@ class Post(Api):
     def remove(self, api_ref, data, *args):
         """Remove existing file id"""
         fs = FileHandler()
-        # Data
-        fs.remove("./storage/data/"+data["id"]+"0/")
-        # Image
-        fs.remove(self.shared.get_image_path(data["id"]))
-        # Objects
-        fs.remove("./storage/objects/"+data["id"]+"*") # TODO: fix this!
+        # This will remove all files related to id
+        for file in self.shared.all_files:
+            if data["id"] in file:
+                for f in self.shared.get_id_files(data["id"]):    
+                    fs.remove(f)
+
+        self.shared.reindex_files()
         return "Removed id!"
 
     def transform(self, api_ref, data, *args):

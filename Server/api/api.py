@@ -14,10 +14,16 @@ def client_index(client, client_list):
         i += 1
     return i
 
+def undefined(*args):
+        return "Function not defined!"
+
 class Api():
-    def __init__(self, client = None,  shared_variables = None):
+    def __init__(self, client,  shared_variables):
         self.shared = shared_variables
         self.client = client
+        self.dispatched_calls = {
+            "help":      self.help
+        }
 
         # Store all new connections!
         if not client_exist(client, self.shared.client_list):
@@ -34,7 +40,19 @@ class Api():
             self.client = self.shared.client_list[client_index(self.client,self.shared.client_list)]
 
     def help(self, *args):
-        return [func for func in dir(self) if callable(getattr(self, func))]
+        method_list = [func for func in dir(self) if callable(getattr(self, func)) and "__" not in func]
+        method_args_list = []
+        for method in method_list:
+            argc = getattr(self, method).__code__.co_argcount
+            argv = getattr(self, method).__code__.co_varnames[:argc]
+            tmp = (method,argc,argv)
+            method_args_list.append(tmp)
 
+        return str(method_args_list)
+
+    
     def __getattr__(self, attr):
-        return "Function undefined "+str(attr)
+        if attr in self.dispatched_calls:
+            return self.dispatched_calls[attr]
+        else:
+            return undefined

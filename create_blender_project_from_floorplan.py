@@ -43,6 +43,14 @@ if __name__ == "__main__":
     if var:
         blender_install_path = var
 
+    supported_blender_formats = ('.obj','.x3d', '.gltf','.mtl','.webm','.blend','.vrml','.usd','.udim','.stl','.svg','.dxf','.fbx','.3ds')
+    oformat = ".blend"
+    var = input("Please enter your prefered blender supported output format [default = .blend]: ")
+    if var:
+        if var in supported_blender_formats:
+            oformat = var
+
+
     print("")
     var = input("This program is about to run and create blender3d project, continue?  [default = " + "OK"+"]: ")
     if var:
@@ -88,6 +96,10 @@ if __name__ == "__main__":
      ] +  data_paths))
      '''
 
+    target_path = "./Target/floorplan.blend"
+    if not os.path.exists('./Target'):
+        os.makedirs('./Target')
+
     # Create blender project
     check_output([blender_install_path,
      "-noaudio", # this is a dockerfile ubuntu hax fix
@@ -95,9 +107,22 @@ if __name__ == "__main__":
      "--python",
      blender_script_path,
      program_path, # Send this as parameter to script
+     target_path
      ] +  data_paths)
 
-    print("Project created at: " + program_path + "/Target/floorplan.blender")
+    # Transform .blend project to another format!
+    if oformat != ".blend":
+        check_output([blender_install_path,
+            "-noaudio", # this is a dockerfile ubuntu hax fix
+            "--background", 
+            "--python", 
+            "./Blender/blender_export_any.py",
+            target_path,
+            oformat,
+            "./Target/floorplan"+oformat])
+        print("Object created at:"+program_path+"/Target/floorplan"+oformat)
+
+    print("Project created at: " + program_path + "/Target/floorplan.blend")
     print("")
     print("Done, Have a nice day!")
 
