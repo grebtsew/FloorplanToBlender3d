@@ -2,9 +2,6 @@ opencv-python==4.2.0.34
 numpy==1.16.2
 configparser==3.5.0
 future-fstrings==1.2.0
-
-requests
-urllib
-pyfiglet
-
-# TODO update these!
+requests==2.25.1
+pyfiglet==0.7
+setuptools==54.1.0

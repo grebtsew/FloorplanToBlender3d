@@ -1,22 +1,35 @@
-version: '3'
+version: '3.8'
 
 #
 #The purpose of this docker-compose file is to simplify the usage of docker on this environment.
 #Note that TARGET folder will contain result, and images can be shared with the container in Images folder!
-#Use this by running:
-#
-#docker-compose run FloorplanToBlender
-#
+
+
+
 
 services:
-  ftb:
+  #ftb:
+    #docker-compose run FloorplanToBlender
     #build: ./  # to speed things up you can pull docker image:  # and remove this row
-    container_name: floorplan-to-blender
+  #  container_name: floorplan-to-blender
+  #  image: grebtsew/floorplan-to-blender # grebtsew/floorplan-to-blender
+  #  stdin_open: true 
+  #  tty: true
+  #  volumes:
+  #      - ./Target:/home/floorplan_to_blender/Target
+  #      - ./Images:/home/floorplan_to_blender/Images
+  #      - ./Data:/home/floorplan_to_blender/Data
+  #      - ./Docs:/home/floorplan_to_blender/Docs
+  ftbserver:
+    build: ./  # to speed things up you can pull docker image:  # and remove this row
+    container_name: floorplan-to-blender-server
     image: grebtsew/floorplan-to-blender # grebtsew/floorplan-to-blender
-    stdin_open: true 
-    tty: true
+    ports:
+      - "80:80" # Flask gui
+      - "8000:8000" # Rest api
+      - "8001:8001" # Swagger gui
+      - "8888:8888" # jupyter guide
+    environment: 
+      - SERVER=true # this is neccessary to activate server mode!
     volumes:
-        - ./Target:/home/floorplan_to_blender/Target
-        - ./Images:/home/floorplan_to_blender/Images
-        - ./Data:/home/floorplan_to_blender/Data
-        - ./Docs:/home/floorplan_to_blender/Docs
+        - ./Server/storage:/home/floorplan_to_blender/Server/storage

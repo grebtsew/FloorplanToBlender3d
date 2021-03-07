@@ -96,7 +96,7 @@ if __name__ == "__main__":
      ] +  data_paths))
      '''
 
-    target_path = "./Target/floorplan.blend"
+    target_path = "/Target/floorplan.blend"
     if not os.path.exists('./Target'):
         os.makedirs('./Target')
 
@@ -119,7 +119,7 @@ if __name__ == "__main__":
             "./Blender/blender_export_any.py",
             target_path,
             oformat,
-            "./Target/floorplan"+oformat])
+            "/Target/floorplan"+oformat])
         print("Object created at:"+program_path+"/Target/floorplan"+oformat)
 
     print("Project created at: " + program_path + "/Target/floorplan.blend")
