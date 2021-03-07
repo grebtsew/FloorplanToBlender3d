@@ -73,4 +73,4 @@ RUN dos2unix ${PROGAM_PATH}/Docker/docker-entrypoint.sh
 RUN chmod +x ${PROGAM_PATH}/Docker/docker-entrypoint.sh 
 
 WORKDIR ${PROGAM_PATH}
-CMD ["/home/floorplan_to_blender/Docker/docker-entrypoint.sh", "$SERVER" ] # TODO fix this!
+ENTRYPOINT /home/floorplan_to_blender/Docker/docker-entrypoint.sh $SERVER

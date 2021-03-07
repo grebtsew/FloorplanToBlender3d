@@ -1,0 +1,38 @@
+version: '3.8'
+
+#
+# The purpose of this docker-compose file is to simplify startup of the ftb-server.
+# Do checkout localhost:8000 for gui, and localhost:8001 for rest api swagger page.
+#
+
+# docker-compose -f docker-compose.server.yml up
+
+services:
+  ftbserver:
+    build: ./  # to speed things up you can pull docker image:  # and remove this row
+    container_name: ftbserver
+    image: grebtsew/floorplan-to-blender # grebtsew/floorplan-to-blender
+    ports:
+      - 80:80 # Flask gui
+      - 8000:8000 # Rest api
+      - 8001:8001 # Swagger gui
+    environment: 
+      - SERVER=true # this is neccessary to activate server mode!
+    volumes:
+        - ./Server/storage:/home/floorplan_to_blender/Server/storage
+
+  scope: # For monitoring of server!
+    container_name: weavescope
+    image: weaveworks/scope:master-28700e3f 
+    privileged: true
+    pid: host
+    ports:
+      - '4040:4040'
+    labels:
+      - "works.weave.role=system"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:rw" # linux
+      - "/usr/local/bin/docker:/usr/bin/docker:rw"  # windows
+    command:
+      - "--probe.docker=true"
+      #- "--weave=false"

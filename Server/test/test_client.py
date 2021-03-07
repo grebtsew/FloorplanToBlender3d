@@ -14,7 +14,7 @@ path_to_result_folder="./test-result"
 
 show = True
 
-url="http://127.0.0.1:8000"
+url="http://localhost:8000"
 
 if __name__ == "__main__":
     # Create folder to play around with

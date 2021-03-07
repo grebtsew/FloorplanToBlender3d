@@ -4,11 +4,12 @@ echo "--- Starting Script ---"
 echo "Incoming parameters "
 echo $1
 
-if ["$1" -eq "true"]; then
-    echo "Starting server and jupyter"
-    jupyter notebook /home/floorplan_to_blender/ --port=8888 --ip=0.0.0.0 --allow-root --no-browser --NotebookApp.token='' &
+if  [ "$1" = true ]; then
+    echo "Moving To server folder"
     cd /home/floorplan_to_blender/Server
+    echo "Starting server"
     python3 ./main.py
+    
 else
     echo "Starting ftb script"
     python3 /home/floorplan_to_blender/create_blender_project_from_floorplan.py
