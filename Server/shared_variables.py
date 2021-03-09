@@ -1,4 +1,4 @@
-from config.file_handler import ConfigHandler
+from config.config_handler import ConfigHandler
 
 from random import randint
 

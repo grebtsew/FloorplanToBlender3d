@@ -3,7 +3,7 @@ FROM ubuntu:18.04
 # Welcome to this DockerFile for the Floorplan To Blender3d project
 # All steps of the installation are described below
 
-LABEL MAINTAINER=grebtsew UPDATED=07-03-2021
+LABEL MAINTAINER=grebtsew UPDATED=2021-03-08
 
 # Create program install folder
 ENV PROGAM_PATH /home/floorplan_to_blender
@@ -62,15 +62,19 @@ VOLUME ${PROGAM_PATH}/Server/storage
 # Set default blender path in config file (doing this twice is a little hax!)
 RUN sed -i 's#blender_installation_path=.*#blender_installation_path='"${BLENDER_PATH}"'#g' ${PROGAM_PATH}/config.ini
 RUN sed -i 's#blender_installation_path=.*#blender_installation_path='"${BLENDER_PATH}"'#g' ${PROGAM_PATH}/config.ini
+RUN sed -i 's#blender_installation_path=.*#blender_installation_path='"${BLENDER_PATH}"'#g' ${PROGAM_PATH}/Server/config.ini
+RUN sed -i 's#blender_installation_path=.*#blender_installation_path='"${BLENDER_PATH}"'#g' ${PROGAM_PATH}/Server/config.ini
 
 # Server ports
-EXPOSE 80 3000 3001
+EXPOSE 80 8000 8001
 
-# Variable used to choose if we are to use server or script on execution
-ENV SERVER=false
+# Variable used to choose if we are to use server, script or jupyter on execution
+# Default script
+# "script" | "server" | "jupyter"
+ENV MODE="script" 
 
 RUN dos2unix ${PROGAM_PATH}/Docker/docker-entrypoint.sh 
 RUN chmod +x ${PROGAM_PATH}/Docker/docker-entrypoint.sh 
 
 WORKDIR ${PROGAM_PATH}
-ENTRYPOINT /home/floorplan_to_blender/Docker/docker-entrypoint.sh $SERVER
+ENTRYPOINT ${PROGAM_PATH}/Docker/docker-entrypoint.sh $MODE

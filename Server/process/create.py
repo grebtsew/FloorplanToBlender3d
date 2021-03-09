@@ -1,11 +1,12 @@
 """
 The process class represents a thread handling stuff in new threads
 """
-from config.file_handler import FileHandler
+from file.file_handler import FileHandler
 from process.process import Process
 from subprocess import check_output
 import os
 import sys
+
 sys.path.insert(0,'..')
 from FloorplanToBlenderLib import * # floorplan to blender lib
 
@@ -33,10 +34,15 @@ class Create(Process):
             self.update("status", "ERROR: image with id not found.")
             return
 
+        # TODO evaluate if wanted
+        # TODO removenoice
+        # TODO resize if wanted
+
         _, blender_install_path, _, _ = IO.config_get_default()
 
         # Set other paths (don't need to change these)
         program_path = os.getcwd() 
+        
         blender_script_path = "../Blender/floorplan_to_3dObject_in_blender.py"
 
         #print(program_path, blender_script_path)
@@ -82,8 +88,8 @@ class Create(Process):
         "-noaudio", # this is a dockerfile ubuntu hax fix
         "--background",
         "--python",
-        blender_script_path,
-        program_path, # Send this as parameter to script
+        blender_script_path, # Send this as parameter to script
+        program_path+"/", 
         target_path,
         ] +  data_paths)
         

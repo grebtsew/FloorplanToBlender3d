@@ -12,12 +12,14 @@ services:
     build: ./  # to speed things up you can pull docker image:  # and remove this row
     container_name: ftbserver
     image: grebtsew/floorplan-to-blender # grebtsew/floorplan-to-blender
+    stdin_open: true 
+    tty: true
     ports:
       - 80:80 # Flask gui
       - 8000:8000 # Rest api
       - 8001:8001 # Swagger gui
     environment: 
-      - SERVER=true # this is neccessary to activate server mode!
+      - MODE="server" # this is neccessary to activate server mode!
     volumes:
         - ./Server/storage:/home/floorplan_to_blender/Server/storage
 

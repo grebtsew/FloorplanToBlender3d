@@ -1,7 +1,7 @@
 from shared_variables import shared_variables
 from api.api import Api
 from process.create import Create
-from config.file_handler import FileHandler
+from file.file_handler import FileHandler
 
 class Post(Api):
 
@@ -50,4 +50,15 @@ class Post(Api):
             message = "File doesn't exist!"
             self.shared.bad_client_event(self.client)
         return message
+
+        # TODO: these are stuff todo!
+        def evaluate(self, api_ref, data, *args):
+            pass
+        def filter(self, api_ref, data, *args):
+            pass
+        def reformat(self, api_ref, data, *args):
+            pass
+        def resize(self, api_ref, data, *args):
+            pass
+        
 
