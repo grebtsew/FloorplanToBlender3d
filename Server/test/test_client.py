@@ -12,7 +12,7 @@ We also test some common problems.
 path_to_test_image="../../Images/example.png"
 path_to_result_folder="./test-result"
 
-show = True
+show = False
 
 url="http://localhost:8000"
 
@@ -139,6 +139,7 @@ if __name__ == "__main__":
     
     try:
         pair = list(eval(response.text))
+        print("created new id, hash = " +str(pair))
     except Exception as e:
         print("ERROR: " + str(e), " \n With response:" ,response.text)
         exit()
@@ -146,7 +147,7 @@ if __name__ == "__main__":
     hash2= pair[1]
 
     # send PUT and create object
-    print("----- PUT "+str(id2)+" process ----- ")
+    print("----- PUT "+str(id2)+" project ----- ")
     with open(path_to_test_image, 'rb') as infile:
         json = {'func': 'createandtransform', 'id':id2, 'hash':hash2, 'iformat':'.jpg', 'oformat':'.obj'}
         headers = {'Content-Type': 'multipart/form-data'}
@@ -241,8 +242,6 @@ if __name__ == "__main__":
     import shutil
     shutil.rmtree("./test-result") 
     
-
-
     # Test call bad methods
     json = {'func': 'this_function_does_not_exist'}
     print("----- Sending bad function invoke none existing function ----- ")

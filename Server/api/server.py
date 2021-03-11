@@ -17,7 +17,10 @@ class S(BaseHTTPRequestHandler):
         super().__init__(*args, **kwargs)
 
     def make_client(self):
-        return(self.client_address,self.address_string(), 0)
+        client = dict()
+        client["address"]=self.address_string()
+        client["port"]=str(self.client_address[1])    
+        return client
 
     def transform_dict(self, d):
         """Solve issue with all items are lists from query parser!"""
@@ -26,6 +29,39 @@ class S(BaseHTTPRequestHandler):
             res[key] = item[0]
         return res
 
+    def query_parser(self, params, rmi):
+        """Takes query dict, creates kwargs for methods"""
+        function = params['func']
+        out_rmi = rmi(client=self.make_client(),shared_variables=self.shared)
+        try:
+            argc = getattr(out_rmi, function).__code__.co_argcount
+            args = getattr(out_rmi, function).__code__.co_varnames[:argc]
+        except Exception: # Happens if we try to access bad functions!
+            return None, None
+
+        # Secure bad requests!
+        if "__" in function or (argc == 0 and len(args) == 0):
+            return None, None
+        
+        # Generate set of correct variables!
+        kwargs = dict()
+
+        # If we want to use api_reference variables, these are ignored by swagger
+        if "_api_ref" in args:
+            kwargs["_api_ref"] = self
+
+        if "_data" in args:
+            kwargs["_data"] = params
+
+        if "func" in params:
+            kwargs["func"] = params["func"]
+
+        # Add relevant data!
+        for parameter in params:
+            if parameter in args:
+                kwargs[parameter]=params[parameter]
+        return out_rmi, kwargs
+    
     def _set_response(self):
         self.send_response(200, "OK")
         self.send_header('Access-Control-Allow-Origin', '*')
@@ -44,17 +80,18 @@ class S(BaseHTTPRequestHandler):
 
     def do_GET(self):
         parsed_path = urlparse(self.path)
+        kwargs = None
         try:
             parsed_data=self.transform_dict(parse_qs(parsed_path.query))
-            function = parsed_data['func']
+            rmi, kwargs = self.query_parser(parsed_data, Get)
         except Exception as e:
             message = "RECIEVED GET REQUEST WITH BAD QUERY: "+str(e)
+            print(message)
         finally:
-            if "__" in function:
+            if kwargs is None or rmi is None:
                 message = "Function unavailable!"
             else:
-                message = getattr(Get(client=self.make_client(),shared_variables=self.shared), function)(self, parsed_data, parsed_path)
-        
+                message = getattr(rmi, kwargs['func'])(**kwargs)
         try:
             self._set_response()
             self.wfile.write(bytes(message, encoding="utf-8"))
@@ -63,53 +100,52 @@ class S(BaseHTTPRequestHandler):
 
     def do_PUT(self):
         parsed_path = urlparse(self.path)
-        params = self.transform_dict(parse_qs(parsed_path.query))
+        parsed_data = self.transform_dict(parse_qs(parsed_path.query))
+        kwargs = None
         ctype = self.headers['Content-Type']
-
         if ctype == 'multipart/form-data':
             content_length = int(self.headers['Content-Length'])
             file = self.rfile.read(content_length)
             if file != None:
-
                 try:
-                    function = params['func']
-                    if "__" in function:
+                    rmi, kwargs = self.query_parser(parsed_data, Put)
+                    if kwargs is None or rmi is None:
                         message = "Function unavailable!"
-                    else:            
-                        message, _ = getattr(Put(client=self.make_client(),shared_variables=self.shared), function)(self, params, file)
-
+                    else:
+                        kwargs["file"] = file
+                        (message, _) = getattr(rmi, kwargs["func"])(**kwargs)
                 except ValueError as e:
-                    message = "RECIEVED POST REQUEST WITH BAD JSON: "+str(e)
-                    print(message)
-            
+                    message = "RECIEVED Put REQUEST WITH BAD DATA: "+str(e)
+                except KeyError as e:
+                    message = "KeyError : " +str(e)
+                except Exception as e:
+                    message = "Unknown error : " +str(e)
             else:
                 message = "NO FILE PROVIDED!"
         elif ctype == 'html/text':
-            function = params['func']
-            if "__" in function:
+            rmi, kwargs = self.query_parser(parsed_data, Put)
+            if kwargs is None or rmi is None:
                 message = "Function unavailable!"
-            else:                    
-                message = getattr(Put(client=self.make_client(),shared_variables=self.shared), function)(self, params)
+            else:
+                message = getattr(rmi, kwargs["func"])(**kwargs)
         else:
             message = "RECIEVED PUT REQUEST WITH BAD CTYPE: "+str(ctype)
-            print(message)
         self._set_response()
         self.wfile.write(bytes(message, encoding="utf-8"))
 
     def do_POST(self):
+
         if self.headers['Content-Length']:
             content_length = int(self.headers['Content-Length'])
             post_data = self.rfile.read(content_length)
-            
+            kwargs = None
             try:
                 data = json.loads(post_data.decode('utf-8'))
-                function = data['func']
-                
-                if "__" in function:
+                rmi, kwargs = self.query_parser(data, Post)
+                if kwargs is None or rmi is None:
                     response = "Function unavailable!"
                 else:
-                    response = getattr(Post(client=self.make_client(),shared_variables=self.shared), function)(self, data)
-
+                    response = getattr(rmi, kwargs["func"])(**kwargs)
             except ValueError as e:
                 response = "RECIEVED POST REQUEST WITH BAD JSON: "+str(e)
                 print(response)

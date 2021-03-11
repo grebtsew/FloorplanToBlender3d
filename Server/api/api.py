@@ -1,13 +1,13 @@
 def client_exist(client, client_list):
     for c in client_list:
-        if c["address"] == client[0] and c["port"] == client[1]:
+        if c["address"] == client["address"] and c["port"] == client["port"]:
             return True
     return False
 
 def client_index(client, client_list):
     i = 0
     for c in client_list:
-        if c["address"] == client[0] and c["port"] == client[1]:
+        if c["address"] == client["address"] and c["port"] == client["port"]:
             return i
         i += 1
     return i
@@ -24,12 +24,9 @@ class Api():
         }
 
         # Store all new connections!
-        if not client_exist(client, self.shared.client_list):
-            c = dict()
-            c["address"]=client[0]
-            c["port"]=client[1]
-            c["errors"]=client[2]
-            self.shared.client_list.append(c)
+        if not client_exist(self.client, self.shared.client_list):
+            client["Errors"] =0
+            self.shared.client_list.append(client)
 
             # TODO store and reset if list of all connections is too large!
             if len(self.shared.client_list) > 99999:
@@ -37,16 +34,43 @@ class Api():
         else:
             self.client = self.shared.client_list[client_index(self.client,self.shared.client_list)]
 
-    def help(self, *args):
+    def help(self, *args, **kwargs) -> str:
+        """This is a crusial function that returns data for generating swagger.json"""
         method_list = [func for func in dir(self) if callable(getattr(self, func)) and "__" not in func]
         method_args_list = []
+
         for method in method_list:
-            # TODO, remove self and api_ref
-            # TODO, add function comments as new field!
+            res = dict()
+
             argc = getattr(self, method).__code__.co_argcount
             argv = getattr(self, method).__code__.co_varnames[:argc]
-            tmp = (method,argc,argv)
-            method_args_list.append(tmp)
+            filter_argv = [func for func in argv if not func.startswith("_") and func != "self"]
+            argc = len(filter_argv)
+
+            res["method"] = method
+            res["type"] = type(self).__name__
+            
+            query= []
+            data = []
+            if res["type"] == "Get":
+                query = filter_argv
+            elif res["type"] == "Post":
+                data = filter_argv
+            elif res["type"] == "Put":
+                if "file" in filter_argv:
+                    data.append("file")
+                    query = filter_argv.copy()
+                    query.remove("file")
+                else:
+                    query = filter_argv
+
+            res["query"] = query # create query
+            res["data"] = data # create json
+            res["annotations"] = getattr(self, method).__annotations__
+            res["argc"] = argc
+            res["argv"] = filter_argv 
+            res["docs"] = getattr(self, method).__doc__ 
+            method_args_list.append(res)
         return str(method_args_list)
 
     def __getattr__(self, attr):

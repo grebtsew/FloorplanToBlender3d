@@ -3,18 +3,18 @@ import json
 import shutil
 import os
 
-def sendFileHeaders(api_ref, file):
-    api_ref.send_response(200)
-    api_ref.send_header("Content-type", 'multipart/form-data')
+def sendFileHeaders(_api_ref, file):
+    _api_ref.send_response(200)
+    _api_ref.send_header("Content-type", 'multipart/form-_data')
     fs = os.fstat(file.fileno())
-    api_ref.send_header("Content-Length", str(fs[6]))
-    api_ref.send_header("Last-Modified", api_ref.date_time_string(fs.st_mtime))
-    api_ref.end_headers()
+    _api_ref.send_header("Content-Length", str(fs[6]))
+    _api_ref.send_header("Last-Modified", _api_ref.date_time_string(fs.st_mtime))
+    _api_ref.end_headers()
 
-def returnFile( path, api_ref):
+def returnFile( path, _api_ref):
     with open(path, "rb") as file:
-        sendFileHeaders(api_ref, file)
-        shutil.copyfileobj(file, api_ref.wfile)
+        sendFileHeaders(_api_ref, file)
+        shutil.copyfileobj(file, _api_ref.wfile)
     return "File sent!"
 
 class Get(Api):
@@ -31,57 +31,59 @@ class Get(Api):
         self.dispatched_calls["process"] = self.process
         self.dispatched_calls["processes"] = self.processes
 
-    def info(self, api_ref, parsed_data, parsed_path,*args):
+    def info(self, _api_ref, _data,*args, **kwargs) -> str:
         return '\n'.join([
             'CLIENT VALUES:',
-            'client_address=%s (%s)' % (api_ref.client_address,
-                api_ref.address_string()),
-            'command=%s' % api_ref.command,
-            'path=%s' % api_ref.path,
-            'real path=%s' % parsed_path.path,
-            'query=%s' % parsed_path.query,
-            'request_version=%s' % api_ref.request_version,
+            'client_address=%s (%s)' % (_api_ref.client_address,
+                _api_ref.address_string()),
+            'command=%s' % _api_ref.command,
+            'path=%s' % _api_ref.path,
+            '_data=%s' % _data,
+            'request_version=%s' % _api_ref.request_version,
             '',
             'SERVER VALUES:',
-            'server_version=%s' % api_ref.server_version,
-            'sys_version=%s' % api_ref.sys_version,
-            'protocol_version=%s' % api_ref.protocol_version,
+            'server_version=%s' % _api_ref.server_version,
+            'sys_version=%s' % _api_ref.sys_version,
+            'protocol_version=%s' % _api_ref.protocol_version,
             '',
             'supported_image_formats=%s' % str(self.shared.supported_image_formats),
             'supported_blender_formats=%s' % str(self.shared.supported_blender_formats)
             ])
 
-    def process(self, api_ref, data, *args):
-        p = self.shared.get_process(data['pid'])
+    def process(self, pid:str, *args, **kwargs) -> str:
+        """Get a specific process"""
+        p = self.shared.get_process(pid)
         if p is None:
             return "Process does not exist!"
         else:
             return json.dumps(p)
 
-    def all(self, *args):
+    def all(self, *args, **kwargs) -> str:
         """Return all files currently managed by server"""
         return json.dumps(self.shared.all_files)
 
-    def images(self, *args):
+    def images(self, *args, **kwargs) -> str:
+        """Get all images on server"""
         return json.dumps(self.shared.images)
 
-    def objects(self, *args):
+    def objects(self, *args, **kwargs) -> str:
+        """Get all objects on server"""
         return json.dumps(self.shared.objects)
 
-    def processes(self, *args):
+    def processes(self, *args, **kwargs) -> str:
+        """Get all processes"""
         return json.dumps(self.shared.all_processes)
     
-    def image(self, api_ref, data, *args):
-        """Return imagefile of id specified in data"""
+    def image(self, _api_ref, id:str, *args, **kwargs) -> str:
+        """Return imagefile of id specified in _data"""
         # check that file exist
-        return returnFile(self.shared.get_image_path(data["id"]), api_ref)
+        return returnFile(self.shared.get_image_path(id), _api_ref)
         
-    def object(self, api_ref, data, *args):
-        """Return objectfile of id specified in data"""
+    def object(self, _api_ref, id:str, oformat:str, *args, **kwargs) -> str:
+        """Return objectfile of id specified in _data"""
         # check if file exist
-        obj = self.shared.get_object_path(data["id"], data["oformat"])
+        obj = self.shared.get_object_path(id, oformat)
         if obj is None:
             return "No such object exists!"
         else:
-            return returnFile(obj, api_ref)
-
+            return returnFile(obj, _api_ref)

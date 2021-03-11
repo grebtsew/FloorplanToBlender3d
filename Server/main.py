@@ -6,7 +6,7 @@ from shared_variables import shared_variables
 #from flask_handler import start_flask_application
 
 #import webbrowser
-from server import Server
+from api.server import Server
 
 if __name__ == "__main__":
     shared = shared_variables()

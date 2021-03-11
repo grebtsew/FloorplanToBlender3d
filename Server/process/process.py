@@ -4,12 +4,11 @@ The process class represents a thread handling stuff in new threads
 import threading
 
 class Process(threading.Thread):
-    def __init__(self, data,  shared_variables = None):
+    def __init__(self, shared_variables = None):
         threading.Thread.__init__(self)
         
         self.shared = shared_variables
-        self.data = data
-
+        
         _pid = None
         while self.shared.pid_exist(_pid) or _pid is None: 
             _pid = self.shared.pid_generator()
