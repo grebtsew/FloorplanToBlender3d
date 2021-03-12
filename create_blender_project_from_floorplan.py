@@ -117,9 +117,9 @@ if __name__ == "__main__":
             "--background", 
             "--python", 
             "./Blender/blender_export_any.py",
-            target_path,
+            "."+target_path,
             oformat,
-            "/Target/floorplan"+oformat])
+            "./Target/floorplan"+oformat])
         print("Object created at:"+program_path+"/Target/floorplan"+oformat)
 
     print("Project created at: " + program_path + "/Target/floorplan.blend")
