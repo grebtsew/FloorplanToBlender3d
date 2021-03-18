@@ -32,23 +32,18 @@ class Get(Api):
         self.dispatched_calls["processes"] = self.processes
 
     def info(self, _api_ref, _data,*args, **kwargs) -> str:
-        return '\n'.join([
-            'CLIENT VALUES:',
-            'client_address=%s (%s)' % (_api_ref.client_address,
-                _api_ref.address_string()),
-            'command=%s' % _api_ref.command,
-            'path=%s' % _api_ref.path,
-            '_data=%s' % _data,
-            'request_version=%s' % _api_ref.request_version,
-            '',
-            'SERVER VALUES:',
-            'server_version=%s' % _api_ref.server_version,
-            'sys_version=%s' % _api_ref.sys_version,
-            'protocol_version=%s' % _api_ref.protocol_version,
-            '',
-            'supported_image_formats=%s' % str(self.shared.supported_image_formats),
-            'supported_blender_formats=%s' % str(self.shared.supported_blender_formats)
-            ])
+        res = dict()
+        res["client_address"] = _api_ref.client_address
+        res["command"] = _api_ref.command
+        res["path"] = _api_ref.path
+        res["_data"] = _data
+        res["request_version"] = _api_ref.request_version
+        res["server_version"] = _api_ref.server_version
+        res["sys_version"] = _api_ref.sys_version
+        res["protocol_version"] = _api_ref.protocol_version
+        res["supported_image_formats"] =  self.shared.supported_image_formats
+        res["supported_blender_formats"] = self.shared.supported_blender_formats
+        return json.dumps(res)
 
     def process(self, pid:str, *args, **kwargs) -> str:
         """Get a specific process"""

@@ -1,3 +1,5 @@
+import json
+
 def client_exist(client, client_list):
     for c in client_list:
         if c["address"] == client["address"] and c["port"] == client["port"]:
@@ -14,6 +16,17 @@ def client_index(client, client_list):
 
 def undefined(*args):
         return "Function not defined!"
+
+def stringifydictvalues(d):
+    """Recursive function that stringifies all values in dicts!"""
+    for k, v in d.items():
+        if isinstance(v, dict):
+            stringifydictvalues(v)
+        else:
+            v = str(v)
+            d.update({k: v})
+    return d
+
 
 class Api():
     def __init__(self, client,  shared_variables):
@@ -66,12 +79,12 @@ class Api():
 
             res["query"] = query # create query
             res["data"] = data # create json
-            res["annotations"] = getattr(self, method).__annotations__
+            res["annotations"] = stringifydictvalues(getattr(self, method).__annotations__)
             res["argc"] = argc
             res["argv"] = filter_argv 
             res["docs"] = getattr(self, method).__doc__ 
             method_args_list.append(res)
-        return str(method_args_list)
+        return json.dumps(method_args_list)
 
     def __getattr__(self, attr):
         if attr in self.dispatched_calls:
