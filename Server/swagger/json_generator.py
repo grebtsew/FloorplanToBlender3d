@@ -51,13 +51,27 @@ def get_api_info(url):
 
 # TODO: implement functions below!
 def collect_template():
-    return None
+    f = open('./swagger-json/swagger-template.json', "rb") 
+    data = jsonlib.load(f) 
+    f.close()
 
-def generate_json(info, get, post, put):
-    return None
+    return data
 
-def merge_files(json_template, json_new):
-    return None
+def generate_json(template,info, get, post, put):
+    json = template
+    # Create info dict and add it to our json object
+    json["tags"] = [{"name":"FloorplanToBlender","description":"RMI functions for handling Floorplan To Blender Rest Api Server.","externalDocs":{"description":"Find out more","url":"https://github.com/grebtsew/FloorplanToBlender3d"}}],
+    
+    # Create scheme dict and add it to json
+
+    # Create json definitions with appropriate links
+
+    return json
+
+def save_to_file(json_template):
+    # Here we write to the .json file
+    with open('./swagger-json/swagger.json', 'w') as f:
+        jsonlib.dump(json_template, f)
 
 def generate_swagger_json():
     
@@ -75,11 +89,9 @@ def generate_swagger_json():
     # Get Templates, read from file!
     json_template = collect_template()
     # Create output for received objects!
-    json_new = generate_json(info, get, post, put)
+    json_new = generate_json(json_template, info, get, post, put)
     # Create final file
-    path = merge_files(json_template, json_new)
-    # Move final file
-    move_and_replace_old_file(path)
+    save_to_file(json_new)
     # return success or fail
     return True
 
