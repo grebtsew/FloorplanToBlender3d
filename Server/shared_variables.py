@@ -141,6 +141,12 @@ class shared_variables():
         self.restapiHost = conf.get("RestApi", "HOST")
         self.restapiPort = conf.get("RestApi", "PORT")
 
+        self.swaggerHost = conf.get("Swagger", "HOST")
+        self.swaggerPort = conf.get("Swagger", "PORT")
+
+
         self.parentPath = conf.get("Storage","PARENT")
         self.imagesPath = conf.get("Storage","IMAGES")
         self.objectsPath = conf.get("Storage","OBJECTS")
+
+

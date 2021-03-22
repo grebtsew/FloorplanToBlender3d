@@ -15,7 +15,7 @@ class Post(Api):
 
     def create(self, *args, **kwargs) -> str:
         """
-        Create new specific file name/id and hash
+        Create new specific file name/id and hash, return JSON.
         """
         tmp_id = None
 
@@ -28,7 +28,7 @@ class Post(Api):
         return str(pair)
 
     def remove(self, id:str, *args, **kwargs) -> str:
-        """Remove existing file id"""
+        """Remove all files linked to specified id."""
         fs = FileHandler()
         # This will remove all files related to id
         for file in self.shared.all_files:
@@ -40,7 +40,7 @@ class Post(Api):
         return "Removed id!"
 
     def transform(self, func:str, id:str,  oformat:str, *args, **kwargs) -> str:
-        """Transform Image to Object"""
+        """Transform Image to 3dObject."""
         _id = self.shared.get_id(id)
         if _id is not None and _id[2]:
             if(oformat in self.shared.supported_blender_formats):

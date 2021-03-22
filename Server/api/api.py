@@ -48,7 +48,7 @@ class Api():
             self.client = self.shared.client_list[client_index(self.client,self.shared.client_list)]
 
     def help(self, *args, **kwargs) -> str:
-        """This is a crusial function that returns data for generating swagger.json"""
+        """This is a crucial function that returns data for generating swagger.json"""
         method_list = [func for func in dir(self) if callable(getattr(self, func)) and "__" not in func]
         method_args_list = []
 

@@ -49,7 +49,7 @@ def get_api_info(url):
     return info.json(), get.json(), post.json(), put.json()
 
 def collect_template():
-    f = open('./swagger-json/swagger-template.json', "rb") 
+    f = open('./swagger/swagger-json/swagger-template.json', "rb") 
     data = jsonlib.load(f) 
     f.close()
     return data
@@ -62,13 +62,21 @@ def merge_path_dict(dict1, dict2):
             dict1[key] = value
     return dict1
 
+def get_type_format(class_name):
+    
+    if class_name == "<class 'str'>":
+        return "string", None
+    if class_name == "<class 'int>":
+        return "integer", "int64"
+    return None, None
+
 def rest_api_to_swagger(type_list):
     res_paths = dict()
     res_defs = dict()
     for method in type_list:
         path = "/?func="+method["method"]
         for query in method["query"]:
-            path += "?"+query+"="+"<"+query+">"
+            path += "?"+query+"="+"{"+query+"}"
         
         parameter_list = []
         definition_dict = dict()
@@ -77,21 +85,29 @@ def rest_api_to_swagger(type_list):
             if key == "return":
                 return_type = value
                 continue
-            definition_dict[key] = {
-                "type":value,
-                "format":value
-            }
+            type, format = get_type_format(value)
+
+            tmp = dict()
+            if type is not None:
+                tmp =  {
+                "type":type,
+                }
+            if format is not None:
+                tmp =  {
+                "type":type,
+                "format":format
+                }
+            definition_dict[key] = tmp
             parameter_list.append({
                 "name":key,
                 "in":key,
                 "description":"Returns "+return_type,
                 "required":True,
-                "type":value,
-                "format":value
+                "type":type,
+                "format":format
             })
 
         # TODO: add consume, produce
-        # TODO: translate used classes
         # TODO: make all functions work in swagger
         # TODO: update comments in code!
         # TODO: add to default startup
@@ -104,8 +120,8 @@ def rest_api_to_swagger(type_list):
                 "The following are Query parameters: "+str(method["query"])+"\n"+
                 "The following are Data/Json parameters: "+str(list(set(method["argv"]) - set(method["query"]))),
                 "operationId":method["type"]+method["method"],
-                #"consumes":[""],
-                #"produces":[""],
+                "consumes":["application/json"],
+                "produces":["application/json"],
                 "parameters":parameter_list,
                 "responses":{"200":{"description":"successful operation","schema":{"$ref":"#/definitions/"+method["type"]+method["method"]}}},
                 #"security":[]
@@ -117,21 +133,25 @@ def rest_api_to_swagger(type_list):
                 "The following are Query parameters: "+str(method["query"])+"\n"+
                 "The following are Data/Json parameters: "+str(list(set(method["argv"]) - set(method["query"]))),
                 "operationId":method["type"]+method["method"],
-                #"consumes":[""],
-                #"produces":[""],
+                "consumes":["application/json"],
+                "produces":["application/json"],
                 "responses":{"200":{"description":"successful operation","schema":{"$ref":"#/definitions/"+method["type"]+method["method"]}}},
                 #"security":[]
                 }
         res_paths[path] = tmp_dict
         
+        _type = None
+        if method["argc"] <= 0:
+            _type, _format = get_type_format(return_type)
+
         if len(definition_dict) > 0:
             res_defs[method["type"]+method["method"]] ={
-                "type":return_type,
+                "type":_type,
                 "properties":definition_dict
             }
         else:
             res_defs[method["type"]+method["method"]] ={
-                "type":return_type
+                "type":_type
             }
 
     return res_paths, res_defs
@@ -172,7 +192,7 @@ def generate_json(template,info, get, post, put):
 
 def save_to_file(json_template):
     # Here we write to the .json file
-    with open('./swagger-json/swagger.json', 'w') as f:
+    with open('./swagger/swagger-json/swagger.json', 'w') as f:
         jsonlib.dump(json_template, f)
 
 def generate_swagger_json():
@@ -194,7 +214,7 @@ def generate_swagger_json():
     json_new = generate_json(json_template, info, get, post, put)
     # Create final file
     save_to_file(json_new)
+    print("Managed to create new swagger.json file!")
     # return success or fail
     return True
 
-generate_swagger_json()

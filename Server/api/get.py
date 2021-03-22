@@ -32,6 +32,7 @@ class Get(Api):
         self.dispatched_calls["processes"] = self.processes
 
     def info(self, _api_ref, _data,*args, **kwargs) -> str:
+        """Returns information about server implementation as JSON."""
         res = dict()
         res["client_address"] = _api_ref.client_address
         res["command"] = _api_ref.command
@@ -46,7 +47,7 @@ class Get(Api):
         return json.dumps(res)
 
     def process(self, pid:str, *args, **kwargs) -> str:
-        """Get a specific process"""
+        """Get a specific process as JSON."""
         p = self.shared.get_process(pid)
         if p is None:
             return "Process does not exist!"
@@ -54,28 +55,28 @@ class Get(Api):
             return json.dumps(p)
 
     def all(self, *args, **kwargs) -> str:
-        """Return all files currently managed by server"""
+        """Return all files currently managed by server as JSON."""
         return json.dumps(self.shared.all_files)
 
     def images(self, *args, **kwargs) -> str:
-        """Get all images on server"""
+        """Get all images on server as JSON."""
         return json.dumps(self.shared.images)
 
     def objects(self, *args, **kwargs) -> str:
-        """Get all objects on server"""
+        """Get all objects on server as JSON."""
         return json.dumps(self.shared.objects)
 
     def processes(self, *args, **kwargs) -> str:
-        """Get all processes"""
+        """Get all processes as JSON."""
         return json.dumps(self.shared.all_processes)
     
     def image(self, _api_ref, id:str, *args, **kwargs) -> str:
-        """Return imagefile of id specified in _data"""
+        """Return imagefile of id specified in JSON."""
         # check that file exist
         return returnFile(self.shared.get_image_path(id), _api_ref)
         
     def object(self, _api_ref, id:str, oformat:str, *args, **kwargs) -> str:
-        """Return objectfile of id specified in _data"""
+        """Return objectfile of id specified in JSON."""
         # check if file exist
         obj = self.shared.get_object_path(id, oformat)
         if obj is None:

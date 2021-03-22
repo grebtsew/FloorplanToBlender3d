@@ -122,7 +122,7 @@ class S(BaseHTTPRequestHandler):
                     message = "Unknown error : " +str(e)
             else:
                 message = "NO FILE PROVIDED!"
-        elif ctype == 'html/text':
+        elif ctype == 'html/text' or ctype =='json/application':
             rmi, kwargs = self.query_parser(parsed_data, Put)
             if kwargs is None or rmi is None:
                 message = "Function unavailable!"
@@ -138,9 +138,15 @@ class S(BaseHTTPRequestHandler):
         if self.headers['Content-Length']:
             content_length = int(self.headers['Content-Length'])
             post_data = self.rfile.read(content_length)
+            
             kwargs = None
             try:
-                data = json.loads(post_data.decode('utf-8'))
+                if post_data == bytearray(): 
+                    parsed_data = urlparse(self.path)
+                    data=self.transform_dict(parse_qs(parsed_data.query))
+                else:
+                    data = json.loads(post_data.decode('utf-8'))
+                    
                 rmi, kwargs = self.query_parser(data, Post)
                 if kwargs is None or rmi is None:
                     response = "Function unavailable!"
