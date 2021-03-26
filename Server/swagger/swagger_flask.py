@@ -33,6 +33,10 @@ class Swagger():
         browser.start()
 
     
+class CORSRequestHandler (SimpleHTTPRequestHandler):
+    def end_headers (self):
+        self.send_header('Access-Control-Allow-Origin', '*')
+        SimpleHTTPRequestHandler.end_headers(self)
 
 class OpenApiBrowser(object):
     """
@@ -51,7 +55,7 @@ class OpenApiBrowser(object):
         """
         os.chdir(root_path)
         server_address = (self.HOST, int(self.PORT))
-        handler = SimpleHTTPRequestHandler
+        handler = CORSRequestHandler
         httpd = HTTPServer(server_address, handler)
         try:
             httpd.serve_forever()
@@ -80,7 +84,7 @@ class OpenApiBrowser(object):
             print("replacing start URL in {} ".format(index_path))
         html = open(index_path).read()
         default_url = "http://petstore.swagger.io/v2/swagger.json"
-        new_url = "http://localhost:" + \
+        new_url = "http://0.0.0.0:" + \
             str(self.PORT) + "/" + basename(self.json_path)
         html1 = re.sub(default_url, new_url, html)
         print(len(html1))
@@ -131,7 +135,7 @@ class OpenApiBrowser(object):
 
         # set-up two processes to run in parallel, one for running a webserver,
         # the other for opening a webbrowser showing what the first is serving
-        address = "http://localhost:" + str(self.PORT) # might not want to do this in docker!
+        address = "http://"+self.HOST+":" + str(self.PORT) # might not want to do this in docker!
         p1 = self.run_webui_process(address, "./swagger/swagger-ui")
         time.sleep(0.5)
         p2 = self.open_webui(address)

@@ -7,7 +7,7 @@ import requests
 import time
 import json as jsonlib
 
-def wait_for_server(url="http://localhost:8000", validconnectcounter = 10, retrydelay = 5):
+def wait_for_server(url="http://0.0.0.0:8000", validconnectcounter = 10, retrydelay = 5):
     """This function will stall the startup process of swagger gui so we start after rest api is up!
     After X connection retries we will return False, in order to sync status with other GUI!"""
     connected = False
@@ -186,7 +186,7 @@ def generate_json(template,info, get, post, put):
 
     json["paths"] = res_paths
     json["definitions"] = res_defs
-    json["host"] ="localhost:8000"
+    json["host"] ="0.0.0.0:8000"
 
     return json
 
@@ -198,7 +198,7 @@ def save_to_file(json_template):
 def generate_swagger_json():
     
     # TODO collect rest api url from config!
-    url="http://localhost:8000"
+    url="http://0.0.0.0:8000"
     # Wait for api is up
     connection_status = False
     while not connection_status:

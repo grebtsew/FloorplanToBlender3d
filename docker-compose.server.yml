@@ -19,7 +19,7 @@ services:
       - 8000:8000 # Rest api
       - 8001:8001 # Swagger gui
     environment: 
-      - MODE="server" # this is neccessary to activate server mode!
+      - MODE=server # this is neccessary to activate server mode!
     volumes:
         - ./Server/storage:/home/floorplan_to_blender/Server/storage
 
