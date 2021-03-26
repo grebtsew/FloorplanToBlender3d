@@ -186,7 +186,7 @@ def generate_json(template,info, get, post, put):
 
     json["paths"] = res_paths
     json["definitions"] = res_defs
-    json["host"] ="0.0.0.0:8000"
+    json["host"] ="localhost:8000"
 
     return json
 
@@ -198,7 +198,7 @@ def save_to_file(json_template):
 def generate_swagger_json():
     
     # TODO collect rest api url from config!
-    url="http://0.0.0.0:8000"
+    url="http://localhost:8000"
     # Wait for api is up
     connection_status = False
     while not connection_status:
