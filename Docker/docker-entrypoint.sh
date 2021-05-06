@@ -9,7 +9,7 @@ if  [ "$1" = "server" ]; then
     cd /home/floorplan_to_blender/Server
     echo "Starting server"
     python3 ./main.py
-elif ["$1" = "jupyter"]; then
+elif [ "$1" = "jupyter" ]; then
     echo "Start jupyter notebook on port 8888"
     jupyter notebook /home/floorplan_to_blender/ --port=8888 --ip=0.0.0.0 --allow-root --no-browser --NotebookApp.token=''
 else

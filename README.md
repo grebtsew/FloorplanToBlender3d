@@ -5,7 +5,6 @@
 ![license](https://img.shields.io/github/license/grebtsew/FloorplanToBlender3d)
 ![dockerhub](https://img.shields.io/badge/dockerhub-active-green)
 ![size](https://img.shields.io/github/repo-size/grebtsew/FloorplanToBlender3d)
-![watcher](https://img.shields.io/github/watchers/grebtsew/FloorplanToBlender3d?style=social)
 ![commit](https://img.shields.io/github/last-commit/grebtsew/FloorplanToBlender3d)
 <!-- TODO Add more relevant badges! -->
 
@@ -35,16 +34,19 @@
 
 
 # About
-The virtualisation of real life objects has been a hot topic for several years. As I started
+The virtualization of real life objects has been a hot topic for several years. As I started
 learning about 3d modelling in [Blender3d](https://www.blender.org/) I thought of the idea to use simple
 imaging on floorplans to automatically create corresponding 3d models. It is much easier than it
 sounds and uses a low amount of resources, enabling it to be used on low hardware.
  By utilizing Blender3d, all created objects will be easy to transfer
   to any other 3d rendering program. Such as [Unity](https://unity.com/), [Unreal Engine](https://www.unrealengine.com/en-US/)
- or [CAD](https://www.autodesk.com/solutions/cad-software).
+ or [CAD](https://www.autodesk.com/solutions/cad-software). 
+
+# Contents
+This repository contains the floorplan to blender library **FTBL** along with example scripts for converting an image to a 3d model **./create_blender_project_from_floorplan.py**. The repository also contains a server that receives images and converts them into 3d models using the **FTBL** library. The Server contains a [Swagger API](https://swagger.io/) gui and is monitored using a [weavescope](https://github.com/weaveworks/scope) container. Read more about the server implementation [here](./Server/README.md). To allow developers to utilize more functionality a Jupyter tutorial has been added to the project, explaining some of the development steps and functions of the library. Read more about the tutorial [here](./Docs/README.md).
 
 # How-To
-This part contains information about how to setup and execute this program.
+This part contains information about how to setup and execute the example script.
 
 <span style="color:yellow">**NOTE**</span>
 : Using other versions of the required programs and libraries than specified in Dockerfiles might require changes in the implementation. It is only guaranteed that this implementation will work if the assigned versions and all requirements are met.
@@ -60,17 +62,29 @@ This project is linked to [Docker Hub](https://hub.docker.com/r/grebtsew/floorpl
 
 ```bash
  docker pull grebtsew/floorplan-to-blender
- # run the container:
- docker run -it grebtsew/floorplan-to-blender
 ```
+
+The dockerfile is divided into three modes. The script mode where the example script can be tested. 
+The server which starts a hosting server instance with a Swagger Api. 
+The jupyter notebook where some tutorials and examples are further explained.
+
+By using the different docker-compose files these modes are automatically selected for you.
 
 <span style="color:blue">**NOTE**</span>
 : For more information about how the dockerfile and docker-compose files can be used to build and run the image to add your own content read more [here](./Docs/README.md).
 
 To pull and run the container together in a one line command run:
 ```bash
+# For Script mode:
  docker-compose run ftb
+# For Server mode: Read more "./Server/README.md"
+ docker-compose -f docker-compose.server.yml up
+# For jupyter mode: Read more "./Docs/README.md"
+ cd ./Docs
+ docker-compose up
 ```
+
+**NOTE**: When changing between modes the container sometimes need to be rebuild, that can be done by adding the --build flag to the commands above.
 
 ## Run locally on OS
 This tutorial will describe how to install this implementation directly on your device.
@@ -81,16 +95,16 @@ These are the programs that are required to run this implementation.
 * [Blender3d >  2.82](https://www.blender.org/)
 * `Python >== 3.6.5`
 
-With a suiteable `blender`, `python` and `python pip` installed you can have `Python3 pip` install all required  packages by running:
-
-```bash
- pip install -r requirements.txt
-```
-
 Clone or download this repo:
 ```git
 git clone https://github.com/grebtsew/FloorplanToBlender3d.git
 ````
+
+With a suitable `blender`, `python` and `python pip` installed you can have `Python3 pip` install all required  packages by running:
+
+```bash
+ pip install -r requirements.txt
+```
 
 ### Run Tutorial
 This tutorial takes you through the execution of this program.
@@ -99,8 +113,6 @@ This tutorial takes you through the execution of this program.
 2. Run python script `create_blender_project_from_floorplan.py`
 3. Follow instructions
 4. Created `floorplan.blender` files will be saved under `./target`
-
-
 
 <span style="color:blue">**NOTE**</span>
 : For more information about alternative ways of executing the implementation read more [here](./Docs/README.md).
@@ -113,12 +125,46 @@ We use `example.png`, see below:
 ![Floorplanexample](Images/example.png)
 
 Next up we execute our script and answer the questions:
-![gif1](Images/demo1.gif)
+![RunScriptDemo](Images/RunScriptDemo.gif)
 
 Finally we can open the newly created floorplan.blender file and see the result:
-![gif2](Images/demo2.gif)
+
+![OpenFiledemo](Images/OpenFiledemo.gif)
 
 <span style="color:blue">**NOTE**</span>: This demo only uses default settings. For instance coloring is by default random.
+
+
+## Floorplan To Blender Server with Swagger API
+The server implementation comes with an automatically generated [Swagger API](https://swagger.io/) page.
+
+![swagger](Images/swaggerdemo.gif)
+
+## Usages in other applications
+If you are interested in code for these demos let me know and I will release the source code.
+
+### AR foundation place floorplans in world
+
+<p align="left">
+  <img width="460" height="300" src="Images/ardemo.gif">
+</p>
+
+### AR foundation real life scaling of floorplans
+
+<p align="left">
+  <img width="460" height="300" src="Images/arrealifedemo.gif">
+</p>
+
+### AR foundation interior design of floorplans
+
+<p align="left">
+  <img width="460" height="300" src="Images/PlaceObjectInRoomDemo.gif">
+</p>
+
+### AR foundation with MediaPipe Hands interactions
+
+<p align="left">
+  <img width="460" height="300" src="Images/InteractDemo.gif">
+</p>
 
 # Documentation
 For more information and tutorial of how to use the ftb library do checkout [docs](Docs/README.md)!
@@ -130,7 +176,7 @@ pytest
 ```
 
 # References and Imports
-During the development of this project I have been searching alot and copied code from `StackOverflow`.
+During the development of this project I have been searching a lot and copied code from `StackOverflow`.
 I share links to copied code and other contributors here:
 
 * First look at problem : https://mathematica.stackexchange.com/questions/19546/image-processing-floor-plan-detecting-rooms-borders-area-and-room-names-t
@@ -148,7 +194,7 @@ functions or answer questions, let me know!
 
 # Known Issues
 These are some known and relevant issues with the current implementation:
-* Floorplan images needs to be quite small for detections to work at this time. If you plan on using a large image, consider downscaling it.
+* Floorplan images needs to be quite small for detections to work at this time. If you plan on using a large image, consider downsizing it.
 * Required programs and libraries might change in future versions, this might require some changes in this implementation for it to work. If you insist on not using the versions specified in Dockerfile, a coding effort might be required.
 
 # License

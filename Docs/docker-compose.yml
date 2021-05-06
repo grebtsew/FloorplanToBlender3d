@@ -2,16 +2,16 @@ version: '3.8'
 
 # The purpose of this docker-compose is to work with jupyter notebook without hosting on local computer
 
-# Run to start 
+# Run to start : remember to use --build of you want to rebuild
 # docker-compose up
 
 services:
   floorplan-to-blender-docs:
-    build: ../
+    build: ../ # grebtsew/floorplan-to-blender
     container_name: ftbdocs
     image: grebtsew/floorplan-to-blender # grebtsew/floorplan-to-blender
     environment: 
-      - MODE="jupyter" # this is neccessary to activate server mode!
+      - MODE=jupyter # this is neccessary to activate server mode!
     ports: 
       - 8888:8888
     volumes: 

@@ -15,7 +15,7 @@ In this folder I will share more links and information about the implementation.
   - [Run old style](#run-old-style)
 - [Solved Issues](#solved-issues)
 
-# Code Review and Explaination
+# Code Review and Explanation
 Here we explain how to use the `Floorplan to blender library` utilizing `Jupyter notebook`.
 
 ## Easy and fast setup with Docker
@@ -24,6 +24,8 @@ I created a docker-compose to setup everything needed for `jupyter notebook` to 
 ```bash
 docker-compose up -d
 ```
+
+**NOTE**: If you have earlier built versions of the container without the Jupyter support add the '--build' flag to the command to rebuild the container.
 
 ## Run Jupyter Notebook locally
 In an effort to get familiar with Jupyter Notebook I will create some demos of how to use the library here too.
@@ -42,7 +44,7 @@ jupyter notebook
 # Docker 
 
 ## Why Docker?
-under construction...
+Docker makes development efficient and predictable. Docker takes away repetitive, mundane configuration tasks and is used throughout the development lifecycle for fast, easy and portable application development - desktop and cloud. Docker’s comprehensive end to end platform includes UIs, CLIs, APIs and security that are engineered to work together across the entire application delivery lifecycle. (docker.com, 2021)
 
 ## Run on Docker
 Firstly you need to install a suitable [Docker](https://www.docker.com/) environment on your device.
@@ -89,9 +91,12 @@ The generated .blender file can be retreived with __scp__ or using __volumes__.
 ```
 
 # Run
-Here we further how the run process works.
+Here we explain further how the run process works.
 ## Run old style
-This tutorial takes you through the execution of this program in examples.
+
+**NOTE**: This part is deprecated!
+
+This tutorial takes you through the execution of this program in examples. 
 
 1. Receive floorplan as image, from pdf or by using other method (for example paint)
 2. Set image file path in `Examples/floorplan_to_datafile.py`
@@ -107,6 +112,7 @@ This tutorial takes you through the execution of this program in examples.
 Here we share information about several issues that has been resolved. This can be useful if someone in the future struggle with similar issues.
 
 Resolved version issues:
+* Changed origin position of resulting objects.
 * If a later `Blender3d` version than 2.79 is used, several changes has to done in all files in the `/Blender` folder.
 * If a later `OpenCV` library version than 3.4.1.15 for python is used, several changes has to be done in the `/FloorplanToBlender3d/detect.py` file.
 Please create an issue if you encounter any problems with this implementation.
