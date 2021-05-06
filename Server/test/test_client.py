@@ -5,8 +5,13 @@ import requests
 import json as jsonlib
 import time
 
+'''
+FloorplanToBlender3d
+Copyright (C) 2021 Daniel Westberg
+'''
+
 """
-The purpose of this file is to test core functionallity of the server.
+The purpose of this file is to test core functionality of the server.
 We also test some common problems.
 """
 path_to_test_image="../../Images/example.png"

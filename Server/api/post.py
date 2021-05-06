@@ -3,6 +3,11 @@ from api.api import Api
 from process.create import Create
 from file.file_handler import FileHandler
 
+'''
+FloorplanToBlender3d
+Copyright (C) 2021 Daniel Westberg
+'''
+
 class Post(Api):
 
     def __init__(self, client,  shared_variables):

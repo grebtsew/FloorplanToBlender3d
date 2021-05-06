@@ -1,3 +1,7 @@
+'''
+FloorplanToBlender3d
+Copyright (C) 2021 Daniel Westberg
+'''
 
 from flask_socketio import SocketIO, emit
 from flask import Flask,Response, render_template, url_for, copy_current_request_context

@@ -1,9 +1,11 @@
 from subprocess import check_output
-
-
-from subprocess import check_output
 import os
 import sys
+
+'''
+FloorplanToBlender3d
+Copyright (C) 2021 Daniel Westberg
+'''
 
 sys.path.insert(0,'../..')
 from FloorplanToBlenderLib import * # floorplan to blender lib

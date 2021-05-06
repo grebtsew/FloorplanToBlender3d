@@ -3,6 +3,10 @@ Waits for RestAPI to start
 Then collects help functions
 And generates a new swagger.json file!
 """
+'''
+FloorplanToBlender3d
+Copyright (C) 2021 Daniel Westberg
+'''
 import requests
 import time
 import json as jsonlib

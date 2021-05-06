@@ -7,6 +7,11 @@ import random
 import os
 import hashlib
 
+'''
+FloorplanToBlender3d
+Copyright (C) 2021 Daniel Westberg
+'''
+
 # TODO make threadsafe!
 
 class shared_variables():

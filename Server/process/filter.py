@@ -1,5 +1,9 @@
 from process.process import Process
 
+'''
+FloorplanToBlender3d
+Copyright (C) 2021 Daniel Westberg
+'''
 
 """This class should remove noise and make better for performance"""
 class Filter(Process):

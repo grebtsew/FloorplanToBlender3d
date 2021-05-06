@@ -1,5 +1,8 @@
 from process.process import Process
-
+'''
+FloorplanToBlender3d
+Copyright (C) 2021 Daniel Westberg
+'''
 
 """This class should reformat one object supported in blender, into another format"""
 class Reformat(Process):

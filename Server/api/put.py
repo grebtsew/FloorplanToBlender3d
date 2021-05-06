@@ -2,6 +2,11 @@ from typing import Tuple
 from api.api import Api
 from api.post import Post # needed to call transform function
 
+'''
+FloorplanToBlender3d
+Copyright (C) 2021 Daniel Westberg
+'''
+
 def create_file(ref, id, iformat, file):
         """Write incoming data to file"""
         file_path = ref.shared.parentPath+"/"+ref.shared.imagesPath + "/" + id + iformat

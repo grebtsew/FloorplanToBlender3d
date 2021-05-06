@@ -1,5 +1,10 @@
 import configparser
 
+'''
+FloorplanToBlender3d
+Copyright (C) 2021 Daniel Westberg
+'''
+
 class ConfigHandler():
 
     def __init__(self, path="config/server_config.ini"):

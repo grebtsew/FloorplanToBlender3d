@@ -1,6 +1,11 @@
 import bpy
 import sys
 
+'''
+FloorplanToBlender3d
+Copyright (C) 2021 Daniel Westberg
+'''
+
 """
 Used to open a .blender file and export it as .obj file.
 """

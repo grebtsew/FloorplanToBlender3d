@@ -1,5 +1,10 @@
 import json
 
+'''
+FloorplanToBlender3d
+Copyright (C) 2021 Daniel Westberg
+'''
+
 def client_exist(client, client_list):
     for c in client_list:
         if c["address"] == client["address"] and c["port"] == client["port"]:

@@ -4,7 +4,10 @@ Move swagger.json to correct folder
 Edit index.html in neccessary
 Start Swagger gui
 """
-
+'''
+FloorplanToBlender3d
+Copyright (C) 2021 Daniel Westberg
+'''
 import os
 import re
 import time

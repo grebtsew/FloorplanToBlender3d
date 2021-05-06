@@ -2,6 +2,11 @@ import bpy
 import os
 import sys
 
+'''
+FloorplanToBlender3d
+Copyright (C) 2021 Daniel Westberg
+'''
+
 """
 Creates new project and opens incoming path object in order to visualize it!
 """

@@ -10,6 +10,11 @@ from api.post import Post
 from api.put import Put
 from api.get import Get
 
+'''
+FloorplanToBlender3d
+Copyright (C) 2021 Daniel Westberg
+'''
+
 class S(BaseHTTPRequestHandler):
 
     def __init__(self, shared, *args, **kwargs):

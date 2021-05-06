@@ -1,3 +1,8 @@
+'''
+FloorplanToBlender3d
+Copyright (C) 2021 Daniel Westberg
+'''
+
 """
 The process class represents a thread handling stuff in new threads
 """

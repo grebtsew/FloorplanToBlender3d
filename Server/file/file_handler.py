@@ -1,6 +1,11 @@
 import os
 import shutil
 
+'''
+FloorplanToBlender3d
+Copyright (C) 2021 Daniel Westberg
+'''
+
 class FileHandler():
     def __init__(self):
         pass

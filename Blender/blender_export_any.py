@@ -2,6 +2,11 @@ import bpy
 import os
 import sys
 
+'''
+FloorplanToBlender3d
+Copyright (C) 2021 Daniel Westberg
+'''
+
 """
 Imports a .blender file and exports it as custom object
 """

@@ -3,6 +3,11 @@ import json
 import shutil
 import os
 
+'''
+FloorplanToBlender3d
+Copyright (C) 2021 Daniel Westberg
+'''
+
 def sendFileHeaders(_api_ref, file):
     _api_ref.send_response(200)
     _api_ref.send_header("Content-type", 'multipart/form-_data')
