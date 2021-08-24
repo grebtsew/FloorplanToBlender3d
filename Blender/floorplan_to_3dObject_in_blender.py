@@ -179,6 +179,9 @@ def create_floorplan(base_path,program_path, name=0):
     path_to_wall_faces_file = program_path +"/" + base_path + "wall_faces"
     path_to_wall_verts_file = program_path +"/" + base_path + "wall_verts"
 
+    path_to_top_wall_faces_file = program_path +"/" + base_path + "top_wall_faces"
+    path_to_top_wall_verts_file = program_path +"/" + base_path + "top_wall_verts"
+
     path_to_floor_faces_file = program_path +"/" +base_path + "floor_faces"
     path_to_floor_verts_file = program_path +"/" +base_path + "floor_verts"
 
@@ -223,19 +226,42 @@ def create_floorplan(base_path,program_path, name=0):
     # Create parent
     wall_parent, wall_parent_mesh = init_object("Walls")
 
-    for box in verts:
-        boxname="Box"+str(boxcount)
-        for wall in box:
+    for walls in verts:
+        boxname = "Box"+str(boxcount)
+        for wall in walls:
             wallname = "Wall"+str(wallcount)
 
-            obj = create_custom_mesh(boxname + wallname, wall, faces, pos=pos, rot=rot, cen=cen)
+            obj = create_custom_mesh(
+                boxname + wallname, wall, faces, pos=pos, rot=rot, cen=cen, mat=create_mat((0.5, 0.5, 0.5, 1)))
             obj.parent = wall_parent
 
             wallcount += 1
         boxcount += 1
 
     wall_parent.parent = parent
-   
+
+    '''
+    Create Top  Walls
+    '''
+    # get image top wall data
+    verts = read_from_file(path_to_top_wall_verts_file)
+    faces = read_from_file(path_to_top_wall_faces_file)
+
+    # Create mesh from data
+    boxcount = 0
+    wallcount = 0
+
+    # Create parent
+    top_wall_parent, top_wall_parent_mesh = init_object("TopWalls")
+
+    for i in range(0, len(verts)):
+        roomname = "TopWalls"+str(i)
+        obj = create_custom_mesh(
+            roomname, verts[i], faces[i], pos=pos, rot=rot, cen=cen, mat=create_mat((0.5, 0.5, 0.5, 1)))
+        obj.parent = top_wall_parent
+
+    top_wall_parent.parent = parent
+
     '''
     Create Floor
     '''

@@ -2,15 +2,11 @@ FROM ubuntu:18.04
 
 # Welcome to this DockerFile for the Floorplan To Blender3d project
 # All steps of the installation are described below
-
-LABEL MAINTAINER=grebtsew UPDATED=2021-03-08
+LABEL MAINTAINER=grebtsew UPDATED=2021-08-24
 
 # Create program install folder
 ENV PROGAM_PATH /home/floorplan_to_blender
 RUN mkdir -p ${PROGAM_PATH}
-
-# Add our program
-ADD ./ ${PROGAM_PATH}/
 
 # Install needed programs
 RUN apt-get update && \
@@ -31,12 +27,6 @@ RUN apt-get update && \
 	apt-get -y autoremove && \
 	rm -rf /var/lib/apt/lists/*
 
-# Setup python
-RUN python3 -m pip install --upgrade pip
-RUN pip install -r ${PROGAM_PATH}/requirements.txt
-RUN pip install -r ${PROGAM_PATH}/Docs/requirements.txt
-RUN pip install -r ${PROGAM_PATH}/Development\ Center/requirements.txt
-
 # Install blender
 ENV BLENDER_PATH /usr/local/blender/blender
 ENV BLENDER_MAJOR 2.82
@@ -47,6 +37,15 @@ RUN mkdir /usr/local/blender && \
 	curl -SL "$BLENDER_BZ2_URL" -o blender.tar.xz && \
 	tar -xf blender.tar.xz -C /usr/local/blender --strip-components=1 && \
 	rm blender.tar.xz
+
+# Add our program
+ADD ./ ${PROGAM_PATH}/
+
+# Setup python
+RUN python3 -m pip install --upgrade pip
+RUN pip install -r ${PROGAM_PATH}/requirements.txt
+RUN pip install -r ${PROGAM_PATH}/Docs/requirements.txt
+RUN pip install -r ${PROGAM_PATH}/Development\ Center/requirements.txt
 
 # Volume to share images and get data after execution
 VOLUME ${PROGAM_PATH}/Images

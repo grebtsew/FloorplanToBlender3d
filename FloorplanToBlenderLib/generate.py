@@ -399,4 +399,23 @@ def generate_walls_file(img_path, info):
     IO.save_to_file(path+"wall_verts", verts, info)
     IO.save_to_file(path+"wall_faces", faces, info)
 
+    # Create top walls verts
+    verts = []
+    for box in boxes:
+        verts.extend([transform.scale_point_to_vector(box, scale, 0)])
+
+    # create faces
+    faces = []
+    for room in verts:
+        count = 0
+        temp = ()
+        for _ in room:
+            temp = temp + (count,)
+            count += 1
+        faces.append([(temp)])
+
+    # One solution to get data to blender is to write and read from file.
+    IO.save_to_file(path+"top_wall_verts", verts, info)
+    IO.save_to_file(path+"top_wall_faces", faces, info)
+
     return get_shape(verts, scale)
