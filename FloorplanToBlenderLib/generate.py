@@ -400,11 +400,9 @@ def generate_walls_file(img_path, info):
     IO.save_to_file(path+"wall_faces", faces, info)
 
     # Create top walls verts
-    wall_count = 0
     verts = []
     for box in boxes:
         verts.extend([transform.scale_point_to_vector(box, scale, 0)])
-        wall_count += 1
 
     # create faces
     faces = []
