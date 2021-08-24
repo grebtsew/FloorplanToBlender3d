@@ -1,10 +1,10 @@
 import cv2
 import numpy as np
+from . import image
 
 # TODO: detect windows
 # TODO: detect doors
-# Calculate (actual) size of appartment
-# TODO: text detection
+# Calculate (actual) size of apartment
 
 """
 Detect
@@ -37,7 +37,6 @@ def wall_filter(gray):
 
     return unknown
 
-
 def detectPreciseBoxes(detect_img, output_img = None, color = [100,100,0]):
     """
     Detect corners with boxes in image with high precision
@@ -64,24 +63,6 @@ def detectPreciseBoxes(detect_img, output_img = None, color = [100,100,0]):
         res.append(approx)
 
     return res, output_img
-
-def remove_noise(img, noise_removal_threshold):
-    """
-    Remove noise from image and return mask
-    Help function for finding room
-    @Param img @mandatory image to remove noise from
-    @Param noise_removal_threshold @mandatory threshold for noise
-    @Return return new mask of image
-    """
-    img[img < 128] = 0
-    img[img > 128] = 255
-    contours, _ = cv2.findContours(~img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    mask = np.zeros_like(img)
-    for contour in contours:
-        area = cv2.contourArea(contour)
-        if area > noise_removal_threshold:
-            cv2.fillPoly(mask, [contour], 255)
-    return mask
 
 def find_corners_and_draw_lines(img, corners_threshold, room_closing_max_length):
     """
@@ -157,7 +138,7 @@ def find_rooms(img, noise_removal_threshold=50, corners_threshold=0.01,
     assert 0 <= corners_threshold <= 1
     # Remove noise left from door removal
 
-    mask = remove_noise(img, noise_removal_threshold)
+    mask = image.remove_noise(img, noise_removal_threshold)
     img = ~mask
 
     find_corners_and_draw_lines(img,corners_threshold,room_closing_max_length)
@@ -271,7 +252,7 @@ def find_details(img, noise_removal_threshold=50, corners_threshold=0.01,
     assert 0 <= corners_threshold <= 1
     # Remove noise left from door removal
 
-    mask = remove_noise(img, noise_removal_threshold)
+    mask = image.remove_noise(img, noise_removal_threshold)
     img = ~mask
 
     find_corners_and_draw_lines(img,corners_threshold,room_closing_max_length)
