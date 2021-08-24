@@ -10,7 +10,6 @@ sys.path.insert(0,floorplan_lib_path)
 from FloorplanToBlenderLib import * # floorplan to blender lib
 from subprocess import check_output
 import os
-import imutils
 
 '''
 New Functions

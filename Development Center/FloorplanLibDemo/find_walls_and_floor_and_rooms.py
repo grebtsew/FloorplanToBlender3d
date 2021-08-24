@@ -20,7 +20,6 @@ except ImportError:
     from FloorplanToBlenderLib import * # floorplan to blender lib
 
 from subprocess import check_output
-import imutils
 
 
 def test(path):

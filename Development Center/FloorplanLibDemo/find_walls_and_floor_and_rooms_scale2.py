@@ -24,7 +24,6 @@ except ImportError:
 
 from subprocess import check_output
 import os
-import imutils
 
 
 def test(path):

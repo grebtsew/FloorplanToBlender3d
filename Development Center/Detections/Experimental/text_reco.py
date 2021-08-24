@@ -2,6 +2,8 @@ import cv2
 import numpy as np
 import os
 
+# TODO add this in implementation!
+
 """
 Text recognition test
 """

@@ -5,8 +5,9 @@ floorplan_lib_path = os.path.dirname(os.path.realpath(__file__))+"/../../"
 
 sys.path.insert(0,floorplan_lib_path)
 from FloorplanToBlenderLib import * # floorplan to blender lib
-
 from pyfiglet import Figlet
+
+# TODO fix this test!
 
 f = Figlet(font='slant')
 print (f.renderText('Floorplan to Blender3d'))
@@ -51,13 +52,17 @@ if __name__ == "__main__":
     print("Creates blender project")
     print("")
 
+    target_path = "/Target/floorplan.blend"
+
     # Create blender project
     check_output([blender_install_path,
+     "-noaudio", # this is a dockerfile ubuntu hax fix
      "--background",
      "--python",
      blender_script_path,
-     program_path # Send this as parameter to script
-     ] +  data_paths) # TODO something is up with this! Check on this later!
+     program_path, # Send this as parameter to script
+     target_path
+     ] +  data_paths)
 
     print("Project created at: " + program_path + "\\floorplan.blender")
     print("")

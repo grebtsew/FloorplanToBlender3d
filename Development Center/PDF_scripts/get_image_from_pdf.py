@@ -1,3 +1,9 @@
+'''
+Some examples for collecting images and content from pdf files
+DEPRECATED!
+'''
+
+
 import fitz
 import cv2
 

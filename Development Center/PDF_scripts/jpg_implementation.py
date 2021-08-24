@@ -3,6 +3,7 @@ import sys
 '''
 JPG_implementation
 Retreive jpg images from pdf files
+DEPRECATED!
 '''
 
 with open('ivar_planlosningar.pdf',"rb") as file:
