@@ -3,6 +3,14 @@ import numpy as np
 from PIL import Image
 from . import detect
 
+'''
+Image
+This file contains code for image processing, used when creating blender project.
+Contains functions for tweeking and filter images for better results.
+
+FloorplanToBlender3d
+Copyright (C) 2021 Daniel Westberg
+'''
 
 def pil_rescale_image(image,factor ):
     width, height = image.size

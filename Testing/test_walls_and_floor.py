@@ -2,15 +2,15 @@ import pytest
 import cv2
 import numpy as np
 import sys
+
 try:
-    sys.path.insert(0,'..')
+    sys.path.insert(0,sys.path[0]+'/..')
     from FloorplanToBlenderLib import * # floorplan to blender lib
 except ImportError:
-    from FloorplanToBlenderLib import * # floorplan to blender lib
+    raise ImportError # floorplan to blender lib
 
 from subprocess import check_output
 import os
-import imutils
 
 
 def test():
@@ -19,7 +19,7 @@ def test():
     This function test functions used to create floor and walls
     '''
     # Read floorplan image
-    img = cv2.imread("../Examples/example2.png")
+    img = cv2.imread(sys.path[1]+"/../Images/example2.png")
     image = img
     # grayscale image
     gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
