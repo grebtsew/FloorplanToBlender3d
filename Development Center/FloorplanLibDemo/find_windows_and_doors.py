@@ -39,9 +39,13 @@ gray_rooms =  cv2.cvtColor(colored_doors,cv2.COLOR_BGR2GRAY)
 # get box positions for rooms
 boxes, gray_rooms = detect.detectPreciseBoxes(gray_rooms, blank_image)
 
+# TODO: add advanced door collection with window filter!
+
+
 cv2.imshow('input', img)
 cv2.imshow('doors and windows', gray_rooms)
 cv2.imshow('colored', colored_doors)
 
 cv2.waitKey()
 cv2.destroyAllWindows()
+

@@ -2,7 +2,9 @@ import cv2
 import numpy as np
 import os
 
+# Low prio!
 # TODO add this in implementation!
+# TODO add tesseract to read the text aswell
 
 """
 Text recognition test
