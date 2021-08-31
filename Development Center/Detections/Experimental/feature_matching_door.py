@@ -194,14 +194,14 @@ def feature_match(img1, img2):
         if len(match_group) >= 4 :
             list_grouped_matches_filtered.append(match_group)
         
-    print(list_grouped_matches_filtered, len(list_grouped_matches_filtered))
+    #print(list_grouped_matches_filtered, len(list_grouped_matches_filtered))
     
 
     # find corners of door in model image
     corners = cv2.goodFeaturesToTrack(model, 3, 0.01, 20)
     corners = np.int0(corners)
     
-    # This is still a little hardcoded but still better!
+    # This is still a little hardcoded but still better than before!
     upper_left = corners[1][0]
     upper_right =  corners[0][0]
     down = corners[2][0]
@@ -242,32 +242,56 @@ def feature_match(img1, img2):
     for match in list_grouped_matches_filtered:
         
         # calculate offsets from points
-        # TODO: make tests to find best points to check between! Check the ones with best rotation!
-        # TODO: find best matches to use for detection!
-        pos1_model = match[0][0]
-        pos2_model = match[1][0]
+        index1, index2 = calculate_best_matches_with_modulus_angle(match)
+
+        pos1_model = match[index1][0]
+        pos2_model = match[index2][0]
 
         # calculate actual position from offsets with rotation!
-        pos1_cap = match[0][1]
-        pos2_cap = match[1][1]
+        pos1_cap = match[index1][1]
+        pos2_cap = match[index2][1]
 
-        # TODO: calculate scale, perhaps later!?
-        print("distance diff x", pos1_model[0]-pos2_model[0], pos1_cap[0]- pos2_cap[0])
-        print("distance diff y", pos1_model[1]-pos2_model[1], pos1_cap[1]- pos2_cap[1])
+       
+        # calculate scale, and rescale model
+       
+        cap_size = [(pos1_cap[0]- pos2_cap[0]), (pos1_cap[1]- pos2_cap[1])]
+        model_size = [(pos1_model[0]-pos2_model[0]),(pos1_model[1]-pos2_model[1])]
+        """
+        if cap_size[1] != 0 or model_size[1] != 0:
+            
+            
+            x_scale = abs(cap_size[0]/model_size[0])
+            y_scale = abs(cap_size[1]/model_size[1])
+
+            scaled_upper_left = scale_model_point_to_origin( origin, upper_left,x_scale, y_scale)
+            scaled_upper_right = scale_model_point_to_origin( origin, upper_right,x_scale, y_scale)
+            scaled_down = scale_model_point_to_origin( origin, down,x_scale, y_scale)
+            scaled_pos1_model = scale_model_point_to_origin( origin, pos1_model,x_scale, y_scale)
+        else:
+        """
+        scaled_upper_left = upper_left
+        scaled_upper_right = upper_right
+        scaled_down = down
+        scaled_pos1_model = pos1_model
+        
+        #print("distance diff x", model_size[0], cap_size[0])
+        #print("distance diff y", model_size[1], cap_size[1])
 
         pt1 = (pos1_model[0]- pos2_model[0], pos1_model[1] -pos2_model[1])
         pt2 = (pos1_cap[0]-pos2_cap[0], pos1_cap[1]-pos2_cap[1])
         
+        
         ang = math.degrees(angle(pt1, pt2))
-    
-        print("Angle between doors ", ang)
+        #print(index1, index2, ang)
+
+        #print("Angle between doors ", ang)
 
         # rotate door
-        new_upper_left = rotate(origin, upper_left, math.radians(ang))
-        new_upper_right = rotate(origin, upper_right, math.radians(ang))
-        new_down = rotate(origin, down, math.radians(ang))
+        new_upper_left = rotate(origin, scaled_upper_left, math.radians(ang))
+        new_upper_right = rotate(origin, scaled_upper_right, math.radians(ang))
+        new_down = rotate(origin, scaled_down, math.radians(ang))
         
-        new_pos1_model = rotate(origin, pos1_model, math.radians(ang))
+        new_pos1_model = rotate(origin, scaled_pos1_model, math.radians(ang))
 
         offset = (new_pos1_model[0]-pos1_model[0], new_pos1_model[1]-pos1_model[1])
 
@@ -285,20 +309,13 @@ def feature_match(img1, img2):
         img = cv2.circle(cap, moved_new_upper_right, radius=4, color=(0, 0, 0), thickness=5)
         img = cv2.circle(cap, moved_new_down, radius=4, color=(0, 0, 0), thickness=5)
        
-    cv2.imshow('frame', img)
-    cv2.waitKey(0)   
-    
-
-    """
+     
     # draw door points
     for match in list_grouped_matches_filtered:
         
         img = cv2.circle(cap, (match[0][1][0],match[0][1][1]), radius=4, color=(0, 0, 0), thickness=5)
 
-    cv2.imshow('frame', img)
-    cv2.waitKey(0)
-    """
-    """
+
     # Draw matches as lines
     if len(matches) > MIN_MATCHES:
 
@@ -306,12 +323,14 @@ def feature_match(img1, img2):
         cap = cv2.drawMatches(model, kp_model, cap, kp_frame,
                             matches[:MIN_MATCHES], 0, flags=2)
         # show result
+
         cv2.imshow('frame', cap)
         cv2.waitKey(0)
+
     else:
         print( "Not enough matches have been found - %d/%d" % (len(matches),
                                                             MIN_MATCHES))
-    """
+    
 
 def rotate(origin, point, angle):
     """
@@ -333,6 +352,143 @@ def angle(vector1, vector2):
     len1 = math.hypot(x1, y1)
     len2 = math.hypot(x2, y2)
     return math.acos(inner_product/(len1*len2))
+
+def scale_model_point_to_origin( origin, point,x_scale, y_scale):
+            dx, dy = (point[0] - origin[0], point[1] - origin[1])
+            return (dx * x_scale, dy * y_scale)
+
+def calculate_best_matches_with_angle_checks(match_list):
+    # calculate best matches by looking at how much we differ from average
+    
+    index1 = 0
+    index2 = 0
+    list_of_angles = []
+
+    i = 0
+    for match1 in match_list:
+        j = 0
+        for match2 in match_list:
+            index1 = i
+            index2 = j
+
+            pos1_model = match_list[index1][0]
+            pos2_model = match_list[index2][0]
+
+            pos1_cap = match_list[index1][1]
+            pos2_cap = match_list[index2][1]
+
+            pt1 = (pos1_model[0]- pos2_model[0], pos1_model[1] -pos2_model[1])
+            pt2 = (pos1_cap[0]-pos2_cap[0], pos1_cap[1]-pos2_cap[1])
+            
+            if pt1 == pt2 or pt1 == (0,0) or pt2 == (0,0):
+                continue
+
+            #print(pt1, pt2)
+            ang = math.degrees(angle(pt1, pt2))
+
+            list_of_angles.append(ang)
+
+            j += 1
+        i += 1
+    
+    average_angle = average(list_of_angles)
+    current_best = math.inf
+
+    _index1 = 0
+    _index2 = 0
+
+    i = 0
+    for match1 in match_list:
+        j = 0
+        for match2 in match_list:
+            index1 = i
+            index2 = j
+
+            pos1_model = match_list[index1][0]
+            pos2_model = match_list[index2][0]
+
+            pos1_cap = match_list[index1][1]
+            pos2_cap = match_list[index2][1]
+
+            pt1 = (pos1_model[0]- pos2_model[0], pos1_model[1] -pos2_model[1])
+            pt2 = (pos1_cap[0]-pos2_cap[0], pos1_cap[1]-pos2_cap[1])
+                
+            if pt1 == pt2 or pt1 == (0,0) or pt2 == (0,0):
+                continue
+
+            ang = math.degrees(angle(pt1, pt2))
+
+            diff = average_angle - ang
+
+            if (diff < current_best):
+                current_best = diff
+                _index1 = i
+                _index2 = j
+            j += 1
+        i += 1
+
+    return _index1, _index2
+
+def average(lst):
+    return sum(lst) / len(lst) 
+
+def calculate_best_matches_with_modulus_angle(match_list):
+    # calculate best matches by looking at the most significant feature distances
+    index1 = 0
+    index2 = 0
+    best = math.inf
+
+    i = 0
+    for match1 in match_list:
+        j = 0
+        for match2 in match_list:
+            
+            pos1_model = match_list[i][0]
+            pos2_model = match_list[j][0]
+
+            pos1_cap = match_list[i][1]
+            pos2_cap = match_list[j][1]
+
+            pt1 = (pos1_model[0]- pos2_model[0], pos1_model[1] -pos2_model[1])
+            pt2 = (pos1_cap[0]-pos2_cap[0], pos1_cap[1]-pos2_cap[1])
+            
+            if pt1 == pt2 or pt1 == (0,0) or pt2 == (0,0):
+                continue
+
+            ang = math.degrees(angle(pt1, pt2))
+            diff = ang % 30
+
+            if diff < best :
+                best = diff
+                index1 = i
+                index2 = j
+    
+            j += 1
+        i += 1
+    return index1, index2
+
+def calculate_best_matches_distance(match_list):
+    # calculate best matches by looking at the most significant feature distances
+    max = 0
+    index1 = 0
+    index2 = 0
+
+    i = 0
+    for match1 in match_list:
+        j = 0
+        for match2 in match_list:
+            
+            # calculate distance between matches
+            dist = abs(match1[1][0] - match2[1][0]) + abs(match1[1][1] - match2[1][1])
+            if dist > max:
+                max = dist
+                index1 = i
+                index2 = j
+            j += 1
+        i += 1
+    
+
+    return index1, index2
 
 """
 We are not allowed to use SURF or SIFT due to licenses in latest OpenCV.
