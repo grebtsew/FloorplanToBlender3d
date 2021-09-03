@@ -7,23 +7,20 @@ Transform
 This file contains functions for transforming data between different formats.
 
 FloorplanToBlender3d
-Copyright (C) 2019 Daniel Westberg
+Copyright (C) 2021 Daniel Westberg
 '''
 
 def recursive_loop_element(thelist, res):
     '''
     Recursive loop element
-    A recursive function transforming any sized array to a one dimentional array
+    A recursive function transforming any sized array to a one dimensional array
     @Param thelist, incoming list
     @Param res, resulting list
     '''
     if not thelist:
         return res
     else:
-        if isinstance(thelist[0], int):
-            res.append(thelist[0])
-            return recursive_loop_element(thelist[1:], res)
-        elif isinstance(thelist[0], float):
+        if isinstance(thelist[0], int) or isinstance(thelist[0], float):
             res.append(thelist[0])
             return recursive_loop_element(thelist[1:], res)
         else:

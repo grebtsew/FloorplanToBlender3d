@@ -4,14 +4,59 @@ import os
 from shutil import which
 import configparser
 import shutil
+import cv2
+from . import image
 
 '''
 IO
 This file contains functions for handling files.
 
 FloorplanToBlender3d
-Copyright (C) 2019 Daniel Westberg
+Copyright (C) 2021 Daniel Westberg
 '''
+
+def read_image(path, settings=None):
+    '''
+    Read image, resize/rescale and return with grayscale
+    '''
+    # Read floorplan image
+    img = cv2.imread(path)
+    if img is None:
+        print("Image "+path+" could not be read by OpenCV library.")
+        raise IOError 
+
+    if settings is not None:
+        if settings['remove_noise']:
+            img = image.denoising(img)
+        if settings['rescale_image']:
+            
+            calibrations = config_read_calibration()
+            scale_factor = image.detect_wall_rescale(calibrations["wall_size_calibration"], img)
+            img = image.cv2_rescale_image(img, scale_factor)
+    
+    return img, cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+
+def config_read_calibration():
+    calibrations = config_get("CALIBRATION")
+    if calibrations is None:
+        calibrations = create_image_scale_calibration()
+    elif calibrations["calibration_image_path"] == "":
+        calibrations = create_image_scale_calibration()
+    elif calibrations["wall_size_calibration"] == 0:
+        calibrations = create_image_scale_calibration(True)
+    return calibrations
+
+def create_image_scale_calibration(GotSettings=False):
+    if GotSettings:
+        default_calibration_image = 'Examples/example.png'
+        calibration_img = cv2.imread(default_calibration_image)
+        calibrations = {'calibration_image_path':default_calibration_image,'wall_size_calibration':str(image.calculate_wall_width_average(calibration_img))}
+        config_update("CALIBRATION",calibrations)
+    else :
+        calibration_img = cv2.imread(settings['default_calibration_image'])
+        calibrations = {'calibration_image_path':default_calibration_image,'wall_size_calibration':str(image.calculate_wall_width_average(calibration_img))}
+        config_update("CALIBRATION",calibrations)
+    return calibrations
 
 def generate_config_file():
     '''
@@ -22,6 +67,14 @@ def generate_config_file():
     'blender_installation_path': 'C:\\Program Files\\Blender Foundation\\Blender\\blender.exe',
     'file_structure': '[[[0,0,0], [0,0,0], [0,0,0]], [[0,0,0], [0,0,0], [0,0,0]], [[0,0,0], [0,0,0], [0,0,0]]]',
     'mode': 'simple'}
+    config['SETTINGS'] = {'remove_noise':'True','rescale_image':'True'}
+    config['CALIBRATION'] = {'calibration_image_path':'Examples/example.png','wall_size_calibration':'0'} # TODO: update this calibration value!
+    with open('config.ini', 'w') as configfile:
+        config.write(configfile)
+
+def config_update(label,settings):
+    config = configparser.ConfigParser()
+    config[label] = settings
     with open('config.ini', 'w') as configfile:
         config.write(configfile)
 
@@ -32,6 +85,18 @@ def config_file_exist(name):
     @Return boolean
     '''
     return os.path.isfile(name)
+
+def config_get(label):
+    '''
+    Read and return values
+    @Return default values
+    '''
+    config = configparser.ConfigParser()
+
+    if not config_file_exist('config.ini'):
+        generate_config_file()
+    config.read('config.ini')
+    return config[label]
 
 def config_get_default():
     '''

@@ -11,7 +11,7 @@ Execution
 This file contains some example usages and creations of multiple floorplans.
 
 FloorplanToBlender3d
-Copyright (C) 2019 Daniel Westberg
+Copyright (C) 2021 Daniel Westberg
 '''
 
 def simple_single(image_path, show=True):

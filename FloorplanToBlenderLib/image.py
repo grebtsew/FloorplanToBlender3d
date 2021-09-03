@@ -49,9 +49,14 @@ def remove_noise(img, noise_removal_threshold):
 def average(lst):
     return sum(lst) / len(lst)
 
+def detect_wall_rescale(reference_size, image):
+    '''
+    detect how much an image is to be rescaled
+    '''
+    image_wall_size = calculate_wall_width_average(img)
+    return calculate_scale_factor(reference_size,image_wall_size )
+
 def calculate_wall_width_average(img):
-    # Calculates average pixels per image wall
-    image = img
     # grayscale image
     gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
 

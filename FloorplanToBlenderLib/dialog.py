@@ -13,7 +13,7 @@ This file contains code for handling dialog and can be seen as a gui solution.
 TODO: This is currently unused
 
 FloorplanToBlender3d
-Copyright (C) 2019 Daniel Westberg
+Copyright (C) 2021 Daniel Westberg
 '''
 
 def figlet(text='Floorplan to Blender3d' , font='slant'):
@@ -37,7 +37,7 @@ def question(text, default):
 
 def end_copyright():
     print("")
-    print("FloorplanToBlender3d Copyright (C) 2019  Daniel Westberg")
+    print("FloorplanToBlender3d Copyright (C) 2021  Daniel Westberg")
     print("This program comes with ABSOLUTELY NO WARRANTY;")
     print("This is free software, and you are welcome to redistribute it under certain conditions;")
     print("")

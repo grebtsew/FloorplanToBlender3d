@@ -45,10 +45,24 @@ if __name__ == "__main__":
 
     supported_blender_formats = ('.obj','.x3d', '.gltf','.mtl','.webm','.blend','.vrml','.usd','.udim','.stl','.svg','.dxf','.fbx','.3ds')
     oformat = ".blend"
-    var = input("Please enter your prefered blender supported output format [default = .blend]: ")
+    var = input("Please enter your preferred blender supported output format [default = .blend]: ")
     if var:
         if var in supported_blender_formats:
             oformat = var
+
+
+    # Advanced Settings
+    settings = IO.config_get_settings()
+
+    var = input("Do you want to change advanced settings [default = No]: ")
+    if var:
+        var = input("Use noise removal [default = Yes]: ")
+        if var:
+            settings['noise_removal'] = True
+
+        var = input("Use auto image resize [default = No]: ")
+        if var:
+            settings['rescale_image'] = True
 
 
     print("")
@@ -56,6 +70,10 @@ if __name__ == "__main__":
     if var:
         print("Program stopped.")
         exit(0)
+
+    # Save new settings to config file
+    # Delete config file to reset it to default
+    IO.config_update('SETTINGS',settings)
 
     print("")
     print("Generate datafiles in folder: Data")
@@ -70,7 +88,7 @@ if __name__ == "__main__":
 
     # Ask how floorplans shall be structured
     if(len(image_paths) > 1):
-        print("There are currently "+ str(len(image_paths)) + " floorplans to create.")#, default multi execution is [ "+mode +" ]")
+        print("There are currently "+ str(len(image_paths)) + " floorplans to create.")# TODO:, default multi execution is [ "+mode +" ]")
 
         var = input("Do you want to build horizontal? [Yes] : ")
         if var:
