@@ -8,7 +8,7 @@ import math
 Floorplan to Blender
 
 FloorplanToBlender3d
-Copyright (C) 2019 Daniel Westberg
+Copyright (C) 2021 Daniel Westberg
 
 This code read data from a file and creates a 3d model of that data.
 RUN THIS CODE FROM BLENDER
@@ -130,7 +130,7 @@ def create_mat(rgb_color):
     return mat
 
 '''
-Main functionallity here!
+Main functionality here!
 '''
 def main(argv):
     '''
@@ -261,7 +261,7 @@ def create_floorplan(base_path,program_path, name=0):
         obj.parent = top_wall_parent
 
     top_wall_parent.parent = parent
-
+    
     '''
     Create Floor
     '''
@@ -290,7 +290,7 @@ def create_floorplan(base_path,program_path, name=0):
         obj.parent = room_parent
 
     room_parent.parent = parent
-
+    
 # Start
 if __name__ == "__main__":
     main(sys.argv)

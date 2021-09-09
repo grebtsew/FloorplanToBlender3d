@@ -29,21 +29,22 @@ def generate_all_files(img_path, info, position=None, rotation=None):
     # Get path to save data
     path = IO.create_new_floorplan_path(const.BASE_PATH)
 
-    settings = IO.config_get_settings()
+
+    settings = IO.config_get("SETTINGS")
     
-    image, gray = IO.read_image(const.PATH, settings)
+    image, gray = IO.read_image(img_path, settings)
 
-    shape = Floor(gray, info).shape
-    new_shape = Wall(gray, info).shape
+    shape = Floor(gray, path, info).shape
+    new_shape = Wall(gray, path, info).shape
+    TopWall(gray, path, info)
     shape = validate_shape(shape, new_shape)
-    new_shape = Room(gray, info).shape
+    new_shape = Room(gray, path, info).shape
     shape = validate_shape(shape, new_shape)
 
-    TopWall(gray, info)
-    Window(gray, info)
-    Door(gray, info)
+    #Window(gray, info)
+    #Door(gray, info)
 
-    generate_transform_file(img_path, info, position, rotation, shape)
+    generate_transform_file(img_path, path, info, position, rotation, shape)
 
     return path, shape
 
@@ -60,7 +61,7 @@ def validate_shape(old_shape, new_shape):
     shape[2] = max(old_shape[2], new_shape[2])
     return shape
 
-def generate_transform_file(img_path, info, position, rotation, shape):
+def generate_transform_file(img_path, path, info, position, rotation, shape):
     '''
     Generate transform of file
     A transform contains information about an objects position, rotation.
@@ -88,6 +89,6 @@ def generate_transform_file(img_path, info, position, rotation, shape):
     else:
         transform["shape"] = shape
 
-    IO.save_to_file(const.PATH+"transform", transform, info)
+    IO.save_to_file(path+"transform", transform, info)
 
     return transform

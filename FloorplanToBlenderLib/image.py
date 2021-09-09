@@ -22,7 +22,7 @@ def cv2_rescale_image(image,factor):
 def pil_to_cv2(image):
     return cv2.cvtColor(np.asarray(image), cv2.COLOR_RGB2BGR)
 
-def calculate_scale_factor(preferred, value):
+def calculate_scale_factor( preferred : float, value : float):
     return preferred/value
 
 def denoising(img):
@@ -53,8 +53,8 @@ def detect_wall_rescale(reference_size, image):
     '''
     detect how much an image is to be rescaled
     '''
-    image_wall_size = calculate_wall_width_average(img)
-    return calculate_scale_factor(reference_size,image_wall_size )
+    image_wall_size = calculate_wall_width_average(image)
+    return calculate_scale_factor(float(reference_size),image_wall_size )
 
 def calculate_wall_width_average(img):
     # grayscale image

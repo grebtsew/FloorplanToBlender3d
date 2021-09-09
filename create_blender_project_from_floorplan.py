@@ -52,7 +52,7 @@ if __name__ == "__main__":
 
 
     # Advanced Settings
-    settings = IO.config_get_settings()
+    settings = IO.config_get("SETTINGS")
 
     var = input("Do you want to change advanced settings [default = No]: ")
     if var:
@@ -127,6 +127,7 @@ if __name__ == "__main__":
      program_path, # Send this as parameter to script
      target_path
      ] +  data_paths)
+     
 
     # Transform .blend project to another format!
     if oformat != ".blend":
