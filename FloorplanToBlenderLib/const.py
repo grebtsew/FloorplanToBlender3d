@@ -14,3 +14,6 @@ BASE_PATH = "Data/"
 # Generators
 WALL_HEIGHT = 1
 PIXEL_TO_3D_SCALE = 100
+
+# Paths to models
+DOOR_MODEL = "Images/Models/door.png" # TODO: make dynamic folder solution

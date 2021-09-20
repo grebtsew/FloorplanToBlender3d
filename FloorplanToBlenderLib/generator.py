@@ -90,6 +90,7 @@ class Wall(Generator):
         wall_img = detect.wall_filter(gray)
         # detect walls
         boxes, img = detect.detectPreciseBoxes(wall_img)
+
         # Convert boxes to verts and faces
         self.verts, self.faces, wall_amount = transform.create_nx4_verts_and_faces(boxes, self.height, self.scale)
 
@@ -175,57 +176,49 @@ class Room(Generator):
 class Door(Generator):
        
     def generate(self, gray, info=False):
-        gray = detect.wall_filter(gray)
 
-        gray = ~gray
+    
+        doors = detect.doors(gray)
 
-        rooms, colored_rooms = detect.find_details(gray.copy())
-
-        gray_rooms =  cv2.cvtColor(colored_rooms,cv2.COLOR_BGR2GRAY)
-
-        # get box positions for rooms
-        boxes, gray_rooms = detect.detectPreciseBoxes(gray_rooms, gray_rooms)
-
-        doors = []
-
+        
+        
         #Create verts for door
-        verts, faces, door_amount = transform.create_nx4_verts_and_faces(doors, self.height, self.scale)
+        #verts, faces, door_amount = transform.create_nx4_verts_and_faces(doors, self.height, self.scale)
 
-        if(info):
-            print("Doors created : ", door_amount)
+        #if(info):
+        #    print("Doors created : ", door_amount)
 
-        IO.save_to_file(self.path+"doors_verts", self.verts, info)
-        IO.save_to_file(self.path+"doors_faces", self.faces, info)
-
-        return self.get_shape(self.verts, self.scale)
+        #IO.save_to_file(self.path+"doors_verts", self.verts, info)
+        #IO.save_to_file(self.path+"doors_faces", self.faces, info)
+        return None
+        #return self.get_shape(self.verts, self.scale)
 
 class Window(Generator):
        
     def generate(self, gray, info=False):
-        gray = detect.wall_filter(gray)
-        gray = ~gray
-        rooms, colored_rooms = detect.find_details(gray.copy())
-        gray_rooms =  cv2.cvtColor(colored_rooms,cv2.COLOR_BGR2GRAY)
 
-        # get box positions for rooms
-        boxes, gray_rooms = detect.detectPreciseBoxes(gray_rooms, gray_rooms)
-        windows = []
+        
+        windows = detect.windows(gray)
         
         '''
         Windows
         '''
+        
         #Create verts for window
         v, self.faces, window_amount1 = transform.create_nx4_verts_and_faces(windows, height=0.25, scale=self.scale) # create low piece
         v2, self.faces, window_amount2 = transform.create_nx4_verts_and_faces(windows, height=1, scale=self.scale, ground= 0.75) # create higher piece
 
+        # TODO: also fill small gaps between windows and walls
+        # TODO: also add verts for filling gaps
+
         self.verts = v
         self.verts.extend(v2)
-        window_amount = window_amount1 + window_amount2
+        parts_per_window = 4
+        window_amount = len(v)/parts_per_window
 
         if(info):
             print("Windows created : ", window_amount)
 
         IO.save_to_file(self.path+"windows_verts", self.verts, info)
         IO.save_to_file(self.path+"windows_faces", self.faces, info)
-
         return self.get_shape(self.verts, self.scale)

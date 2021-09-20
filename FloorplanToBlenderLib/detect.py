@@ -1,6 +1,9 @@
 import cv2
 import numpy as np
 from . import image
+from . import const
+from . import IO
+import math
 
 # Calculate (actual) size of apartment
 
@@ -251,8 +254,71 @@ def rectContainsOrAlmostContains(pt, box):
     return isInside or almostInside
 
 def doors(image):
-    # TODO: collect door model path
-    return feature_match(image, door_model)
+    _, model = IO.read_image(const.DOOR_MODEL)
+    _, doors = feature_match(image, model)
+    return doors
+
+def angle(vector1, vector2):
+    x1, y1 = vector1
+    x2, y2 = vector2
+    inner_product = x1*x2 + y1*y2
+    len1 = math.hypot(x1, y1)
+    len2 = math.hypot(x2, y2)
+    return math.acos(inner_product/(len1*len2))
+
+
+def windows(image):
+    _, model = IO.read_image(const.DOOR_MODEL)
+    windows, _ = feature_match(image, model)
+    return windows
+
+def rotate(origin, point, angle):
+    """
+    Rotate a point counterclockwise by a given angle around a given origin.
+
+    The angle should be given in radians.
+    """
+    ox, oy = origin
+    px, py = point
+
+    qx = ox + math.cos(angle) * (px - ox) - math.sin(angle) * (py - oy)
+    qy = oy + math.sin(angle) * (px - ox) + math.cos(angle) * (py - oy)
+    return qx, qy
+
+def calculate_best_matches_with_modulus_angle(match_list):
+    # calculate best matches by looking at the most significant feature distances
+    index1 = 0
+    index2 = 0
+    best = math.inf
+
+    i = 0
+    for match1 in match_list:
+        j = 0
+        for match2 in match_list:
+            
+            pos1_model = match_list[i][0]
+            pos2_model = match_list[j][0]
+
+            pos1_cap = match_list[i][1]
+            pos2_cap = match_list[j][1]
+
+            pt1 = (pos1_model[0]- pos2_model[0], pos1_model[1] -pos2_model[1])
+            pt2 = (pos1_cap[0]-pos2_cap[0], pos1_cap[1]-pos2_cap[1])
+            
+            if pt1 == pt2 or pt1 == (0,0) or pt2 == (0,0):
+                continue
+
+            ang = math.degrees(angle(pt1, pt2))
+            diff = ang % 30
+
+            if diff < best :
+                best = diff
+                index1 = i
+                index2 = j
+    
+            j += 1
+        i += 1
+    return index1, index2
 
 def feature_match(img1, img2):
     MIN_MATCHES = 20
@@ -403,25 +469,7 @@ def feature_match(img1, img2):
        
         # calculate scale, and rescale model
        
-        cap_size = [(pos1_cap[0]- pos2_cap[0]), (pos1_cap[1]- pos2_cap[1])]
-        model_size = [(pos1_model[0]-pos2_model[0]),(pos1_model[1]-pos2_model[1])]
-        """
-        if cap_size[1] != 0 or model_size[1] != 0:
-            
-            
-            x_scale = abs(cap_size[0]/model_size[0])
-            y_scale = abs(cap_size[1]/model_size[1])
-
-            scaled_upper_left = scale_model_point_to_origin( origin, upper_left,x_scale, y_scale)
-            scaled_upper_right = scale_model_point_to_origin( origin, upper_right,x_scale, y_scale)
-            scaled_down = scale_model_point_to_origin( origin, down,x_scale, y_scale)
-            scaled_pos1_model = scale_model_point_to_origin( origin, pos1_model,x_scale, y_scale)
-        else:
-        """
-        scaled_upper_left = upper_left
-        scaled_upper_right = upper_right
-        scaled_down = down
-        scaled_pos1_model = pos1_model
+       
         
         #print("distance diff x", model_size[0], cap_size[0])
         #print("distance diff y", model_size[1], cap_size[1])
@@ -436,15 +484,33 @@ def feature_match(img1, img2):
         #print("Angle between doors ", ang)
 
         # rotate door
-        new_upper_left = rotate(origin, scaled_upper_left, math.radians(ang))
-        new_upper_right = rotate(origin, scaled_upper_right, math.radians(ang))
-        new_down = rotate(origin, scaled_down, math.radians(ang))
+        new_upper_left = rotate(origin, upper_left, math.radians(ang))
+        new_upper_right = rotate(origin, upper_right, math.radians(ang))
+        new_down = rotate(origin, down, math.radians(ang))
         
-        new_pos1_model = rotate(origin, scaled_pos1_model, math.radians(ang))
+        new_pos1_model = rotate(origin, pos1_model, math.radians(ang))
 
         offset = (new_pos1_model[0]-pos1_model[0], new_pos1_model[1]-pos1_model[1])
 
-      
+        #cap_size = [(pos1_cap[0]- pos2_cap[0]), (pos1_cap[1]- pos2_cap[1])]
+        #model_size = [(pos1_model[0]-pos2_model[0]),(pos1_model[1]-pos2_model[1])]
+        """
+        if cap_size[1] != 0 or model_size[1] != 0:
+            
+            
+            x_scale = abs(cap_size[0]/model_size[0])
+            y_scale = abs(cap_size[1]/model_size[1])
+
+            scaled_upper_left = scale_model_point_to_origin( origin, upper_left,x_scale, y_scale)
+            scaled_upper_right = scale_model_point_to_origin( origin, upper_right,x_scale, y_scale)
+            scaled_down = scale_model_point_to_origin( origin, down,x_scale, y_scale)
+            scaled_pos1_model = scale_model_point_to_origin( origin, pos1_model,x_scale, y_scale)
+        else:
+        """
+        #scaled_upper_left = upper_left
+        #scaled_upper_right = upper_right
+        #scaled_down = down
+        #scaled_pos1_model = pos1_model
 
         # calculate dist!
         move_dist = (pos1_cap[0]- pos1_model[0],pos1_cap[1]- pos1_model[1])
@@ -454,39 +520,16 @@ def feature_match(img1, img2):
         moved_new_upper_right =(int(new_upper_right[0]+move_dist[0] - offset[0]), int(new_upper_right[1]+move_dist[1]-offset[1] ))
         moved_new_down =( int(new_down[0]+move_dist[0] - offset[0]),int(new_down[1]+move_dist[1]-offset[1]) )
 
-        img = cv2.circle(cap, moved_new_upper_left, radius=4, color=(0, 0, 0), thickness=5)
-        img = cv2.circle(cap, moved_new_upper_right, radius=4, color=(0, 0, 0), thickness=5)
-        img = cv2.circle(cap, moved_new_down, radius=4, color=(0, 0, 0), thickness=5)
+        #img = cv2.circle(cap, moved_new_upper_left, radius=4, color=(0, 0, 0), thickness=5)
+        #img = cv2.circle(cap, moved_new_upper_right, radius=4, color=(0, 0, 0), thickness=5)
+        #img = cv2.circle(cap, moved_new_down, radius=4, color=(0, 0, 0), thickness=5)
        
         list_of_proper_transformed_doors.append([moved_new_upper_left, moved_new_upper_right, moved_new_down])
      
-    # draw door points
-    for match in list_grouped_matches_filtered:
-        
-        img = cv2.circle(cap, (match[0][1][0],match[0][1][1]), radius=4, color=(0, 0, 0), thickness=5)
-
-
-    # Draw matches as lines
-    if len(matches) > MIN_MATCHES:
-
-        # draw first 15 matches.
-        cap = cv2.drawMatches(model, kp_model, cap, kp_frame,
-                            matches[:MIN_MATCHES], 0, flags=2)
-        # show result
-        cv2.imshow('frame', cap)
-        cv2.waitKey(0)
-
-    else:
-        print( "Not enough matches have been found - %d/%d" % (len(matches),
-                                                            MIN_MATCHES))
     
-    return list_of_proper_transformed_doors
 
-def windows(img, list_of_doors):
-
-    # grayscale
-    gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
-    gray = wall_filter(gray)
+    #gray = cv2.cvtColor(img1,cv2.COLOR_BGR2GRAY)
+    gray = wall_filter(img1)
     gray = ~gray
     rooms, colored_rooms = find_rooms(gray.copy())
     doors, colored_doors = find_details(gray.copy())
@@ -504,7 +547,7 @@ def windows(img, list_of_doors):
         # is a door inside box?
         isDoor = False
         _door = []
-        for door in list_of_doors:
+        for door in list_of_proper_transformed_doors:
             
             if points_are_inside_or_close_to_box(door,box):
                 isDoor = True
@@ -512,12 +555,12 @@ def windows(img, list_of_doors):
                 break
         
         if isDoor:
-            doors.append(_door)
+            doors.append((_door,box))
             continue
         
         # is window?
         x,y,w,h = cv2.boundingRect(box)
-        cropped = img[y:y+h, x:x+w]
+        cropped = img1[y:y+h, x:x+w]
         # bandpassfilter
         total = np.sum(cropped)
         colored = np.sum(cropped > 0)
@@ -527,7 +570,49 @@ def windows(img, list_of_doors):
         amount_of_colored = colored/total
         
         if(low < amount_of_colored < high):
-
             windows.append(box)
 
     return windows, doors
+
+def find_details(img, noise_removal_threshold=50, corners_threshold=0.01,
+               room_closing_max_length=130, gap_in_wall_max_threshold=5000,
+               gap_in_wall_min_threshold=10):
+
+    """
+    I have copied and changed this function some...
+    origin from
+    https://stackoverflow.com/questions/54274610/crop-each-of-them-using-opencv-python
+    @Param img: grey scale image of rooms, already eroded and doors removed etc.
+    @Param noise_removal_threshold: Minimal area of blobs to be kept.
+    @Param corners_threshold: Threshold to allow corners. Higher removes more of the house.
+    @Param room_closing_max_length: Maximum line length to add to close off open doors.
+    @Param gap_in_wall_threshold: Minimum number of pixels to identify component as room instead of hole in the wall.
+    @Return: rooms: list of numpy arrays containing boolean masks for each detected room
+             colored_house: A colored version of the input image, where each room has a random color.
+    """
+    assert 0 <= corners_threshold <= 1
+    # Remove noise left from door removal
+
+    mask = image.remove_noise(img, noise_removal_threshold)
+    img = ~mask
+
+    find_corners_and_draw_lines(img,corners_threshold,room_closing_max_length)
+
+    img, mask = mark_outside_black(img, mask)
+
+    # Find the connected components in the house
+    ret, labels = cv2.connectedComponents(img)
+    img = cv2.cvtColor(img,cv2.COLOR_GRAY2RGB)
+    unique = np.unique(labels)
+    details = []
+    for label in unique:
+        component = labels == label
+        if img[component].sum() == 0 or np.count_nonzero(component) < gap_in_wall_min_threshold or np.count_nonzero(component) > gap_in_wall_max_threshold:
+            color = 0
+        else:
+            details.append(component)
+            color = np.random.randint(0, 255, size=3)
+
+        img[component] = color
+
+    return details, img

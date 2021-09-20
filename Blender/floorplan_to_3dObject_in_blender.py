@@ -188,9 +188,9 @@ def create_floorplan(base_path,program_path, name=0):
     path_to_rooms_faces_file = program_path +"/" + base_path + "rooms_faces"
     path_to_rooms_verts_file = program_path +"/" + base_path + "rooms_verts"
 
-# TODO add window, doors here!
-#    path_to_windows_faces_file = program_path +"\\" + base_path + "windows_faces"
-#    path_to_windows_verts_file = program_path +"\\" + base_path + "windows_verts"
+# TODO add  doors here!
+    path_to_windows_faces_file = program_path +"\\" + base_path + "windows_faces"
+    path_to_windows_verts_file = program_path +"\\" + base_path + "windows_verts"
 
     path_to_transform_file = program_path+"/" + base_path + "transform"
 
@@ -262,6 +262,35 @@ def create_floorplan(base_path,program_path, name=0):
 
     top_wall_parent.parent = parent
     
+    '''
+    Create Windows
+    '''
+    # get image wall data
+    verts = read_from_file(path_to_windows_verts_file)
+    faces = read_from_file(path_to_windows_faces_file)
+
+    # Create mesh from data
+    boxcount = 0
+    wallcount = 0
+
+    # Create parent
+    wall_parent, wall_parent_mesh = init_object("Windows")
+
+    for walls in verts:
+        boxname = "Box"+str(boxcount)
+        for wall in walls:
+            wallname = "Wall"+str(wallcount)
+
+            obj = create_custom_mesh(
+                boxname + wallname, wall, faces, pos=pos, rot=rot, cen=cen, mat=create_mat((0.5, 0.5, 0.5, 1)))
+            obj.parent = wall_parent
+
+            wallcount += 1
+        boxcount += 1
+
+    wall_parent.parent = parent
+
+
     '''
     Create Floor
     '''
