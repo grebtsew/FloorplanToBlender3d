@@ -526,14 +526,13 @@ def feature_match(img1, img2):
        
         list_of_proper_transformed_doors.append([moved_new_upper_left, moved_new_upper_right, moved_new_down])
      
-    
-
-    #gray = cv2.cvtColor(img1,cv2.COLOR_BGR2GRAY)
     gray = wall_filter(img1)
     gray = ~gray
     rooms, colored_rooms = find_rooms(gray.copy())
     doors, colored_doors = find_details(gray.copy())
     gray_rooms =  cv2.cvtColor(colored_doors,cv2.COLOR_BGR2GRAY)
+
+    
 
     # get box positions for rooms
     boxes, gray_rooms = detectPreciseBoxes(gray_rooms)
@@ -572,7 +571,35 @@ def feature_match(img1, img2):
         if(low < amount_of_colored < high):
             windows.append(box)
 
-    return windows, doors
+    return rescale_rect(windows, 1.05), doors
+
+def rescale_rect(list_of_rects, scale_factor):
+    
+    rescaled_rects = []
+    for rect in list_of_rects:
+        x,y,w,h = cv2.boundingRect(rect)
+
+        center = (x+w/2, y+h/2)
+
+        # Get center diff
+        xdiff = abs(center[0] - x)
+        ydiff = abs(center[1]- y)
+        
+        xshift = xdiff * scale_factor
+        yshift = ydiff * scale_factor
+        
+        width = 2*xshift
+        height = 2*yshift
+
+        # upper left
+        new_x = x - abs(xdiff - xshift)
+        new_y = y - abs(ydiff - yshift)
+
+        # create contour
+        contour = np.array([[[new_x,new_y]], [[new_x+width,new_y]], [[new_x+width,new_y+height]], [[new_x,new_y+height]]]) 
+        rescaled_rects.append(contour)
+
+    return rescaled_rects
 
 def find_details(img, noise_removal_threshold=50, corners_threshold=0.01,
                room_closing_max_length=130, gap_in_wall_max_threshold=5000,

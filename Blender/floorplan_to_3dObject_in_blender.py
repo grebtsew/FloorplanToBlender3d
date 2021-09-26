@@ -176,21 +176,30 @@ def create_floorplan(base_path,program_path, name=0):
     
     #base_path = base_path.replace('/','\\')
 
-    path_to_wall_faces_file = program_path +"/" + base_path + "wall_faces"
-    path_to_wall_verts_file = program_path +"/" + base_path + "wall_verts"
+    path_to_wall_vertical_faces_file = program_path +"/" + base_path + "wall_vertical_faces"
+    path_to_wall_vertical_verts_file = program_path +"/" + base_path + "wall_vertical_verts"
 
-    path_to_top_wall_faces_file = program_path +"/" + base_path + "top_wall_faces"
-    path_to_top_wall_verts_file = program_path +"/" + base_path + "top_wall_verts"
+    path_to_wall_horizontal_faces_file = program_path +"/" + base_path + "wall_horizontal_faces"
+    path_to_wall_horizontal_verts_file = program_path +"/" + base_path + "wall_horizontal_verts"
 
     path_to_floor_faces_file = program_path +"/" +base_path + "floor_faces"
     path_to_floor_verts_file = program_path +"/" +base_path + "floor_verts"
 
-    path_to_rooms_faces_file = program_path +"/" + base_path + "rooms_faces"
-    path_to_rooms_verts_file = program_path +"/" + base_path + "rooms_verts"
+    path_to_rooms_faces_file = program_path +"/" + base_path + "room_faces"
+    path_to_rooms_verts_file = program_path +"/" + base_path + "room_verts"
 
-# TODO add  doors here!
-    path_to_windows_faces_file = program_path +"\\" + base_path + "windows_faces"
-    path_to_windows_verts_file = program_path +"\\" + base_path + "windows_verts"
+    path_to_doors_vertical_faces_file = program_path +"\\" + base_path + "door_vertical_faces"
+    path_to_doors_vertical_verts_file = program_path +"\\" + base_path + "door_vertical_verts"
+
+    path_to_doors_horizontal_faces_file = program_path +"\\" + base_path + "door_horizontal_faces"
+    path_to_doors_horizontal_verts_file = program_path +"\\" + base_path + "door_horizontal_verts"
+
+    path_to_windows_vertical_faces_file = program_path +"\\" + base_path + "window_vertical_faces"
+    path_to_windows_vertical_verts_file = program_path +"\\" + base_path + "window_vertical_verts"
+
+    path_to_windows_horizontal_faces_file = program_path +"\\" + base_path + "window_horizontal_faces"
+    path_to_windows_horizontal_verts_file = program_path +"\\" + base_path + "window_horizontal_verts"
+
 
     path_to_transform_file = program_path+"/" + base_path + "transform"
 
@@ -216,8 +225,8 @@ def create_floorplan(base_path,program_path, name=0):
     Create Walls
     '''
     # get image wall data
-    verts = read_from_file(path_to_wall_verts_file)
-    faces = read_from_file(path_to_wall_faces_file)
+    verts = read_from_file(path_to_wall_vertical_verts_file)
+    faces = read_from_file(path_to_wall_vertical_faces_file)
 
     # Create mesh from data
     boxcount = 0
@@ -238,36 +247,28 @@ def create_floorplan(base_path,program_path, name=0):
             wallcount += 1
         boxcount += 1
 
-    wall_parent.parent = parent
-
-    '''
-    Create Top  Walls
-    '''
     # get image top wall data
-    verts = read_from_file(path_to_top_wall_verts_file)
-    faces = read_from_file(path_to_top_wall_faces_file)
+    verts = read_from_file(path_to_wall_horizontal_verts_file)
+    faces = read_from_file(path_to_wall_horizontal_faces_file)
 
     # Create mesh from data
     boxcount = 0
     wallcount = 0
 
-    # Create parent
-    top_wall_parent, top_wall_parent_mesh = init_object("TopWalls")
-
     for i in range(0, len(verts)):
-        roomname = "TopWalls"+str(i)
+        roomname = "VertWalls"+str(i)
         obj = create_custom_mesh(
             roomname, verts[i], faces[i], pos=pos, rot=rot, cen=cen, mat=create_mat((0.5, 0.5, 0.5, 1)))
-        obj.parent = top_wall_parent
+        obj.parent = wall_parent
 
-    top_wall_parent.parent = parent
+    wall_parent.parent = parent
     
     '''
     Create Windows
     '''
     # get image wall data
-    verts = read_from_file(path_to_windows_verts_file)
-    faces = read_from_file(path_to_windows_faces_file)
+    verts = read_from_file(path_to_windows_vertical_verts_file)
+    faces = read_from_file(path_to_windows_vertical_faces_file)
 
     # Create mesh from data
     boxcount = 0
@@ -288,8 +289,66 @@ def create_floorplan(base_path,program_path, name=0):
             wallcount += 1
         boxcount += 1
 
+
+    # get windows
+    verts = read_from_file(path_to_windows_horizontal_verts_file)
+    faces = read_from_file(path_to_windows_horizontal_faces_file)
+
+    # Create mesh from data
+    boxcount = 0
+    wallcount = 0
+
+    for i in range(0, len(verts)):
+        roomname = "VertWindow"+str(i)
+        obj = create_custom_mesh(
+            roomname, verts[i], faces[i], pos=pos, rot=rot, cen=cen, mat=create_mat((0.5, 0.5, 0.5, 1)))
+        obj.parent = wall_parent
+
     wall_parent.parent = parent
 
+
+    '''
+    Create Doors
+    '''
+    # get image wall data
+    verts = read_from_file(path_to_doors_vertical_verts_file)
+    faces = read_from_file(path_to_doors_vertical_faces_file)
+
+    # Create mesh from data
+    boxcount = 0
+    wallcount = 0
+
+    # Create parent
+    wall_parent, wall_parent_mesh = init_object("Doors")
+
+    for walls in verts:
+        boxname = "Box"+str(boxcount)
+        for wall in walls:
+            wallname = "Wall"+str(wallcount)
+
+            obj = create_custom_mesh(
+                boxname + wallname, wall, faces, pos=pos, rot=rot, cen=cen, mat=create_mat((0.5, 0.5, 0.5, 1)))
+            obj.parent = wall_parent
+
+            wallcount += 1
+        boxcount += 1
+
+
+    # get windows
+    verts = read_from_file(path_to_doors_horizontal_verts_file)
+    faces = read_from_file(path_to_doors_horizontal_faces_file)
+
+    # Create mesh from data
+    boxcount = 0
+    wallcount = 0
+
+    for i in range(0, len(verts)):
+        roomname = "VertWindow"+str(i)
+        obj = create_custom_mesh(
+            roomname, verts[i], faces[i], pos=pos, rot=rot, cen=cen, mat=create_mat((0.5, 0.5, 0.5, 1)))
+        obj.parent = wall_parent
+
+    wall_parent.parent = parent
 
     '''
     Create Floor
@@ -323,11 +382,3 @@ def create_floorplan(base_path,program_path, name=0):
 # Start
 if __name__ == "__main__":
     main(sys.argv)
-
-    '''
-    TODO:
-    Create door
-    Create window
-    Create details
-    Save as param
-    '''

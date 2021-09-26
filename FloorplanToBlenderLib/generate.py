@@ -2,7 +2,7 @@ from . import detect
 from . import IO
 from . import transform
 from . import const
-from FloorplanToBlenderLib.generator import Door, Floor, Room, TopWall, Wall, Window
+from FloorplanToBlenderLib.generator import Door, Floor, Room, Wall, Window
 
 '''
 Generate
@@ -36,7 +36,6 @@ def generate_all_files(img_path, info, position=None, rotation=None):
 
     shape = Floor(gray, path, info).shape
     new_shape = Wall(gray, path, info).shape
-    TopWall(gray, path, info)
     shape = validate_shape(shape, new_shape)
     new_shape = Room(gray, path, info).shape
     shape = validate_shape(shape, new_shape)

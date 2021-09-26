@@ -5,6 +5,8 @@ from pyfiglet import Figlet
 f = Figlet(font='slant')
 print (f.renderText('Floorplan to Blender3d'))
 
+# TODO: remove objects outside of detected floor!
+
 '''
 Create Blender Project from floorplan
 This file contains a simple example implementation of creations of 3d models from
