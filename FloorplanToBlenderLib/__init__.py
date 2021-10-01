@@ -17,4 +17,4 @@ execution...
 
 '''
 
-__all__ = ['image', 'detect', 'generate', 'IO', 'transform', 'dialog', 'execution', 'const', 'generator']
+__all__ = ['image', 'detect', 'generate', 'IO', 'transform', 'dialog', 'execution', 'const', 'generator','draw']

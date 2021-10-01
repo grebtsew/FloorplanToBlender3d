@@ -15,7 +15,7 @@ FloorplanToBlender3d
 Copyright (C) 2021 Daniel Westberg
 '''
 
-def read_image(path, settings=None):
+def read_image(path,  settings=None):
     '''
     Read image, resize/rescale and return with grayscale
     '''
