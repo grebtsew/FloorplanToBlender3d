@@ -1,12 +1,9 @@
 from subprocess import check_output
-from FloorplanToBlenderLib import * # floorplan to blender lib
+from FloorplanToBlenderLib import IO,config,const,execution # floorplan to blender lib
 import os
 from pyfiglet import Figlet
-f = Figlet(font='slant')
-print (f.renderText('Floorplan to Blender3d'))
 
 # TODO: remove objects outside of detected floor!
-# TODO: fix horrible code!
 
 '''
 Create Blender Project from floorplan
@@ -17,12 +14,17 @@ FloorplanToBlender3d
 Copyright (C) 2021 Daniel Westberg
 '''
 if __name__ == "__main__":
+    f = Figlet(font='slant')
+    print (f.renderText('Floorplan to Blender3d'))
 
     # Set required default paths
     image_path = "" # path the your image
     blender_install_path = "" # path to blender installation folder
 
-    image_path, blender_install_path, file_structure, mode = IO.config_get_default()
+    data_folder = "Data/"
+    target_folder = "./Target"
+
+    image_path, blender_install_path, file_structure, mode = config.get_default()
 
     # Set other paths (don't need to change these)
     program_path = os.path.dirname(os.path.realpath(__file__)) 
@@ -46,15 +48,14 @@ if __name__ == "__main__":
     if var:
         blender_install_path = var
 
-    supported_blender_formats = ('.obj','.x3d', '.gltf','.mtl','.webm','.blend','.vrml','.usd','.udim','.stl','.svg','.dxf','.fbx','.3ds')
-    oformat = ".blend"
+    
+    outformat = config.get("DEFAULT")["out_format"]
     var = input("Please enter your preferred blender supported output format [default = .blend]: ")
-    if var:
-        if var in supported_blender_formats:
-            oformat = var
+    if var in const.SUPPORTED_BLENDER_FORMATS:
+        outformat = var
 
     # Advanced Settings
-    settings = IO.config_get("SETTINGS") # TODO: fix and update config file
+    settings = config.get("SETTINGS") # TODO: fix and update config file
 
     var = input("Do you want to change advanced settings [default = No]: ")
     if var == "Yes" or var == "yes":
@@ -74,14 +75,14 @@ if __name__ == "__main__":
 
     # Save new settings to config file
     # Delete config file to reset it to default
-    IO.config_update('SETTINGS',settings)
+    config.update('SETTINGS',settings)
 
     print("")
     print("Generate datafiles in folder: Data")
     print("")
     print("Clean datafiles")
 
-    IO.clean_data_folder("Data/")
+    IO.clean_data_folder(data_folder)
 
     # Generate data files
     data_paths = list()
@@ -102,33 +103,13 @@ if __name__ == "__main__":
     print("")
     print("Creates blender project")
     print("")
-
-    '''
-    #Debug print
-    print(str([blender_install_path,
-    "-noaudio", # this is an ubuntu hax fix
-     "--background",
-     "--python",
-     blender_script_path,
-     program_path # Send this as parameter to script
-     ] +  data_paths))
-     '''
     
-    if not os.path.exists('./Target'):
-        os.makedirs('./Target')
+    if not os.path.exists(target_folder):
+        os.makedirs(target_folder)
     
-    target_base = "./Target/floorplan"
-    target_path = target_base+".blend"
-    # If blender target file already exist, get next id
-    id = 0
-    if os.path.isfile(target_path):
-        for file in os.listdir("./Target"):
-            filename = os.fsdecode(file)
-            if filename.endswith(".blend"): 
-                id += 1
-        target_base += str(id)
-    
-    target_path = target_base+".blend"
+    target_base = target_folder+"/floorplan"
+    target_path = target_base+const.BASE_FORMAT
+    target_path = IO.get_next_target_base_name(target_base, target_path)+const.BASE_FORMAT
     
     # Create blender project
     check_output([blender_install_path,
@@ -141,16 +122,16 @@ if __name__ == "__main__":
      ] +  data_paths)
      
     # Transform .blend project to another format!
-    if oformat != ".blend":
+    if outformat != ".blend":
         check_output([blender_install_path,
             "-noaudio", # this is a dockerfile ubuntu hax fix
             "--background", 
             "--python", 
             "./Blender/blender_export_any.py",
             "."+target_path,
-            oformat,
-            target_base+oformat])
-        print("Object created at:"+program_path+"/"+target_base+oformat)
+            outformat,
+            target_base+outformat])
+        print("Object created at:"+program_path+"/"+target_base+outformat)
 
     print("Project created at: " + program_path + target_path)
     print("")

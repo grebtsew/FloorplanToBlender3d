@@ -8,6 +8,7 @@ from . import transform
 from . import IO
 from . import const
 from . import draw
+from . import calculate
 
 class Generator():
     __metaclass__ = abc.ABCMeta
@@ -166,40 +167,23 @@ class Room(Generator):
 
         return self.get_shape(self.verts, self.scale)
 
-def get_box_center(box):
-    x,y,w,h = cv2.boundingRect(box)
-    return (x+w/2, y+h/2)
-
-def euclidean_distance_2d(p1,p2):
-    
-    return math.sqrt(abs(math.pow(p1[0]-p2[0],2) - math.pow(p1[1]-p2[1],2)))
-
-def magnitude(point):
-    return math.sqrt(point[0]*point[0] + point[1]*point[1])
-
-def normalize(normal):
-    mag = magnitude(normal)
-    for i, val in enumerate(normal):
-        normal[i] = val/mag
-    return normal
-
-
 class Door(Generator):
        
-    def __init__(self, gray, path, image_path, info=False):
+    def __init__(self, gray, path, image_path, scale_factor, info=False):
         self.image_path = image_path
+        self.scale_factor = scale_factor
         super().__init__( gray, path, info)
 
     def get_point_the_furthest_away(self, door_features, door_box):
         best_point = None
         dist = 0
-        center = get_box_center(door_box)
+        center = calculate.box_center(door_box)
         for f in door_features:
             if best_point is None:
                 best_point = f
-                dist = abs(euclidean_distance_2d(center, f)) 
+                dist = abs(calculate.euclidean_distance_2d(center, f)) 
             else:
-                distance = abs(euclidean_distance_2d(center, f))
+                distance = abs(calculate.euclidean_distance_2d(center, f))
                 if dist < distance :
                     best_point = f
                     dist = distance
@@ -220,9 +204,9 @@ class Door(Generator):
         for fp in box_side_points:
             if best_point is None:
                 best_point = fp
-                dists = euclidean_distance_2d(wall_point, fp)
+                dists = calculate.euclidean_distance_2d(wall_point, fp)
             else:
-                distance = euclidean_distance_2d(wall_point, fp)
+                distance = calculate.euclidean_distance_2d(wall_point, fp)
                 if distance > dists:
                     best_point = fp
                     dists = distance
@@ -232,7 +216,7 @@ class Door(Generator):
 
     def generate(self, gray, info=False):
 
-        doors = detect.doors(self.image_path)
+        doors = detect.doors(self.image_path, self.scale_factor)
 
         w = 4
         h = 1
@@ -253,7 +237,7 @@ class Door(Generator):
             normal_line = [space_point[0] - closest_box_point[0], space_point[1]-closest_box_point[1]] # TODO: fix this properly!
        
             # Normalize point
-            normal_line = normalize(normal_line)
+            normal_line = calculate.normalize_2d(normal_line)
      
         
             # Create door contour
@@ -316,14 +300,15 @@ class Door(Generator):
         return self.get_shape(self.verts, self.scale)
 
 class Window(Generator):
-    def __init__(self, gray, path, image_path, info=False):
+    def __init__(self, gray, path, image_path, scale_factor, info=False):
         self.image_path = image_path
+        self.scale_factor = scale_factor
         super().__init__( gray, path, info)
 
     def generate(self, gray, info=False):
 
         
-        windows = detect.windows(self.image_path)
+        windows = detect.windows(self.image_path, self.scale_factor)
         
         '''
         Windows

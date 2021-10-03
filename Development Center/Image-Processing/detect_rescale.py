@@ -72,6 +72,9 @@ def calculate_wall_width_average(img):
                 shortest = w 
             filtered_boxes.append(shortest)
     # 2. calculate average
+
+
+
     return Average(filtered_boxes)
 
 def Average(lst):

@@ -54,6 +54,8 @@ def detect_wall_rescale(reference_size, image): # TODO: print if image is rescal
     detect how much an image is to be rescaled
     '''
     image_wall_size = calculate_wall_width_average(image)
+    if image_wall_size is None: # No walls could be found!
+        return None
     return calculate_scale_factor(float(reference_size),image_wall_size )
 
 def calculate_wall_width_average(img):
@@ -86,4 +88,8 @@ def calculate_wall_width_average(img):
                 shortest = w 
             filtered_boxes.append(shortest)
     # 2. calculate average
+
+    if len(filtered_boxes) == 0: # if no good boxes could be found, we use default one
+        return None
+
     return average(filtered_boxes) # TODO: error here if no 4 corner boxes were found, fix this!

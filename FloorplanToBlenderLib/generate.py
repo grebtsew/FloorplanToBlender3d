@@ -2,6 +2,7 @@ from . import detect
 from . import IO
 from . import transform
 from . import const
+from . import config
 from FloorplanToBlenderLib.generator import Door, Floor, Room, Wall, Window
 
 '''
@@ -30,9 +31,9 @@ def generate_all_files(img_path, info, position=None, rotation=None):
     path = IO.create_new_floorplan_path(const.BASE_PATH)
 
 
-    settings = IO.config_get("SETTINGS")
+    settings = config.get("SETTINGS")
     
-    image, gray = IO.read_image(img_path, settings)
+    image, gray, scale_factor = IO.read_image(img_path, settings)
 
     shape = Floor(gray, path, info).shape
     new_shape = Wall(gray, path, info).shape
@@ -40,8 +41,8 @@ def generate_all_files(img_path, info, position=None, rotation=None):
     new_shape = Room(gray, path, info).shape
     shape = validate_shape(shape, new_shape)
 
-    Window(gray, path, img_path, info)
-    Door(gray, path, img_path, info)
+    Window(gray, path, img_path, scale_factor, info)
+    Door(gray, path, img_path, scale_factor, info)
 
     generate_transform_file(img_path, path, info, position, rotation, shape)
 

@@ -14,21 +14,26 @@ def image(image, title="FTBL", wait=0):
     cv2.imshow(title, image)
     cv2.waitKey(wait)
 
-def pointsOnImage(image, points):
+def points(image, points):
     for point in points:
         image = cv2.circle(image, point, radius=4, color=(0, 0, 0), thickness=5)
     return image
 
-def contoursOnImage(image, contours):
+def contours(image, contours):
     return cv2.drawContours(image, contours, -1, (0,255,0), 3)
   
+def lines(image, lines):
+    for line in lines:
+        image = cv2.polylines(image, line, True, (0,0,255), 1, cv2.LINE_AA)       
+    return image
+
 def doors(img, doors):
     for door in doors:
-        img = pointsOnImage(img, door[0])
-        img = boxesOnImage(img, door[1])
+        img = points(img, door[0])
+        img = boxes(img, door[1])
     return img
 
-def boxesOnImage(image, boxes, text=""):
+def boxes(image, boxes, text=""):
     """
     Draw boxes on images
     Boxes is a list of boxes
@@ -40,7 +45,7 @@ def boxesOnImage(image, boxes, text=""):
         cv2.putText(image, str(text), (x, y), 7, 10,(255,0,0))
     return image
 
-def colorMap(img, mapping=cv2.COLORMAP_HSV):
+def colormap(img, mapping=cv2.COLORMAP_HSV):
     """
     ColorMap grayscale image
     Return colormapped image
@@ -52,7 +57,7 @@ def colorMap(img, mapping=cv2.COLORMAP_HSV):
     """
     return cv2.applyColorMap(img,mapping)
 
-def histogram(img, title="Histogram"):
+def histogram(img, title="Histogram", wait=0):
     """
     Draw histogram of image data
     """
@@ -62,4 +67,7 @@ def histogram(img, title="Histogram"):
     ax1.axis('off')
     ax2.plot(hist[1][:-1], hist[0], lw=2)
     ax2.set_title(title)
-    plt.show()
+    if wait == 0:
+        plt.show()
+    else:
+        plt.pause(wait)

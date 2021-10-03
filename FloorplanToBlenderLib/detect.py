@@ -4,6 +4,7 @@ from . import image
 from . import const
 from . import IO
 from . import draw
+from . import image
 import math
 
 # Calculate (actual) size of apartment
@@ -259,19 +260,20 @@ def rectContainsOrAlmostContains(pt, box):
 
     return isInside or almostInside
 
-def doors(image_path):
+def doors(image_path, scale_factor):
     model = cv2.imread(const.DOOR_MODEL,0)
-    image = cv2.imread(image_path,0)
-    
-    _, doors = feature_match(image, model)
+    img = cv2.imread(image_path,0)
+
+    img = image.cv2_rescale_image(img, scale_factor)
+    _, doors = feature_match(img, model)
     return doors
 
-def windows(image_path):
-    _, model = IO.read_image(const.DOOR_MODEL)
+def windows(image_path, scale_factor):
     model = cv2.imread(const.DOOR_MODEL,0)
-    
-    image = cv2.imread(image_path,0)
-    windows, _ = feature_match(image, model)   
+    img = cv2.imread(image_path,0)
+
+    img = image.cv2_rescale_image(img, scale_factor)
+    windows, _ = feature_match(img, model)   
     return windows
 
 def rotate(origin, point, angle):
@@ -415,8 +417,6 @@ def feature_match(img1, img2):
         if len(match_group) >= 4 :
             list_grouped_matches_filtered.append(match_group)
         
-    #print(list_grouped_matches_filtered, len(list_grouped_matches_filtered))
-    
 
     # find corners of door in model image
     corners = cv2.goodFeaturesToTrack(model, 3, 0.01, 20)

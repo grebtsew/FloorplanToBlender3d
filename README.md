@@ -1,5 +1,5 @@
 <p align="center">
-  <img width="460" height="300" src="Images/logo.png">
+  <img width="460" height="300" src="Images/Logo/logo.png">
 </p>
 
 ![license](https://img.shields.io/github/license/grebtsew/FloorplanToBlender3d)
@@ -9,7 +9,7 @@
 <!-- TODO Add more relevant badges! -->
 
 
-![Demo](Images/powerpoint.gif)
+![Demo](Images/Demos/powerpoint.gif)
 
 <details>
   <summary><strong>Table of Contents</strong> (click to expand)</summary>
@@ -122,14 +122,14 @@ This tutorial takes you through the execution of this program.
 ## Create Floorplan in Blender3d
 Here we demo the program. First of we need a floorplan image to process.
 We use `example.png`, see below:
-![Floorplanexample](Images/example.png)
+![Floorplanexample](Images/Examples/example.png)
 
 Next up we execute our script and answer the questions:
-![RunScriptDemo](Images/RunScriptDemo.gif)
+![RunScriptDemo](Images/Demos/RunScriptDemo.gif)
 
 Finally we can open the newly created floorplan.blender file and see the result:
 
-![OpenFiledemo](Images/OpenFiledemo.gif)
+![OpenFiledemo](Images/Demos/OpenFiledemo.gif)
 
 <span style="color:blue">**NOTE**</span>: This demo only uses default settings. For instance coloring is by default random.
 
@@ -137,7 +137,7 @@ Finally we can open the newly created floorplan.blender file and see the result:
 ## Floorplan To Blender Server with Swagger API
 The server implementation comes with an automatically generated [Swagger API](https://swagger.io/) page.
 
-![swagger](Images/swaggerdemo.gif)
+![swagger](Images/Demos/swaggerdemo.gif)
 
 ## Usages in other applications
 If you are interested in code for these demos let me know and I will release the source code.
@@ -145,25 +145,25 @@ If you are interested in code for these demos let me know and I will release the
 ### AR foundation place floorplans in world
 
 <p align="left">
-  <img width="460" height="300" src="Images/ardemo.gif">
+  <img width="460" height="300" src="Images/Demos/ardemo.gif">
 </p>
 
 ### AR foundation real life scaling of floorplans
 
 <p align="left">
-  <img width="460" height="300" src="Images/arrealifedemo.gif">
+  <img width="460" height="300" src="Images/Demos/arrealifedemo.gif">
 </p>
 
 ### AR foundation interior design of floorplans
 
 <p align="left">
-  <img width="460" height="300" src="Images/PlaceObjectInRoomDemo.gif">
+  <img width="460" height="300" src="Images/Demos/PlaceObjectInRoomDemo.gif">
 </p>
 
 ### AR foundation with MediaPipe Hands interactions
 
 <p align="left">
-  <img width="460" height="300" src="Images/InteractDemo.gif">
+  <img width="460" height="300" src="Images/Demos/InteractDemo.gif">
 </p>
 
 # Documentation
