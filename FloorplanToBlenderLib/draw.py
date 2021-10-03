@@ -19,6 +19,15 @@ def pointsOnImage(image, points):
         image = cv2.circle(image, point, radius=4, color=(0, 0, 0), thickness=5)
     return image
 
+def contoursOnImage(image, contours):
+    return cv2.drawContours(image, contours, -1, (0,255,0), 3)
+  
+def doors(img, doors):
+    for door in doors:
+        img = pointsOnImage(img, door[0])
+        img = boxesOnImage(img, door[1])
+    return img
+
 def boxesOnImage(image, boxes, text=""):
     """
     Draw boxes on images
@@ -27,7 +36,7 @@ def boxesOnImage(image, boxes, text=""):
     """
     for box in boxes:
         (x, y, w, h) = cv2.boundingRect(box)
-        cv2.rectangle(image, (x, y), (x + w, y + h), (0,0,255), 1)
+        cv2.rectangle(image, (x, y), (x + w, y + h), (0,0,255), 5)
         cv2.putText(image, str(text), (x, y), 7, 10,(255,0,0))
     return image
 

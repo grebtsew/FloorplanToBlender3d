@@ -40,8 +40,8 @@ def generate_all_files(img_path, info, position=None, rotation=None):
     new_shape = Room(gray, path, info).shape
     shape = validate_shape(shape, new_shape)
 
-    Window(gray, path, info)
-    Door(gray, path, info)
+    Window(gray, path, img_path, info)
+    Door(gray, path, img_path, info)
 
     generate_transform_file(img_path, path, info, position, rotation, shape)
 

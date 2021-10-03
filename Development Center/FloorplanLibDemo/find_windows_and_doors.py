@@ -125,6 +125,10 @@ def rectContainsOrAlmostContains(pt, box):
 
     return isInside or almostInside
 
+def scale_model_point_to_origin( origin, point,x_scale, y_scale):
+    dx, dy = (point[0] - origin[0], point[1] - origin[1])
+    return (dx * x_scale, dy * y_scale)
+
 def feature_detect(img):
     """
     Find features in image
@@ -266,14 +270,6 @@ def feature_match(img1, img2):
 
     origin = (int((max_x+min_x)/2), int((min_y+max_y)/2))
 
-    """
-    # Show corners
-    for corner in corners:
-        x,y = corner.ravel()
-        cv2.circle(model,(x,y),5,0,5)
-    cv2.imshow('dst',model)
-    cv2.waitKey(0)   
-    """
     list_of_proper_transformed_doors = []
 
     doors_actual_pos = []
@@ -290,35 +286,8 @@ def feature_match(img1, img2):
         pos1_cap = match[index1][1]
         pos2_cap = match[index2][1]
 
-       
-        # calculate scale, and rescale model
-       
-        cap_size = [(pos1_cap[0]- pos2_cap[0]), (pos1_cap[1]- pos2_cap[1])]
-        model_size = [(pos1_model[0]-pos2_model[0]),(pos1_model[1]-pos2_model[1])]
-        """
-        if cap_size[1] != 0 or model_size[1] != 0:
-            
-            
-            x_scale = abs(cap_size[0]/model_size[0])
-            y_scale = abs(cap_size[1]/model_size[1])
-
-            scaled_upper_left = scale_model_point_to_origin( origin, upper_left,x_scale, y_scale)
-            scaled_upper_right = scale_model_point_to_origin( origin, upper_right,x_scale, y_scale)
-            scaled_down = scale_model_point_to_origin( origin, down,x_scale, y_scale)
-            scaled_pos1_model = scale_model_point_to_origin( origin, pos1_model,x_scale, y_scale)
-        else:
-        """
-        scaled_upper_left = upper_left
-        scaled_upper_right = upper_right
-        scaled_down = down
-        scaled_pos1_model = pos1_model
-        
-        #print("distance diff x", model_size[0], cap_size[0])
-        #print("distance diff y", model_size[1], cap_size[1])
-
         pt1 = (pos1_model[0]- pos2_model[0], pos1_model[1] -pos2_model[1])
         pt2 = (pos1_cap[0]-pos2_cap[0], pos1_cap[1]-pos2_cap[1])
-        
         
         ang = math.degrees(angle(pt1, pt2))
         #print(index1, index2, ang)
@@ -326,23 +295,48 @@ def feature_match(img1, img2):
         #print("Angle between doors ", ang)
 
         # rotate door
-        new_upper_left = rotate(origin, scaled_upper_left, math.radians(ang))
-        new_upper_right = rotate(origin, scaled_upper_right, math.radians(ang))
-        new_down = rotate(origin, scaled_down, math.radians(ang))
+        new_upper_left = rotate(origin, upper_left, math.radians(ang))
+        new_upper_right = rotate(origin, upper_right, math.radians(ang))
+        new_down = rotate(origin, down, math.radians(ang))
         
-        new_pos1_model = rotate(origin, scaled_pos1_model, math.radians(ang))
+        new_pos1_model = rotate(origin, pos1_model, math.radians(ang))
 
-        offset = (new_pos1_model[0]-pos1_model[0], new_pos1_model[1]-pos1_model[1])
+        # calculate scale, and rescale model
+        """
+        new_cap1 = rotate(origin, pos1_cap, math.radians(ang))
+        new_cap2 = rotate(origin, pos2_cap, math.radians(ang))
+        new_model1 = rotate(origin, pos1_model, math.radians(ang))
+        new_model2 = rotate(origin, pos2_model, math.radians(ang))
 
-      
+        cap_size = [(new_cap1[0]- new_cap2[0]), (new_cap1[1]- new_cap2[1])]
+        model_size = [(new_model1[0]-new_model2[0]),(new_model1[1]-new_model2[1])]
+        
+        
+        if cap_size[1] != 0 or model_size[1] != 0:
+            x_scale = abs(cap_size[0]/model_size[0])
+            y_scale = abs(cap_size[1]/model_size[1])
+            print(x_scale, y_scale)
+            scaled_upper_left = scale_model_point_to_origin( origin, new_upper_left,x_scale, y_scale)
+            #scaled_upper_right = scale_model_point_to_origin( origin, new_upper_right,x_scale, y_scale)
+            #scaled_down = scale_model_point_to_origin( origin, new_down,x_scale, y_scale)
+            scaled_pos1_model = scale_model_point_to_origin( origin, new_pos1_model,x_scale, y_scale)
+        else:
+        """
+        scaled_upper_left = new_upper_left
+        scaled_upper_right = new_upper_right
+        scaled_down = new_down
+        scaled_pos1_model = new_pos1_model
+    
+
+        offset = (scaled_pos1_model[0]-pos1_model[0], scaled_pos1_model[1]-pos1_model[1])
 
         # calculate dist!
         move_dist = (pos1_cap[0]- pos1_model[0],pos1_cap[1]- pos1_model[1])
         
         # draw corners!
-        moved_new_upper_left = (int(new_upper_left[0]+move_dist[0] - offset[0]), int(new_upper_left[1]+move_dist[1]-offset[1] ))
-        moved_new_upper_right =(int(new_upper_right[0]+move_dist[0] - offset[0]), int(new_upper_right[1]+move_dist[1]-offset[1] ))
-        moved_new_down =( int(new_down[0]+move_dist[0] - offset[0]),int(new_down[1]+move_dist[1]-offset[1]) )
+        moved_new_upper_left = (int(scaled_upper_left[0]+move_dist[0] - offset[0]), int(scaled_upper_left[1]+move_dist[1]-offset[1] ))
+        moved_new_upper_right =(int(scaled_upper_right[0]+move_dist[0] - offset[0]), int(scaled_upper_right[1]+move_dist[1]-offset[1] ))
+        moved_new_down =( int(scaled_down[0]+move_dist[0] - offset[0]),int(scaled_down[1]+move_dist[1]-offset[1]) )
 
         img = cv2.circle(cap, moved_new_upper_left, radius=4, color=(0, 0, 0), thickness=5)
         img = cv2.circle(cap, moved_new_upper_right, radius=4, color=(0, 0, 0), thickness=5)

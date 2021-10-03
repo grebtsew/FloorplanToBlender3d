@@ -49,7 +49,7 @@ def remove_noise(img, noise_removal_threshold):
 def average(lst):
     return sum(lst) / len(lst)
 
-def detect_wall_rescale(reference_size, image):
+def detect_wall_rescale(reference_size, image): # TODO: print if image is rescaled!
     '''
     detect how much an image is to be rescaled
     '''
@@ -86,4 +86,4 @@ def calculate_wall_width_average(img):
                 shortest = w 
             filtered_boxes.append(shortest)
     # 2. calculate average
-    return average(filtered_boxes)
+    return average(filtered_boxes) # TODO: error here if no 4 corner boxes were found, fix this!

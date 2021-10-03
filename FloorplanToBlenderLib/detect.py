@@ -51,6 +51,7 @@ def detectPreciseBoxes(detect_img, output_img = None, color = [100,100,0]):
     res = []
 
     contours, hierarchy = cv2.findContours(detect_img,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
+   
     #area = sorted(contours, key=cv2.contourArea, reverse=True)
 
     largest_contour_area = 0
@@ -100,8 +101,6 @@ def find_corners_and_draw_lines(img, corners_threshold, room_closing_max_length)
                 cv2.line(img, (x, y1[0]), (x, y2[0]), color, 1)
     return img
 
-
-
 def mark_outside_black(img, mask):
     """
     Mark white background as black
@@ -117,7 +116,6 @@ def mark_outside_black(img, mask):
     cv2.fillPoly(mask, [biggest_contour], 255)
     img[mask == 0] = 0
     return img, mask
-
 
 def find_rooms(img, noise_removal_threshold=50, corners_threshold=0.01,
                room_closing_max_length=130,
@@ -215,7 +213,6 @@ def detectOuterContours(detect_img, output_img = None, color = [255, 255, 255]):
         final = cv2.drawContours(output_img, [approx], 0, color)
     return approx, output_img
 
-
 def rectContains(rect,pt):
     """
     Count if Rect contains point
@@ -232,6 +229,14 @@ def points_are_inside_or_close_to_box(door,box):
         if rectContainsOrAlmostContains(point, box):
             return True
             break
+
+def angle(vector1, vector2):
+    x1, y1 = vector1
+    x2, y2 = vector2
+    inner_product = x1*x2 + y1*y2
+    len1 = math.hypot(x1, y1)
+    len2 = math.hypot(x2, y2)
+    return math.acos(inner_product/(len1*len2))
 
 def rectContainsOrAlmostContains(pt, box):
 
@@ -254,32 +259,19 @@ def rectContainsOrAlmostContains(pt, box):
 
     return isInside or almostInside
 
-def doors(image):
+def doors(image_path):
     model = cv2.imread(const.DOOR_MODEL,0)
-    image = cv2.imread("./Images/example.png",0)
+    image = cv2.imread(image_path,0)
+    
     _, doors = feature_match(image, model)
     return doors
 
-def angle(vector1, vector2):
-    x1, y1 = vector1
-    x2, y2 = vector2
-    inner_product = x1*x2 + y1*y2
-    len1 = math.hypot(x1, y1)
-    len2 = math.hypot(x2, y2)
-    return math.acos(inner_product/(len1*len2))
-
-def windows(image):
+def windows(image_path):
     _, model = IO.read_image(const.DOOR_MODEL)
     model = cv2.imread(const.DOOR_MODEL,0)
-    image = cv2.imread("./Images/example.png",0)
-    windows, _ = feature_match(image, model)
-    if True:
-        #gray = draw.pointsOnImage(gray, flatten(list_of_proper_transformed_doors))
-        #print(windows)
-        #gray= draw.boxesOnImage(image, windows)
-        #draw.image(image)
-        pass
-        
+    
+    image = cv2.imread(image_path,0)
+    windows, _ = feature_match(image, model)   
     return windows
 
 def rotate(origin, point, angle):
@@ -294,6 +286,10 @@ def rotate(origin, point, angle):
     qx = ox + math.cos(angle) * (px - ox) - math.sin(angle) * (py - oy)
     qy = oy + math.sin(angle) * (px - ox) + math.cos(angle) * (py - oy)
     return qx, qy
+
+def scale_model_point_to_origin( origin, point,x_scale, y_scale):
+            dx, dy = (point[0] - origin[0], point[1] - origin[1])
+            return (dx * x_scale, dy * y_scale)
 
 def calculate_best_matches_with_modulus_angle(match_list):
     # calculate best matches by looking at the most significant feature distances
@@ -475,35 +471,9 @@ def feature_match(img1, img2):
         # calculate actual position from offsets with rotation!
         pos1_cap = match[index1][1]
         pos2_cap = match[index2][1]
-       
-        # calculate scale, and rescale model
-       
-        cap_size = [(pos1_cap[0]- pos2_cap[0]), (pos1_cap[1]- pos2_cap[1])]
-        model_size = [(pos1_model[0]-pos2_model[0]),(pos1_model[1]-pos2_model[1])]
-        """
-        if cap_size[1] != 0 or model_size[1] != 0:
-            
-            
-            x_scale = abs(cap_size[0]/model_size[0])
-            y_scale = abs(cap_size[1]/model_size[1])
-
-            scaled_upper_left = scale_model_point_to_origin( origin, upper_left,x_scale, y_scale)
-            scaled_upper_right = scale_model_point_to_origin( origin, upper_right,x_scale, y_scale)
-            scaled_down = scale_model_point_to_origin( origin, down,x_scale, y_scale)
-            scaled_pos1_model = scale_model_point_to_origin( origin, pos1_model,x_scale, y_scale)
-        else:
-        """
-        scaled_upper_left = upper_left
-        scaled_upper_right = upper_right
-        scaled_down = down
-        scaled_pos1_model = pos1_model
-        
-        #print("distance diff x", model_size[0], cap_size[0])
-        #print("distance diff y", model_size[1], cap_size[1])
 
         pt1 = (pos1_model[0]- pos2_model[0], pos1_model[1] -pos2_model[1])
         pt2 = (pos1_cap[0]-pos2_cap[0], pos1_cap[1]-pos2_cap[1])
-        
         
         ang = math.degrees(angle(pt1, pt2))
         #print(index1, index2, ang)
@@ -511,37 +481,63 @@ def feature_match(img1, img2):
         #print("Angle between doors ", ang)
 
         # rotate door
-        new_upper_left = rotate(origin, scaled_upper_left, math.radians(ang))
-        new_upper_right = rotate(origin, scaled_upper_right, math.radians(ang))
-        new_down = rotate(origin, scaled_down, math.radians(ang))
+        new_upper_left = rotate(origin, upper_left, math.radians(ang))
+        new_upper_right = rotate(origin, upper_right, math.radians(ang))
+        new_down = rotate(origin, down, math.radians(ang))
         
-        new_pos1_model = rotate(origin, scaled_pos1_model, math.radians(ang))
+        new_pos1_model = rotate(origin, pos1_model, math.radians(ang))
 
-        offset = (new_pos1_model[0]-pos1_model[0], new_pos1_model[1]-pos1_model[1])
+        # calculate scale, and rescale model
+        """
+        # TODO: fix this scaling problem!
+        new_cap1 = rotate(origin, pos1_cap, math.radians(ang))
+        new_cap2 = rotate(origin, pos2_cap, math.radians(ang))
+        new_model1 = rotate(origin, pos1_model, math.radians(ang))
+        new_model2 = rotate(origin, pos2_model, math.radians(ang))
 
-      
+        cap_size = [(new_cap1[0]- new_cap2[0]), (new_cap1[1]- new_cap2[1])]
+        model_size = [(new_model1[0]-new_model2[0]),(new_model1[1]-new_model2[1])]
+        
+        
+        if cap_size[1] != 0 or model_size[1] != 0:
+            x_scale = abs(cap_size[0]/model_size[0])
+            y_scale = abs(cap_size[1]/model_size[1])
+            print(x_scale, y_scale)
+            scaled_upper_left = scale_model_point_to_origin( origin, new_upper_left,x_scale, y_scale)
+            #scaled_upper_right = scale_model_point_to_origin( origin, new_upper_right,x_scale, y_scale)
+            #scaled_down = scale_model_point_to_origin( origin, new_down,x_scale, y_scale)
+            scaled_pos1_model = scale_model_point_to_origin( origin, new_pos1_model,x_scale, y_scale)
+        else:
+        """
+        scaled_upper_left = new_upper_left
+        scaled_upper_right = new_upper_right
+        scaled_down = new_down
+        scaled_pos1_model = new_pos1_model
+    
+
+        offset = (scaled_pos1_model[0]-pos1_model[0], scaled_pos1_model[1]-pos1_model[1])
 
         # calculate dist!
         move_dist = (pos1_cap[0]- pos1_model[0],pos1_cap[1]- pos1_model[1])
         
         # draw corners!
-        moved_new_upper_left = (int(new_upper_left[0]+move_dist[0] - offset[0]), int(new_upper_left[1]+move_dist[1]-offset[1] ))
-        moved_new_upper_right =(int(new_upper_right[0]+move_dist[0] - offset[0]), int(new_upper_right[1]+move_dist[1]-offset[1] ))
-        moved_new_down =( int(new_down[0]+move_dist[0] - offset[0]),int(new_down[1]+move_dist[1]-offset[1]) )
+        moved_new_upper_left = (int(scaled_upper_left[0]+move_dist[0] - offset[0]), int(scaled_upper_left[1]+move_dist[1]-offset[1] ))
+        moved_new_upper_right =(int(scaled_upper_right[0]+move_dist[0] - offset[0]), int(scaled_upper_right[1]+move_dist[1]-offset[1] ))
+        moved_new_down =( int(scaled_down[0]+move_dist[0] - offset[0]),int(scaled_down[1]+move_dist[1]-offset[1]) )
 
-        #img = cv2.circle(cap, moved_new_upper_left, radius=4, color=(0, 0, 0), thickness=5)
-        #img = cv2.circle(cap, moved_new_upper_right, radius=4, color=(0, 0, 0), thickness=5)
-        #img = cv2.circle(cap, moved_new_down, radius=4, color=(0, 0, 0), thickness=5)
+        #img2 = cv2.circle(cap, moved_new_upper_left, radius=4, color=(0, 0, 0), thickness=5)
+        #img2 = cv2.circle(cap, moved_new_upper_right, radius=4, color=(0, 0, 0), thickness=5)
+        #img2 = cv2.circle(cap, moved_new_down, radius=4, color=(0, 0, 0), thickness=5)
        
         list_of_proper_transformed_doors.append([moved_new_upper_left, moved_new_upper_right, moved_new_down])
      
     # draw door points
     #for match in list_grouped_matches_filtered:
-        
-        #img = cv2.circle(cap, (match[0][1][0],match[0][1][1]), radius=4, color=(0, 0, 0), thickness=5)
+    #img = cv2.circle(cap, (match[0][1][0],match[0][1][1]), radius=4, color=(0, 0, 0), thickness=5)
 
 
     # Draw matches as lines
+    """
     if len(matches) > MIN_MATCHES:
 
         # draw first 15 matches.
@@ -554,7 +550,8 @@ def feature_match(img1, img2):
     else:
         print( "Not enough matches have been found - %d/%d" % (len(matches),
                                                             MIN_MATCHES))
-    
+    """
+
     gray = wall_filter(img1)
     gray = ~gray
     rooms, colored_rooms = find_rooms(gray.copy())
@@ -575,7 +572,7 @@ def feature_match(img1, img2):
         _door = []
         for door in list_of_proper_transformed_doors:
             
-            if points_are_inside_or_close_to_box(door,box): # TODO: match door win only one box, the closest one!
+            if points_are_inside_or_close_to_box(door,box): # TODO: match door with only one box, the closest one!
                 isDoor = True
                 _door = door
                 break
@@ -598,9 +595,14 @@ def feature_match(img1, img2):
         if(low < amount_of_colored < high):
             windows.append(box)
 
+    if True: # Draw doors
+        #img3 = draw.doors(img1, doors)
+        #draw.image(img3)
+        pass
+
     if True: # Draw windows
-        #gray= draw.boxesOnImage(gray, windows)
-        #draw.image(gray)
+        #img3= draw.boxesOnImage(img1, windows)
+        #draw.image(img3)
         pass
 
 

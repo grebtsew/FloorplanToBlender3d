@@ -15,6 +15,8 @@ FloorplanToBlender3d
 Copyright (C) 2021 Daniel Westberg
 '''
 
+# TODO: add config security check, before start up!
+
 def read_image(path,  settings=None):
     '''
     Read image, resize/rescale and return with grayscale
@@ -40,9 +42,9 @@ def config_read_calibration():
     calibrations = config_get("CALIBRATION")
     if calibrations is None:
         calibrations = create_image_scale_calibration()
-    elif calibrations["calibration_image_path"] == "":
+    elif calibrations["calibration_image_path"] == "": # TODO: fix if deleted!
         calibrations = create_image_scale_calibration()
-    elif float(calibrations["wall_size_calibration"]) == 0:
+    elif float(calibrations["wall_size_calibration"]) == 0: # TODO: fix if deleted!
         calibrations = create_image_scale_calibration(True)
     return calibrations
 

@@ -6,6 +6,7 @@ f = Figlet(font='slant')
 print (f.renderText('Floorplan to Blender3d'))
 
 # TODO: remove objects outside of detected floor!
+# TODO: fix horrible code!
 
 '''
 Create Blender Project from floorplan
@@ -30,7 +31,7 @@ if __name__ == "__main__":
     # Create some gui
     print( "----- CREATE BLENDER PROJECT FROM FLOORPLAN WITH DIALOG -----" )
     print("Welcome to this program. Please answer the questions below to progress.")
-    print("Remember that you can change default paths in the config file.")
+    print("Remember that it is recommended to change default values and settings in the config file.")
     print("")
 
     # Some input
@@ -52,20 +53,18 @@ if __name__ == "__main__":
         if var in supported_blender_formats:
             oformat = var
 
-
     # Advanced Settings
-    settings = IO.config_get("SETTINGS")
+    settings = IO.config_get("SETTINGS") # TODO: fix and update config file
 
     var = input("Do you want to change advanced settings [default = No]: ")
-    if var:
+    if var == "Yes" or var == "yes":
         var = input("Use noise removal [default = Yes]: ")
-        if var:
-            settings['noise_removal'] = True
+        if var == "Yes" or var == "yes":
+            settings['noise_removal'] = "True"
 
         var = input("Use auto image resize [default = No]: ")
-        if var:
-            settings['rescale_image'] = True
-
+        if var == "Yes" or var == "yes":
+            settings['rescale_image'] = "True"
 
     print("")
     var = input("This program is about to run and create blender3d project, continue?  [default = " + "OK"+"]: ")
@@ -89,17 +88,16 @@ if __name__ == "__main__":
     fshape = None
 
     # Ask how floorplans shall be structured
-    if(len(image_paths) > 1):
-        print("There are currently "+ str(len(image_paths)) + " floorplans to create.")# TODO:, default multi execution is [ "+mode +" ]")
+    if(len(image_paths) > 1): # TODO:, default multi execution is [ "+mode +" ]")
+        print("There are currently "+ str(len(image_paths)) + " floorplans to create.")
 
-        var = input("Do you want to build horizontal? [Yes] : ")
+        var = input("Do you want to build horizontal? [Yes] : ") # TODO: vertical + matrix
         if var:
             data_paths = execution.multiple_simple(image_paths, False)
         else:
             data_paths = execution.multiple_simple(image_paths, True)
     else:
         data_paths = [execution.simple_single(image_paths[0])]
-
 
     print("")
     print("Creates blender project")
@@ -115,11 +113,23 @@ if __name__ == "__main__":
      program_path # Send this as parameter to script
      ] +  data_paths))
      '''
-
-    target_path = "/Target/floorplan.blend"
+    
     if not os.path.exists('./Target'):
         os.makedirs('./Target')
-
+    
+    target_base = "./Target/floorplan"
+    target_path = target_base+".blend"
+    # If blender target file already exist, get next id
+    id = 0
+    if os.path.isfile(target_path):
+        for file in os.listdir("./Target"):
+            filename = os.fsdecode(file)
+            if filename.endswith(".blend"): 
+                id += 1
+        target_base += str(id)
+    
+    target_path = target_base+".blend"
+    
     # Create blender project
     check_output([blender_install_path,
      "-noaudio", # this is a dockerfile ubuntu hax fix
@@ -130,7 +140,6 @@ if __name__ == "__main__":
      target_path
      ] +  data_paths)
      
-
     # Transform .blend project to another format!
     if oformat != ".blend":
         check_output([blender_install_path,
@@ -140,10 +149,10 @@ if __name__ == "__main__":
             "./Blender/blender_export_any.py",
             "."+target_path,
             oformat,
-            "./Target/floorplan"+oformat])
-        print("Object created at:"+program_path+"/Target/floorplan"+oformat)
+            target_base+oformat])
+        print("Object created at:"+program_path+"/"+target_base+oformat)
 
-    print("Project created at: " + program_path + "/Target/floorplan.blend")
+    print("Project created at: " + program_path + target_path)
     print("")
     print("Done, Have a nice day!")
 
@@ -151,5 +160,4 @@ if __name__ == "__main__":
     print("FloorplanToBlender3d Copyright (C) 2021  Daniel Westberg")
     print("This program comes with ABSOLUTELY NO WARRANTY;")
     print("This is free software, and you are welcome to redistribute it under certain conditions;")
-    
     print("")

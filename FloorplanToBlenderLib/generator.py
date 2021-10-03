@@ -7,6 +7,7 @@ from . import detect
 from . import transform
 from . import IO
 from . import const
+from . import draw
 
 class Generator():
     __metaclass__ = abc.ABCMeta
@@ -173,8 +174,22 @@ def euclidean_distance_2d(p1,p2):
     
     return math.sqrt(abs(math.pow(p1[0]-p2[0],2) - math.pow(p1[1]-p2[1],2)))
 
+def magnitude(point):
+    return math.sqrt(point[0]*point[0] + point[1]*point[1])
+
+def normalize(normal):
+    mag = magnitude(normal)
+    for i, val in enumerate(normal):
+        normal[i] = val/mag
+    return normal
+
+
 class Door(Generator):
        
+    def __init__(self, gray, path, image_path, info=False):
+        self.image_path = image_path
+        super().__init__( gray, path, info)
+
     def get_point_the_furthest_away(self, door_features, door_box):
         best_point = None
         dist = 0
@@ -190,24 +205,8 @@ class Door(Generator):
                     dist = distance
         return best_point
     
-    def get_closest_point_to_point(self, p , door_features):
-        closest_point = None
-        dist = math.inf
-        for point in door_features:
-            if point == p:
-                continue
-            if closest_point is None:
-                closest_point = point
-                dist = abs(euclidean_distance_2d(p, point))
-            else:
-                distance = abs(euclidean_distance_2d(p, point))
-                if dist < distance :
-                    closest_point = point
-                    dist = distance
-        return closest_point
-
     def get_closest_box_point_to_door_point(self, wall_point, box):
-        best_points = None
+        best_point = None
         dists =math.inf
 
         box_side_points = []
@@ -219,22 +218,23 @@ class Door(Generator):
             box_side_points = [[x, y+h/2],[x+w, y+h/2]]
 
         for fp in box_side_points:
-            if best_points is None:
-                best_points = fp
+            if best_point is None:
+                best_point = fp
                 dists = euclidean_distance_2d(wall_point, fp)
             else:
                 distance = euclidean_distance_2d(wall_point, fp)
-                if distance < dists:
-                    best_points = fp
+                if distance > dists:
+                    best_point = fp
                     dists = distance
 
-        return best_points
+            #print(best_point)
+        return (int(best_point[0]), int(best_point[1]))
 
     def generate(self, gray, info=False):
 
-        doors = detect.doors(gray)
+        doors = detect.doors(self.image_path)
 
-        w = 20
+        w = 4
         h = 1
 
         door_contours = []
@@ -246,40 +246,47 @@ class Door(Generator):
             # find door to space point
             space_point = self.get_point_the_furthest_away(door_features, door_box)
 
-            # find door to wall corner
-            wall_point = self.get_closest_point_to_point(space_point, door_features)
-
             # find best box corner to use as attachment
-            closest_box_point = self.get_closest_box_point_to_door_point(wall_point, door_box)
+            closest_box_point = self.get_closest_box_point_to_door_point(space_point, door_box)
             
             # Calculate normal
-            normal_line = [space_point[0] - closest_box_point[0], space_point[1]-closest_box_point[1]]
-            nminval = min(normal_line)
-            maxval = max(normal_line)
-            for i, val in enumerate(normal_line):
-                normal_line[i] = (val/nminval)/(maxval-nminval)
-
+            normal_line = [space_point[0] - closest_box_point[0], space_point[1]-closest_box_point[1]] # TODO: fix this properly!
+       
+            # Normalize point
+            normal_line = normalize(normal_line)
+     
+        
             # Create door contour
-            x1 = wall_point[0] + normal_line[0]*w
-            y1 = wall_point[1] + normal_line[1]*w
+            x1 = closest_box_point[0] + normal_line[1]*w
+            y1 = closest_box_point[1] - normal_line[0]*w
 
-            x2 = space_point[0] - normal_line[0]*w
-            y2 = space_point[1] - normal_line[1]*w
+            x2 = closest_box_point[0] - normal_line[1]*w
+            y2 = closest_box_point[1] + normal_line[0]*w
 
-            c1 = [x1,y1]
-            c2 = [x2,y1]
-            c3 = [x2,y2]
-            c4 = [x1,y2]
+            x4 = space_point[0] + normal_line[1]*w
+            y4 = space_point[1] - normal_line[0]*w
+
+            x3 = space_point[0] - normal_line[1]*w
+            y3 = space_point[1] + normal_line[0]*w
+
+
+            c1 = [int(x1),int(y1)]
+            c2 = [int(x2),int(y2)]
+            c3 = [int(x3),int(y3)]
+            c4 = [int(x4),int(y4)]
            
-            door_contour = np.array([[c1], [c2], [c3], [c4]]) 
+            door_contour = np.array([[c1], [c2], [c3], [c4]], dtype=np.int32) 
             door_contours.append(door_contour)
-    
+
+            
+        #if True:
+        #    tmpimg = draw.contoursOnImage(gray, door_contours)
+        #    draw.image(tmpimg)
 
         # TODO: create print script to show debug!
-
+        # TODO: windows, doors wrongscaled?
         #Create verts for door
         self.verts, self.faces, door_amount = transform.create_nx4_verts_and_faces(door_contours, self.height, self.scale) # TODO: create 4xn_verts!
-
 
         if(info):
             print("Doors created : ", door_amount/4)
@@ -309,11 +316,14 @@ class Door(Generator):
         return self.get_shape(self.verts, self.scale)
 
 class Window(Generator):
-       
+    def __init__(self, gray, path, image_path, info=False):
+        self.image_path = image_path
+        super().__init__( gray, path, info)
+
     def generate(self, gray, info=False):
 
         
-        windows = detect.windows(gray)
+        windows = detect.windows(self.image_path)
         
         '''
         Windows
@@ -332,7 +342,7 @@ class Window(Generator):
         window_amount = len(v)/parts_per_window
 
         if(info):
-            print("Windows created : ", window_amount)
+            print("Windows created : ", window_amount) #TODO: wrong!
 
         IO.save_to_file(self.path+"window_vertical_verts", self.verts, info)
         IO.save_to_file(self.path+"window_vertical_faces", self.faces, info)
