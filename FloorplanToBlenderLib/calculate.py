@@ -1,5 +1,7 @@
 import cv2
 import math
+import numpy as np
+from . import detect
 
 '''
 Calculate
@@ -9,16 +11,53 @@ FloorplanToBlender3d
 Copyright (C) 2021 Daniel Westberg
 '''
 
+def average(lst):
+    return sum(lst) / len(lst)
+
+def wall_width_average(img):
+    # grayscale image
+    gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+
+    # Resulting image
+    height, width, channels = img.shape
+    blank_image = np.zeros((height,width,3), np.uint8) # output image same size as original
+
+    # create wall image (filter out small objects from image)
+    wall_img = detect.wall_filter(gray)
+    '''
+    Detect Wall
+    '''
+    # detect walls
+    boxes, img = detect.precise_boxes(wall_img, blank_image)
+
+    # filter out to only count walls
+    filtered_boxes = list()
+    for box in boxes:
+        if len(box) == 4: # got only 4 corners  # detect oblong
+            x,y,w,h = cv2.boundingRect(box)
+            # Calculate scale value
+            # 1. get shortest (width) side
+            if w > h:
+                shortest = h
+            else:
+                shortest = w 
+            filtered_boxes.append(shortest)
+    # 2. calculate average
+
+    if len(filtered_boxes) == 0: # if no good boxes could be found, we use default scale
+        return None
+
+    return average(filtered_boxes) 
+
+
 def best_matches_with_modulus_angle(match_list):
     # calculate best matches by looking at the most significant feature distances
     index1 = 0
     index2 = 0
     best = math.inf
 
-    i = 0
-    for match1 in match_list:
-        j = 0
-        for match2 in match_list:
+    for i, _ in enumerate(match_list):
+        for j, _ in enumerate(match_list):
             
             pos1_model = match_list[i][0]
             pos2_model = match_list[j][0]
@@ -32,31 +71,15 @@ def best_matches_with_modulus_angle(match_list):
             if pt1 == pt2 or pt1 == (0,0) or pt2 == (0,0):
                 continue
 
-            ang = math.degrees(angle(pt1, pt2))
+            ang = math.degrees(angle_between_vectors_2d(pt1, pt2))
             diff = ang % 30
 
             if diff < best :
                 best = diff
                 index1 = i
                 index2 = j
-    
-            j += 1
-        i += 1
+
     return index1, index2
-
-
-def rotate_round_origin_vector_2d(origin, point, angle):
-    """
-    Rotate a point counterclockwise by a given angle around a given origin.
-
-    The angle should be given in radians.
-    """
-    ox, oy = origin
-    px, py = point
-
-    qx = ox + math.cos(angle) * (px - ox) - math.sin(angle) * (py - oy)
-    qy = oy + math.sin(angle) * (px - ox) + math.cos(angle) * (py - oy)
-    return qx, qy
 
 def points_are_inside_or_close_to_box(door,box):
     for point in door:

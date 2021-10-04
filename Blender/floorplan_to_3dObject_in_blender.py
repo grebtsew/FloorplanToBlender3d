@@ -173,8 +173,6 @@ def main(argv):
 def create_floorplan(base_path,program_path, name=0):
 
     parent, parent_mesh = init_object("Floorplan"+str(name))
-    
-    #base_path = base_path.replace('/','\\')
 
     path_to_wall_vertical_faces_file = program_path +"/" + base_path + "wall_vertical_faces"
     path_to_wall_vertical_verts_file = program_path +"/" + base_path + "wall_vertical_verts"

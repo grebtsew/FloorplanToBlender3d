@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 from PIL import Image
 from . import detect
+from . import calculate
 
 '''
 Image
@@ -62,50 +63,12 @@ def mark_outside_black(img, mask):
     img[mask == 0] = 0
     return img, mask
 
-def average(lst):
-    return sum(lst) / len(lst)
-
 def detect_wall_rescale(reference_size, image): # TODO: print if image is rescaled!
     '''
     detect how much an image is to be rescaled
     '''
-    image_wall_size = calculate_wall_width_average(image)
+    image_wall_size = calculate.wall_width_average(image)
     if image_wall_size is None: # No walls could be found!
         return None
     return calculate_scale_factor(float(reference_size),image_wall_size )
 
-def calculate_wall_width_average(img):
-    # grayscale image
-    gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
-
-    # Resulting image
-    height, width, channels = img.shape
-    blank_image = np.zeros((height,width,3), np.uint8) # output image same size as original
-
-    # create wall image (filter out small objects from image)
-    wall_img = detect.wall_filter(gray)
-    wall_temp = wall_img
-    '''
-    Detect Wall
-    '''
-    # detect walls
-    boxes, img = detect.precise_boxes(wall_img, blank_image)
-
-    # filter out to only count walls
-    filtered_boxes = list()
-    for box in boxes:
-        if len(box) == 4: # got only 4 corners  # detect oblong
-            x,y,w,h = cv2.boundingRect(box)
-            # Calculate scale value
-            # 1. get shortest (width) side
-            if w > h:
-                shortest = h
-            else:
-                shortest = w 
-            filtered_boxes.append(shortest)
-    # 2. calculate average
-
-    if len(filtered_boxes) == 0: # if no good boxes could be found, we use default one
-        return None
-
-    return average(filtered_boxes) # TODO: error here if no 4 corner boxes were found, fix this!
