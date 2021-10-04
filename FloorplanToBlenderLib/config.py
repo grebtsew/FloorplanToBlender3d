@@ -1,12 +1,10 @@
-import numpy as np
-import json
-import os
-from shutil import which
 import configparser
-import shutil
+import os
 import cv2
+
 from . import image
 from . import IO
+from . import const
 
 '''
 Config
@@ -19,22 +17,23 @@ Copyright (C) 2021 Daniel Westberg
 # TODO: add config security check, before start up!
 
 def read_calibration():
-    calibrations = get("WALL_CALIBRATION")
+    calibrations = get(const.WALL_CALIBRATION)
     if calibrations is None:
         calibrations = create_image_scale_calibration()
-    elif calibrations["calibration_image_path"] == "": # TODO: fix if deleted!
+    elif calibrations[const.STR_CALIBRATION_IMAGE_PATH] == "": # TODO: fix if deleted!
         calibrations = create_image_scale_calibration()
-    elif float(calibrations["wall_size_calibration"]) == 0: # TODO: fix if deleted!
+    elif float(calibrations[const.STR_WALL_SIZE_CALIBRATION]) == 0: # TODO: fix if deleted!
         calibrations = create_image_scale_calibration(True)
     return calibrations
 
-def create_image_scale_calibration(GotSettings=False):
-    if GotSettings:
-        default_calibration_image = 'Images/Calibrations/wallcalibration.png'
+def create_image_scale_calibration(got_settings=False):
+    default_calibration_image = 'Images/Calibrations/wallcalibration.png'
+    if got_settings:
         calibration_img = cv2.imread(default_calibration_image)
         calibrations = {'calibration_image_path':default_calibration_image,'wall_size_calibration':str(image.calculate_wall_width_average(calibration_img))}
         update("WALL_CALIBRATION",calibrations)
     else :
+        settings = get("SETTINGS")
         calibration_img = cv2.imread(settings['default_calibration_image'])
         calibrations = {'calibration_image_path':default_calibration_image,'wall_size_calibration':str(image.calculate_wall_width_average(calibration_img))}
         update("WALL_CALIBRATION",calibrations)
@@ -53,15 +52,14 @@ def generate_file():
     'mode': 'simple'}
     conf['FEATURES'] = {'floors':'True','rooms':'True','walls':'True','doors':'True','windows':'True'}
     conf['SETTINGS'] = {'remove_noise':'True','rescale_image':'True'}
-    conf['WALL_CALIBRATION'] = {'calibration_image_path':'Images/Calibrations/wallcalibration.png','wall_size_calibration':'33.5'} # TODO: update this calibration value!
-    with open('config.ini', 'w') as configfile:
+    conf['WALL_CALIBRATION'] = {'calibration_image_path':'Images/Calibrations/wallcalibration.png','wall_size_calibration':'0'} 
+    with open(const.CONFIG_FILE_NAME, 'w') as configfile:
         conf.write(configfile)
 
 def update(label,settings):
-    conf = configparser.ConfigParser()
     conf = get_all()
     conf[label] = settings
-    with open('config.ini', 'w') as configfile:
+    with open(const.CONFIG_FILE_NAME, 'w') as configfile:
         conf.write(configfile)
 
 def file_exist(name):
@@ -79,9 +77,9 @@ def get_all():
     '''
     config = configparser.ConfigParser()
 
-    if not file_exist('config.ini'):
+    if not file_exist(const.CONFIG_FILE_NAME):
         generate_file()
-    config.read('config.ini')
+    config.read(const.CONFIG_FILE_NAME)
     return config
 
 def get(label):
@@ -91,9 +89,9 @@ def get(label):
     '''
     conf = configparser.ConfigParser()
 
-    if not file_exist('config.ini'):
+    if not file_exist(const.CONFIG_FILE_NAME):
         generate_file()
-    conf.read('config.ini')
+    conf.read(const.CONFIG_FILE_NAME)
     return conf[label]
 
 def get_default():
