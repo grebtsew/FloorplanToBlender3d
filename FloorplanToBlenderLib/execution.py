@@ -20,12 +20,12 @@ def simple_single(image_path, show=True):
     @Param image_path path to image
     @Return path to generated files
     '''
-    fpath, _ = generate.generate_all_files(image_path, show)
-    return fpath
+    filepath, _ = generate.generate_all_files(image_path, show)
+    return filepath
 
 def multiple_simple(image_paths, horizontal=True):
     '''
-    Generates several new appartments
+    Generates several new apartments
     @Param image_paths - list of path to images
     @Param horizontal - if apartments should stack horizontal or vertical
     @Return paths to image data
@@ -40,20 +40,20 @@ def multiple_simple(image_paths, horizontal=True):
         if fshape is not None:
             # Generate all data for imagepath
             if horizontal:
-                fpath, fshape = generate.generate_all_files(image_path, True, position=(0,fshape[1],0))
+                filepath, fshape = generate.generate_all_files(image_path, True, position=(0,fshape[1],0))
             else:
-                fpath, fshape = generate.generate_all_files(image_path, True, position=(fshape[0],0,0))
+                filepath, fshape = generate.generate_all_files(image_path, True, position=(fshape[0],0,0))
 
         else:
-            fpath, fshape = generate.generate_all_files(image_path, True)
+            filepath, fshape = generate.generate_all_files(image_path, True)
 
         # add path to send to blender
-        data_paths.append(fpath)
+        data_paths.append(filepath)
     return data_paths
 
 def multiple_coord(image_paths):
     '''
-    Generates new appartments with fixed coordinates!
+    Generates new apartments with fixed coordinates!
     @Param image_paths - list of tuples containing [(img_path, pos)]
     @Return paths to image data
     '''
@@ -67,13 +67,13 @@ def multiple_coord(image_paths):
         # Calculate positions and rotations here!
 
         if pos is not None:
-            fpath, fshape = generate.generate_all_files(image_path, True, position=(pos[0],pos[1],pos[2]))
+            filepath, fshape = generate.generate_all_files(image_path, True, position=(pos[0],pos[1],pos[2]))
         else:
             if fshape is not None:
-                fpath, fshape = generate.generate_all_files(image_path, True, position=(fshape[0],fshape[1],fshape[2]))
+                filepath, fshape = generate.generate_all_files(image_path, True, position=(fshape[0],fshape[1],fshape[2]))
             else:
-                fpath, fshape = generate.generate_all_files(image_path, True)
+                filepath, fshape = generate.generate_all_files(image_path, True)
 
         # add path to send to blender
-        data_paths.append(fpath)
+        data_paths.append(filepath)
     return data_paths

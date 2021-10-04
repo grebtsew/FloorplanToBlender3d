@@ -69,7 +69,7 @@ class Floor(Generator):
     def generate(self, gray, info=False):
        
         # detect outer Contours (simple floor or roof solution)
-        contour, img = detect.detectOuterContours(gray)
+        contour, img = detect.outer_contours(gray)
         #Create verts
         self.verts = transform.scale_point_to_vector(contour, self.scale, self.height)
 
@@ -94,7 +94,7 @@ class Wall(Generator):
         # create wall image (filter out small objects from image)
         wall_img = detect.wall_filter(gray)
         # detect walls
-        boxes, img = detect.detectPreciseBoxes(wall_img)
+        boxes, img = detect.precise_boxes(wall_img)
 
         # Convert boxes to verts and faces, vertically
         self.verts, self.faces, wall_amount = transform.create_nx4_verts_and_faces(boxes, self.height, self.scale)
@@ -128,7 +128,7 @@ class Room(Generator):
         gray_rooms =  cv2.cvtColor(colored_rooms,cv2.COLOR_BGR2GRAY)
 
         # get box positions for rooms
-        boxes, gray_rooms = detect.detectPreciseBoxes(gray_rooms, gray_rooms)
+        boxes, gray_rooms = detect.precise_boxes(gray_rooms, gray_rooms)
 
         self.verts, self.faces, counter = transform.create_4xn_verts_and_faces(boxes, self.height, self.scale)
 
@@ -280,7 +280,7 @@ class Window(Generator):
         window_amount = len(v)/parts_per_window
 
         if(info):
-            print("Windows created : ", window_amount) 
+            print("Windows created : ", int(window_amount)) 
 
         IO.save_to_file(self.path+"window_vertical_verts", self.verts, info)
         IO.save_to_file(self.path+"window_vertical_faces", self.faces, info)

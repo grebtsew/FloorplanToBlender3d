@@ -46,6 +46,22 @@ def remove_noise(img, noise_removal_threshold):
             cv2.fillPoly(mask, [contour], 255)
     return mask
 
+def mark_outside_black(img, mask):
+    """
+    Mark white background as black
+    @Param @mandatory img image input
+    @Param @mandatory mask mask to use
+    @Return image, mask
+    """
+    # Mark the outside of the house as black
+    contours, _ = cv2.findContours(~img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    contour_sizes = [(cv2.contourArea(contour), contour) for contour in contours]
+    biggest_contour = max(contour_sizes, key=lambda x: x[0])[1]
+    mask = np.zeros_like(mask)
+    cv2.fillPoly(mask, [biggest_contour], 255)
+    img[mask == 0] = 0
+    return img, mask
+
 def average(lst):
     return sum(lst) / len(lst)
 
@@ -73,7 +89,7 @@ def calculate_wall_width_average(img):
     Detect Wall
     '''
     # detect walls
-    boxes, img = detect.detectPreciseBoxes(wall_img, blank_image)
+    boxes, img = detect.precise_boxes(wall_img, blank_image)
 
     # filter out to only count walls
     filtered_boxes = list()

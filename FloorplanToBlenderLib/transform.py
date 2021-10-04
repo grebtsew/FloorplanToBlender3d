@@ -1,6 +1,5 @@
+import math
 import cv2
-import numpy as np
-
 '''
 Transform
 This file contains functions for transforming data between different formats.
@@ -8,6 +7,61 @@ This file contains functions for transforming data between different formats.
 FloorplanToBlender3d
 Copyright (C) 2021 Daniel Westberg
 '''
+
+def rescale_rect(list_of_rects, scale_factor):
+    
+    rescaled_rects = []
+    for rect in list_of_rects:
+        x,y,w,h = cv2.boundingRect(rect)
+
+        center = (x+w/2, y+h/2)
+
+        # Get center diff
+        xdiff = abs(center[0] - x)
+        ydiff = abs(center[1]- y)
+        
+        xshift = xdiff * scale_factor
+        yshift = ydiff * scale_factor
+        
+        width = 2*xshift
+        height = 2*yshift
+
+        # upper left
+        new_x = x - abs(xdiff - xshift)
+        new_y = y - abs(ydiff - yshift)
+
+        # create contour
+        contour = np.array([[[new_x,new_y]], [[new_x+width,new_y]], [[new_x+width,new_y+height]], [[new_x,new_y+height]]]) 
+        rescaled_rects.append(contour)
+
+    return rescaled_rects
+
+
+def flatten(in_list):
+    if in_list == []:
+        return []
+    elif type(in_list) is not list:
+        return [in_list]
+    else:
+        return flatten(in_list[0]) + flatten(in_list[1:])
+
+def rotate_round_origin_vector_2d(origin, point, angle):
+    """
+    Rotate a point counterclockwise by a given angle around a given origin.
+
+    The angle should be given in radians.
+    """
+    ox, oy = origin
+    px, py = point
+
+    qx = ox + math.cos(angle) * (px - ox) - math.sin(angle) * (py - oy)
+    qy = oy + math.sin(angle) * (px - ox) + math.cos(angle) * (py - oy)
+    return qx, qy
+
+
+def scale_model_point_to_origin( origin, point,x_scale, y_scale):
+    dx, dy = (point[0] - origin[0], point[1] - origin[1])
+    return (dx * x_scale, dy * y_scale)
 
 def recursive_loop_element(thelist, res):
     '''

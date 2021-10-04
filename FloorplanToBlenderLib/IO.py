@@ -1,10 +1,9 @@
-import numpy as np
 import json
 import os
 from shutil import which
-import configparser
 import shutil
 import cv2
+
 from . import image
 from . import config
 
@@ -93,19 +92,14 @@ def create_new_floorplan_path(path):
     for root, dirs, files in os.walk(path):
         for dir in dirs:
             try:
-                if(int(dir) is not None):
-                    res = int(dir) + 1
-            except:
+                res = int(dir) + 1
+            except Exception:
                 continue
-
     res = path + str(res) + "/"
-
     # create dir
     if not os.path.exists(res):
         os.makedirs(res)
-
     return res;
-
 
 def get_current_path():
     '''
@@ -124,11 +118,11 @@ def find_program_path(name):
 
 def get_next_target_base_name(target_base, target_path):
     # If blender target file already exist, get next id
-    id = 0
+    fid = 0
     if os.path.isfile(target_path):
         for file in os.listdir("./Target"):
             filename = os.fsdecode(file)
             if filename.endswith(".blend"): 
-                id += 1
-        target_base += str(id)
+                fid += 1
+        target_base += str(fid)
     return target_base

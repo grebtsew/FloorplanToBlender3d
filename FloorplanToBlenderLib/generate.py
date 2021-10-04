@@ -3,6 +3,7 @@ from . import IO
 from . import transform
 from . import const
 from . import config
+
 from FloorplanToBlenderLib.generator import Door, Floor, Room, Wall, Window
 
 '''
@@ -17,7 +18,7 @@ Copyright (C) 2021 Daniel Westberg
 def generate_all_files(img_path, info, position=None, rotation=None):
     '''
     Generate all data files
-    @Param imgpath
+    @Param image path
     @Param info, boolean if should be printed
     @Param position, vector of float
     @Param rotation, vector of float
@@ -31,7 +32,7 @@ def generate_all_files(img_path, info, position=None, rotation=None):
     path = IO.create_new_floorplan_path(const.BASE_PATH)
 
 
-    settings = config.get("SETTINGS")
+    settings = config.get(const.SETTINGS)
     
     image, gray, scale_factor = IO.read_image(img_path, settings)
 
