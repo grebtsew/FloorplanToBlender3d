@@ -47,12 +47,13 @@ def generate_file():
     conf = configparser.ConfigParser()
     conf['DEFAULT'] = {'image_path': 'Images/Examples/example.png',
     'out_format':'.blend',
-    'blender_installation_path': 'C:\\Program Files\\Blender Foundation\\Blender 2.90\\blender.exe', # TODO: change this to windows/linux default
+    'overwrite_data':'False', # TODO: implement!
+    'blender_installation_path': 'C:\\Program Files\\Blender Foundation\\Blender 2.90\\blender.exe', 
     'file_structure': '[[[0,0,0], [0,0,0], [0,0,0]], [[0,0,0], [0,0,0], [0,0,0]], [[0,0,0], [0,0,0], [0,0,0]]]',
     'mode': 'simple'}
     conf['FEATURES'] = {'floors':'True','rooms':'True','walls':'True','doors':'True','windows':'True'}
     conf['SETTINGS'] = {'remove_noise':'True','rescale_image':'True'}
-    conf['WALL_CALIBRATION'] = {'calibration_image_path':'Images/Calibrations/wallcalibration.png','wall_size_calibration':'0'} # TODO: update this calibration value!
+    conf['WALL_CALIBRATION'] = {'calibration_image_path':'Images/Calibrations/wallcalibration.png','wall_size_calibration':'33.5'} # TODO: update this calibration value!
     with open('config.ini', 'w') as configfile:
         conf.write(configfile)
 

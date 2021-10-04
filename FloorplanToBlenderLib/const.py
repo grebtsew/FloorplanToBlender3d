@@ -20,6 +20,15 @@ PIXEL_TO_3D_SCALE = 100
 
 # Paths to models
 DOOR_MODEL = "Images/Models/Doors/door.png" # TODO: make dynamic folder solution, to add more doors!
+DOOR_WIDTH = 5
+
+# DEBUG modes
+
+DEBUG_DOOR = False
+DEBUG_WINDOW = False
+DEBUG_FLOOR = False
+DEBUG_ROOM = False
+DEBUG_WALL = False
 
 
 # TODO: move more variables here!

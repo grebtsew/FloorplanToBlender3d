@@ -1,6 +1,5 @@
 import cv2
 import numpy as np
-from itertools import *
 
 '''
 Transform
@@ -57,21 +56,39 @@ def scale_point_to_vector(boxes, scale = 1, height = 0):
             res.extend([(pos[0]/scale, pos[1]/scale, height)])
     return res
 
-
-def write_verts_on_2d_image(boxes, blank_image):
+def create_4xn_verts_and_faces(boxes, height = 1, scale = 1, ground = False, ground_height= 0):
     '''
-    Write verts as lines and show image
-    @Param boxes, numpy array of boxes
-    @Param blank_image, image to write and show
+    Create verts and faces
+    @Param boxes,
+    @Param height,
+    @Param scale,
+    @Return verts - as [[wall1],[wall2],...] numpy array, faces - as array to use on all boxes, wall_amount - as integer
+    Use the result by looping over boxes in verts, and create mesh for each box with same face and pos
+    See create_custom_mesh in floorplan code
+    This functions is used to create horizontal objects
     '''
+    counter = 0
+    verts = []
 
+    # Create verts
     for box in boxes:
-        for wall in box:
-            # draw line
-            cv2.line(blank_image,(int(wall[0][0]),int(wall[1][1])),(int(wall[2][0]),int(wall[2][1])),(255,0,0),5)
+        verts.extend([scale_point_to_vector(box, scale, height)])
+        if ground:
+            verts.extend([scale_point_to_vector(box, scale, ground_height)])
+        counter+= 1
 
-    cv2.imshow('show image',blank_image)
-    cv2.waitKey(0)
+    faces = []
+
+    #Create faces
+    for room in verts:
+        count = 0
+        temp = ()
+        for _ in room:
+            temp = temp + (count,)
+            count += 1
+        faces.append([(temp)])
+
+    return verts, faces, counter
 
 def create_nx4_verts_and_faces(boxes, height = 1, scale = 1, ground = 0):
     '''
@@ -82,8 +99,9 @@ def create_nx4_verts_and_faces(boxes, height = 1, scale = 1, ground = 0):
     @Return verts - as [[wall1],[wall2],...] numpy array, faces - as array to use on all boxes, wall_amount - as integer
     Use the result by looping over boxes in verts, and create mesh for each box with same face and pos
     See create_custom_mesh in floorplan code
+    This functions is used to create vertical objects
     '''
-    wall_counter = 0
+    counter = 0
     verts = []
 
     for box in boxes:
@@ -91,30 +109,30 @@ def create_nx4_verts_and_faces(boxes, height = 1, scale = 1, ground = 0):
         for index in range(0, len(box) ):
             temp_verts = []
             # Get current
-            curr = box[index][0];
+            current = box[index][0];
 
             # is last, link to first
             if(len(box)-1 >= index+1):
-                next = box[index+1][0];
+                next_vert = box[index+1][0];
             else:
-                next = box[0][0]; # link to first pos
+                next_vert = box[0][0]; # link to first pos
 
             # Create all 3d poses for each wall
-            temp_verts.extend([(curr[0]/scale, curr[1]/scale, ground)])
-            temp_verts.extend([(curr[0]/scale, curr[1]/scale, height)])
-            temp_verts.extend([(next[0]/scale, next[1]/scale, ground)])
-            temp_verts.extend([(next[0]/scale, next[1]/scale, height)])
+            temp_verts.extend([(current[0]/scale, current[1]/scale, ground)])
+            temp_verts.extend([(current[0]/scale, current[1]/scale, height)])
+            temp_verts.extend([(next_vert[0]/scale, next_vert[1]/scale, ground)])
+            temp_verts.extend([(next_vert[0]/scale, next_vert[1]/scale, height)])
 
             # add wall verts to verts
             box_verts.extend([temp_verts])
 
             # wall counter
-            wall_counter += 1
+            counter += 1
 
         verts.extend([box_verts])
 
     faces = [(0, 1, 3, 2)]
-    return verts, faces, wall_counter
+    return verts, faces, counter
 
 def create_verts(boxes, height, scale):
     '''
@@ -143,26 +161,3 @@ def create_verts(boxes, height, scale):
         verts.extend(temp_verts)
 
     return verts
-
-def write_boxes_on_2d_image(boxes, blank_image):
-    '''
-    Write boxes as lines and show image
-    @Param boxes, numpy array of boxes
-    @Param blank_image, image to write and show
-    '''
-
-    for box in boxes:
-        for index in range(0, len(box) ):
-
-            curr = box[index][0];
-
-            if(len(box)-1 >= index+1):
-                next = box[index+1][0];
-            else:
-                next = box[0][0]; # link to first pos
-
-            # draw line
-            cv2.line(blank_image,(curr[0],curr[1]),(next[0],next[1]),(255,0,0),5)
-
-    cv2.imshow('show image',blank_image)
-    cv2.waitKey(0)
