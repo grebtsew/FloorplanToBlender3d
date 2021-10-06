@@ -4,6 +4,7 @@ from shutil import which
 import shutil
 import cv2
 
+from . import const
 from . import image
 from . import config
 
@@ -29,14 +30,14 @@ def read_image(path,  settings=None):
 
     scale_factor = 1
     if settings is not None:
-        if settings['remove_noise']:
+        if settings[const.STR_REMOVE_NOISE]:
             img = image.denoising(img)
-        if settings['rescale_image']:
+        if settings[const.STR_RESCALE_IMAGE]:
             
             calibrations = config.read_calibration()
-            scale_factor = image.detect_wall_rescale(float(calibrations["wall_size_calibration"]), img)
+            scale_factor = image.detect_wall_rescale(float(calibrations[const.STR_WALL_SIZE_CALIBRATION]), img)
             if scale_factor is None:
-                print("WARNING: Auto rescale failed due to no good walls found in image."+ 
+                print("WARNING: Auto rescale failed due to non good walls found in image."+ 
                 "If rescale still is needed, please rescale manually.")
                 scale_factor = 1
             else:
@@ -52,11 +53,11 @@ def save_to_file(file_path, data, show=True):
     @Param file_path, path to outputfile
     @Param data, data to write to file
     '''
-    with open(file_path+'.txt', 'w') as f:
+    with open(file_path+const.SAVE_DATA_FORMAT, 'w') as f:
         f.write(json.dumps(data))
 
     if show:
-        print("Created file : " + file_path + ".txt")
+        print("Created file : " + file_path + const.SAVE_DATA_FORMAT)
 
 def read_from_file(file_path):
     '''
@@ -66,7 +67,7 @@ def read_from_file(file_path):
     @Return data
     '''
     #Now read the file back into a Python list object
-    with open(file_path+'.txt', 'r') as f:
+    with open(file_path+const.SAVE_DATA_FORMAT, 'r') as f:
         data = json.loads(f.read())
     return data
 
@@ -88,7 +89,7 @@ def create_new_floorplan_path(path):
     @Param path, path to floorplan
     @Return end path
     '''
-    res = 0;
+    res = 0
     for root, dirs, files in os.walk(path):
         for dir in dirs:
             try:
@@ -120,9 +121,9 @@ def get_next_target_base_name(target_base, target_path):
     # If blender target file already exist, get next id
     fid = 0
     if os.path.isfile(target_path):
-        for file in os.listdir("./Target"):
+        for file in os.listdir(const.TARGET_PATH):
             filename = os.fsdecode(file)
-            if filename.endswith(".blend"): 
+            if filename.endswith(const.BASE_FORMAT): 
                 fid += 1
         target_base += str(fid)
     return target_base

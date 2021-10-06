@@ -2,6 +2,7 @@ import cv2
 import math
 import numpy as np
 from . import detect
+from . import const
 
 '''
 Calculate
@@ -15,6 +16,11 @@ def average(lst):
     return sum(lst) / len(lst)
 
 def wall_width_average(img):
+    """
+    This function calculate an average of all walls in floorplan.
+    This is used to scale the size of the image for better accuracy.
+    Returns the average as float value. See CALIBRATION in config file.
+    """
     # grayscale image
     gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
 
@@ -49,8 +55,11 @@ def wall_width_average(img):
 
     return average(filtered_boxes) 
 
-
 def best_matches_with_modulus_angle(match_list):
+    """
+    This function compare matching matches from orb feature matching,
+    by rotating in steps over 360 degrees in order to find the best fit for door rotation.
+    """
     # calculate best matches by looking at the most significant feature distances
     index1 = 0
     index2 = 0
@@ -72,7 +81,7 @@ def best_matches_with_modulus_angle(match_list):
                 continue
 
             ang = math.degrees(angle_between_vectors_2d(pt1, pt2))
-            diff = ang % 30
+            diff = ang % const.DOOR_ANGLE_HIT_STEP
 
             if diff < best :
                 best = diff
@@ -82,11 +91,18 @@ def best_matches_with_modulus_angle(match_list):
     return index1, index2
 
 def points_are_inside_or_close_to_box(door,box):
+    """
+    Calculate if a point is within vicinity of a box.
+    """
     for point in door:
         if rect_contains_or_almost_contains_point(point, box):
             return True
+    return False
 
 def angle_between_vectors_2d(vector1, vector2):
+    """
+    Get angle between two 2d vectors
+    """
     x1, y1 = vector1
     x2, y2 = vector2
     inner_product = x1*x2 + y1*y2
@@ -95,6 +111,9 @@ def angle_between_vectors_2d(vector1, vector2):
     return math.acos(inner_product/(len1*len2))
 
 def rect_contains_or_almost_contains_point(pt, box):
+    """
+    Calculate if a point is within vicinity of a box. Help function.
+    """
 
     x,y,w,h = cv2.boundingRect(box)
     is_inside = x < pt[0] <x+w and y < pt[1] < y+h

@@ -27,23 +27,16 @@ def lines(image, lines):
         image = cv2.polylines(image, line, True, (0,0,255), 1, cv2.LINE_AA)       
     return image
 
-def verts(boxes, blank_image):
+def verts(boxes, image):
     '''
     Write verts as lines and show image
     @Param boxes, numpy array of boxes
     @Param blank_image, image to write and show
     '''
-
     for box in boxes:
         for wall in box:
             # draw line
-            cv2.line(blank_image,(int(wall[0][0]),int(wall[1][1])),(int(wall[2][0]),int(wall[2][1])),(255,0,0),5)
-
-def doors(img, doors):
-    for door in doors:
-        img = points(img, door[0])
-        img = boxes(img, door[1])
-    return img
+            cv2.line(image,(int(wall[0][0]),int(wall[1][1])),(int(wall[2][0]),int(wall[2][1])),(255,0,0),5)
 
 def boxes(image, boxes, text=""):
     """
@@ -56,6 +49,12 @@ def boxes(image, boxes, text=""):
         cv2.rectangle(image, (x, y), (x + w, y + h), (0,0,255), 5)
         cv2.putText(image, str(text), (x, y), 7, 10,(255,0,0))
     return image
+
+def doors(img, doors):
+    for door in doors:
+        img = points(img, door[0])
+        img = boxes(img, door[1])
+    return img
 
 def colormap(img, mapping=cv2.COLORMAP_HSV):
     """

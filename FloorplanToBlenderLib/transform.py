@@ -1,6 +1,8 @@
 import math
 import cv2
 import numpy as np
+
+from . import const
 '''
 Transform
 This file contains functions for transforming data between different formats.
@@ -10,6 +12,9 @@ Copyright (C) 2021 Daniel Westberg
 '''
 
 def rescale_rect(list_of_rects, scale_factor):
+    """
+    Rescale box relative to it's center point.
+    """
     
     rescaled_rects = []
     for rect in list_of_rects:
@@ -39,6 +44,9 @@ def rescale_rect(list_of_rects, scale_factor):
 
 
 def flatten(in_list):
+    """
+    Flatten multidim list
+    """
     if in_list == []:
         return []
     elif type(in_list) is not list:
@@ -61,6 +69,9 @@ def rotate_round_origin_vector_2d(origin, point, angle):
 
 
 def scale_model_point_to_origin( origin, point,x_scale, y_scale):
+    """
+    Scale 2d vector between two points
+    """
     dx, dy = (point[0] - origin[0], point[1] - origin[1])
     return (dx * x_scale, dy * y_scale)
 
@@ -111,7 +122,7 @@ def scale_point_to_vector(boxes, scale = 1, height = 0):
             res.extend([(pos[0]/scale, pos[1]/scale, height)])
     return res
 
-def create_4xn_verts_and_faces(boxes, height = 1, scale = 1, ground = False, ground_height= 0):
+def create_4xn_verts_and_faces(boxes, height = 1, scale = 1, ground = False, ground_height= const.WALL_GROUND):
     '''
     Create verts and faces
     @Param boxes,
@@ -145,7 +156,7 @@ def create_4xn_verts_and_faces(boxes, height = 1, scale = 1, ground = False, gro
 
     return verts, faces, counter
 
-def create_nx4_verts_and_faces(boxes, height = 1, scale = 1, ground = 0):
+def create_nx4_verts_and_faces(boxes, height = 1, scale = 1, ground = const.WALL_GROUND):
     '''
     Create verts and faces
     @Param boxes,
@@ -164,11 +175,11 @@ def create_nx4_verts_and_faces(boxes, height = 1, scale = 1, ground = 0):
         for index in range(0, len(box) ):
             temp_verts = []
             # Get current
-            current = box[index][0];
+            current = box[index][0]
 
             # is last, link to first
             if(len(box)-1 >= index+1):
-                next_vert = box[index+1][0];
+                next_vert = box[index+1][0]
             else:
                 next_vert = box[0][0]; # link to first pos
 

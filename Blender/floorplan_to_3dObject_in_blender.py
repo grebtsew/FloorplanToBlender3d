@@ -3,6 +3,7 @@ import numpy as np
 import json
 import sys
 import math
+import os.path
 
 '''
 Floorplan to Blender
@@ -31,6 +32,8 @@ This code is tested on Windows 10, Blender 2.79, in January 2019.
 '''
 Our helpful functions
 '''
+
+# TODO: restructure this file with a class and help-function to save a lot of lines of code!
 
 def read_from_file(file_path):
     '''
@@ -222,161 +225,170 @@ def create_floorplan(base_path,program_path, name=0):
     '''
     Create Walls
     '''
-    # get image wall data
-    verts = read_from_file(path_to_wall_vertical_verts_file)
-    faces = read_from_file(path_to_wall_vertical_faces_file)
 
-    # Create mesh from data
-    boxcount = 0
-    wallcount = 0
+    if os.path.isfile(path_to_wall_vertical_verts_file+".txt") and os.path.isfile(path_to_wall_vertical_faces_file+".txt") \
+    and os.path.isfile(path_to_wall_horizontal_verts_file+".txt") and os.path.isfile(path_to_wall_horizontal_faces_file+".txt"):
+        # get image wall data
+        verts = read_from_file(path_to_wall_vertical_verts_file)
+        faces = read_from_file(path_to_wall_vertical_faces_file)
 
-    # Create parent
-    wall_parent, wall_parent_mesh = init_object("Walls")
+        # Create mesh from data
+        boxcount = 0
+        wallcount = 0
 
-    for walls in verts:
-        boxname = "Box"+str(boxcount)
-        for wall in walls:
-            wallname = "Wall"+str(wallcount)
+        # Create parent
+        wall_parent, wall_parent_mesh = init_object("Walls")
 
+        for walls in verts:
+            boxname = "Box"+str(boxcount)
+            for wall in walls:
+                wallname = "Wall"+str(wallcount)
+
+                obj = create_custom_mesh(
+                    boxname + wallname, wall, faces, pos=pos, rot=rot, cen=cen, mat=create_mat((0.5, 0.5, 0.5, 1)))
+                obj.parent = wall_parent
+
+                wallcount += 1
+            boxcount += 1
+
+        # get image top wall data
+        verts = read_from_file(path_to_wall_horizontal_verts_file)
+        faces = read_from_file(path_to_wall_horizontal_faces_file)
+
+        # Create mesh from data
+        boxcount = 0
+        wallcount = 0
+
+        for i in range(0, len(verts)):
+            roomname = "VertWalls"+str(i)
             obj = create_custom_mesh(
-                boxname + wallname, wall, faces, pos=pos, rot=rot, cen=cen, mat=create_mat((0.5, 0.5, 0.5, 1)))
+                roomname, verts[i], faces[i], pos=pos, rot=rot, cen=cen, mat=create_mat((0.5, 0.5, 0.5, 1)))
             obj.parent = wall_parent
 
-            wallcount += 1
-        boxcount += 1
-
-    # get image top wall data
-    verts = read_from_file(path_to_wall_horizontal_verts_file)
-    faces = read_from_file(path_to_wall_horizontal_faces_file)
-
-    # Create mesh from data
-    boxcount = 0
-    wallcount = 0
-
-    for i in range(0, len(verts)):
-        roomname = "VertWalls"+str(i)
-        obj = create_custom_mesh(
-            roomname, verts[i], faces[i], pos=pos, rot=rot, cen=cen, mat=create_mat((0.5, 0.5, 0.5, 1)))
-        obj.parent = wall_parent
-
-    wall_parent.parent = parent
+        wall_parent.parent = parent
     
     '''
     Create Windows
     '''
-    # get image wall data
-    verts = read_from_file(path_to_windows_vertical_verts_file)
-    faces = read_from_file(path_to_windows_vertical_faces_file)
+    if os.path.isfile(path_to_windows_vertical_verts_file+".txt") and os.path.isfile(path_to_windows_vertical_faces_file+".txt") \
+     and os.path.isfile(path_to_windows_horizontal_verts_file+".txt") and os.path.isfile(path_to_windows_horizontal_faces_file+".txt"):
+        # get image wall data
+        verts = read_from_file(path_to_windows_vertical_verts_file)
+        faces = read_from_file(path_to_windows_vertical_faces_file)
 
-    # Create mesh from data
-    boxcount = 0
-    wallcount = 0
+        # Create mesh from data
+        boxcount = 0
+        wallcount = 0
 
-    # Create parent
-    wall_parent, wall_parent_mesh = init_object("Windows")
+        # Create parent
+        wall_parent, wall_parent_mesh = init_object("Windows")
 
-    for walls in verts:
-        boxname = "Box"+str(boxcount)
-        for wall in walls:
-            wallname = "Wall"+str(wallcount)
+        for walls in verts:
+            boxname = "Box"+str(boxcount)
+            for wall in walls:
+                wallname = "Wall"+str(wallcount)
 
+                obj = create_custom_mesh(
+                    boxname + wallname, wall, faces, pos=pos, rot=rot, cen=cen, mat=create_mat((0.5, 0.5, 0.5, 1)))
+                obj.parent = wall_parent
+
+                wallcount += 1
+            boxcount += 1
+
+
+        # get windows
+        verts = read_from_file(path_to_windows_horizontal_verts_file)
+        faces = read_from_file(path_to_windows_horizontal_faces_file)
+
+        # Create mesh from data
+        boxcount = 0
+        wallcount = 0
+
+        for i in range(0, len(verts)):
+            roomname = "VertWindow"+str(i)
             obj = create_custom_mesh(
-                boxname + wallname, wall, faces, pos=pos, rot=rot, cen=cen, mat=create_mat((0.5, 0.5, 0.5, 1)))
+                roomname, verts[i], faces[i], pos=pos, rot=rot, cen=cen, mat=create_mat((0.5, 0.5, 0.5, 1)))
             obj.parent = wall_parent
 
-            wallcount += 1
-        boxcount += 1
-
-
-    # get windows
-    verts = read_from_file(path_to_windows_horizontal_verts_file)
-    faces = read_from_file(path_to_windows_horizontal_faces_file)
-
-    # Create mesh from data
-    boxcount = 0
-    wallcount = 0
-
-    for i in range(0, len(verts)):
-        roomname = "VertWindow"+str(i)
-        obj = create_custom_mesh(
-            roomname, verts[i], faces[i], pos=pos, rot=rot, cen=cen, mat=create_mat((0.5, 0.5, 0.5, 1)))
-        obj.parent = wall_parent
-
-    wall_parent.parent = parent
+        wall_parent.parent = parent
 
 
     '''
     Create Doors
     '''
-    # get image wall data
-    verts = read_from_file(path_to_doors_vertical_verts_file)
-    faces = read_from_file(path_to_doors_vertical_faces_file)
+    if os.path.isfile(path_to_doors_vertical_verts_file+".txt") and os.path.isfile(path_to_doors_vertical_faces_file+".txt") \
+     and os.path.isfile(path_to_doors_horizontal_verts_file+".txt") and os.path.isfile(path_to_doors_horizontal_faces_file+".txt"):
+    
+        # get image wall data
+        verts = read_from_file(path_to_doors_vertical_verts_file)
+        faces = read_from_file(path_to_doors_vertical_faces_file)
 
-    # Create mesh from data
-    boxcount = 0
-    wallcount = 0
+        # Create mesh from data
+        boxcount = 0
+        wallcount = 0
 
-    # Create parent
-    wall_parent, wall_parent_mesh = init_object("Doors")
+        # Create parent
+        wall_parent, wall_parent_mesh = init_object("Doors")
 
-    for walls in verts:
-        boxname = "Box"+str(boxcount)
-        for wall in walls:
-            wallname = "Wall"+str(wallcount)
+        for walls in verts:
+            boxname = "Box"+str(boxcount)
+            for wall in walls:
+                wallname = "Wall"+str(wallcount)
 
+                obj = create_custom_mesh(
+                    boxname + wallname, wall, faces, pos=pos, rot=rot, cen=cen, mat=create_mat((0.5, 0.5, 0.5, 1)))
+                obj.parent = wall_parent
+
+                wallcount += 1
+            boxcount += 1
+
+
+        # get windows
+        verts = read_from_file(path_to_doors_horizontal_verts_file)
+        faces = read_from_file(path_to_doors_horizontal_faces_file)
+
+        # Create mesh from data
+        boxcount = 0
+        wallcount = 0
+
+        for i in range(0, len(verts)):
+            roomname = "VertWindow"+str(i)
             obj = create_custom_mesh(
-                boxname + wallname, wall, faces, pos=pos, rot=rot, cen=cen, mat=create_mat((0.5, 0.5, 0.5, 1)))
+                roomname, verts[i], faces[i], pos=pos, rot=rot, cen=cen, mat=create_mat((0.5, 0.5, 0.5, 1)))
             obj.parent = wall_parent
 
-            wallcount += 1
-        boxcount += 1
-
-
-    # get windows
-    verts = read_from_file(path_to_doors_horizontal_verts_file)
-    faces = read_from_file(path_to_doors_horizontal_faces_file)
-
-    # Create mesh from data
-    boxcount = 0
-    wallcount = 0
-
-    for i in range(0, len(verts)):
-        roomname = "VertWindow"+str(i)
-        obj = create_custom_mesh(
-            roomname, verts[i], faces[i], pos=pos, rot=rot, cen=cen, mat=create_mat((0.5, 0.5, 0.5, 1)))
-        obj.parent = wall_parent
-
-    wall_parent.parent = parent
+        wall_parent.parent = parent
 
     '''
     Create Floor
     '''
-    # get image wall data
-    verts = read_from_file(path_to_floor_verts_file)
-    faces = read_from_file(path_to_floor_faces_file)
-
-    # Create mesh from data
-    cornername="Floor"
-    obj = create_custom_mesh(cornername, verts, [faces], pos=pos, mat=create_mat((40,1,1,1)), cen=cen)
-    obj.parent = parent
-
-    '''
-    Create rooms
-    '''
-    # get image wall data
-    verts = read_from_file(path_to_rooms_verts_file)
-    faces = read_from_file(path_to_rooms_faces_file)
-
-    # Create parent
-    room_parent, room_parent_mesh = init_object("Rooms")
-
-    for i in range(0,len(verts)):
-        roomname="Room"+str(i)
-        obj = create_custom_mesh(roomname, verts[i], faces[i], pos=pos, rot=rot, cen=cen)
-        obj.parent = room_parent
-
-    room_parent.parent = parent
+    if os.path.isfile(path_to_floor_verts_file+".txt") and os.path.isfile(path_to_floor_faces_file+".txt"):
     
-# Start
+        # get image wall data
+        verts = read_from_file(path_to_floor_verts_file)
+        faces = read_from_file(path_to_floor_faces_file)
+
+        # Create mesh from data
+        cornername="Floor"
+        obj = create_custom_mesh(cornername, verts, [faces], pos=pos, mat=create_mat((40,1,1,1)), cen=cen)
+        obj.parent = parent
+
+        '''
+        Create rooms
+        '''
+        # get image wall data
+        verts = read_from_file(path_to_rooms_verts_file)
+        faces = read_from_file(path_to_rooms_faces_file)
+
+        # Create parent
+        room_parent, room_parent_mesh = init_object("Rooms")
+
+        for i in range(0,len(verts)):
+            roomname="Room"+str(i)
+            obj = create_custom_mesh(roomname, verts[i], faces[i], pos=pos, rot=rot, cen=cen)
+            obj.parent = room_parent
+
+        room_parent.parent = parent
+    
 if __name__ == "__main__":
     main(sys.argv)

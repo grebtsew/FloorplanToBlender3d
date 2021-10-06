@@ -3,6 +3,7 @@ import numpy as np
 from PIL import Image
 from . import detect
 from . import calculate
+from . import const
 
 '''
 Image
@@ -27,7 +28,7 @@ def calculate_scale_factor( preferred : float, value : float):
     return preferred/value
 
 def denoising(img):
-    return cv2.fastNlMeansDenoisingColored(img,None,10,10,7,21)
+    return cv2.fastNlMeansDenoisingColored(img,None,const.IMAGE_H,const.IMAGE_HCOLOR,const.IMAGE_TEMPLATE_SIZE,const.IMAGE_SEARCH_SIZE)
 
 def remove_noise(img, noise_removal_threshold):
     """

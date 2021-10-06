@@ -21,13 +21,13 @@ def figlet(text='Floorplan to Blender3d' , font='slant'):
     print (f.renderText(text))
 
 def init():
-    # Create some gui
     print( "----- CREATE BLENDER PROJECT FROM FLOORPLAN WITH DIALOG -----" )
     print("Welcome to this program. Please answer the questions below to progress.")
-    print("Remember that you can change default paths in the config file.")
+    print("Remember that you can change data more efficiently in the config file.")
     print("")
 
-def question(text, default):
+def question(text, default): 
+    # TODO: make input better!
     '''
     @Param text, question string
     @Param default, possible values
@@ -41,7 +41,3 @@ def end_copyright():
     print("This program comes with ABSOLUTELY NO WARRANTY;")
     print("This is free software, and you are welcome to redistribute it under certain conditions;")
     print("")
-
-# TODO: use this!
-# TODO: think this through
-# TODO: make input better!

@@ -31,19 +31,30 @@ def generate_all_files(img_path, info, position=None, rotation=None):
     # Get path to save data
     path = IO.create_new_floorplan_path(const.BASE_PATH)
 
-
     settings = config.get(const.SETTINGS)
+    features = config.get(const.FEATURES)
     
     image, gray, scale_factor = IO.read_image(img_path, settings)
+    shape = [1, 1, 0]
 
-    shape = Floor(gray, path, info).shape
-    new_shape = Wall(gray, path, info).shape
-    shape = validate_shape(shape, new_shape)
-    new_shape = Room(gray, path, info).shape
-    shape = validate_shape(shape, new_shape)
+    print(bool(features[const.STR_FLOORS]), bool(features[const.STR_WALLS]),  features[const.STR_WINDOWS], bool(features[const.STR_WINDOWS]))
 
-    Window(gray, path, img_path, scale_factor, info)
-    Door(gray, path, img_path, scale_factor, info)
+    if eval(features[const.STR_FLOORS]):
+        shape = Floor(gray, path, info).shape
+
+    if eval(features[const.STR_WALLS]):
+        new_shape = Wall(gray, path, info).shape
+        shape = validate_shape(shape, new_shape)
+
+    if eval(features[const.STR_ROOMS]):
+        new_shape = Room(gray, path, info).shape
+        shape = validate_shape(shape, new_shape)
+
+    if eval(features[const.STR_WINDOWS]):
+        Window(gray, path, img_path, scale_factor, info)
+    
+    if eval(features[const.STR_DOORS]):
+        Door(gray, path, img_path, scale_factor, info)
 
     generate_transform_file(img_path, path, info, position, rotation, shape)
 

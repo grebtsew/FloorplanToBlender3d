@@ -1,7 +1,6 @@
 from subprocess import check_output
-from FloorplanToBlenderLib import IO,config,const,execution # floorplan to blender lib
+from FloorplanToBlenderLib import IO,config,const,execution,dialog # floorplan to blender lib
 import os
-from pyfiglet import Figlet
 
 # TODO: remove objects outside of detected floor!
 
@@ -14,27 +13,25 @@ FloorplanToBlender3d
 Copyright (C) 2021 Daniel Westberg
 '''
 if __name__ == "__main__":
-    f = Figlet(font='slant')
-    print (f.renderText('Floorplan to Blender3d'))
+    """
+    Do not change variables in this file but rather in ./config.ini or ./FloorplanToBlenderLib/const.py
+    """
+    dialog.figlet()
 
-    # Set required default paths
-    image_path = "" # path the your image
-    blender_install_path = "" # path to blender installation folder
+    image_path = "" 
+    blender_install_path = "" 
 
-    data_folder = "Data/"
-    target_folder = "./Target"
+    data_folder = const.BASE_PATH
+    target_folder = const.TARGET_PATH
 
     image_path, blender_install_path, file_structure, mode = config.get_default()
-
+    
     # Set other paths (don't need to change these)
     program_path = os.path.dirname(os.path.realpath(__file__)) 
-    blender_script_path = "Blender/floorplan_to_3dObject_in_blender.py"
+    blender_script_path = const.BLENDER_SCRIPT_PATH
 
     # Create some gui
-    print( "----- CREATE BLENDER PROJECT FROM FLOORPLAN WITH DIALOG -----" )
-    print("Welcome to this program. Please answer the questions below to progress.")
-    print("Remember that it is recommended to change default values and settings in the config file.")
-    print("")
+    dialog.init()
 
     # Some input
     image_paths = []
@@ -47,35 +44,38 @@ if __name__ == "__main__":
     var = input("Please enter your blender installation path [default = " +blender_install_path+"]: ")
     if var:
         blender_install_path = var
-
-    
-    outformat = config.get("DEFAULT")["out_format"]
-    var = input("Please enter your preferred blender supported output format [default = .blend]: ")
+   
+    outformat = config.get(const.DEFAULT)[const.STR_OUT_FORMAT]
+    var = input("Please enter your preferred blender supported output format [default = "+outformat+"]: ")
     if var in const.SUPPORTED_BLENDER_FORMATS:
         outformat = var
 
     # Advanced Settings
-    settings = config.get("SETTINGS") # TODO: fix and update config file
+    settings = config.get(const.SETTINGS) # TODO: fix and update config file
 
     var = input("Do you want to change advanced settings [default = No]: ")
     if var == "Yes" or var == "yes":
-        var = input("Use noise removal [default = Yes]: ")
+        var = input("Use noise removal [default = "+settings[const.STR_REMOVE_NOISE]+"]: ")
         if var == "Yes" or var == "yes":
-            settings['noise_removal'] = "True"
+            settings[const.STR_REMOVE_NOISE] = "True"
+        elif var == "No" or var == "no":
+            settings[const.STR_REMOVE_NOISE] = "False"
 
-        var = input("Use auto image resize [default = No]: ")
+        var = input("Use auto image resize [default = "+const.STR_RESCALE_IMAGE+"]: ")
         if var == "Yes" or var == "yes":
-            settings['rescale_image'] = "True"
+            settings[const.STR_RESCALE_IMAGE] = "True"
+        elif var == "No" or var == "no":
+            settings[const.STR_RESCALE_IMAGE] = "False"
 
     print("")
-    var = input("This program is about to run and create blender3d project, continue?  [default = " + "OK"+"]: ")
+    var = input("This program is about to run and create blender3d project, continue? : ")
     if var:
         print("Program stopped.")
         exit(0)
 
     # Save new settings to config file
     # Delete config file to reset it to default
-    config.update('SETTINGS',settings)
+    config.update(const.SETTINGS,settings)
 
     print("")
     print("Generate datafiles in folder: Data")
@@ -137,8 +137,4 @@ if __name__ == "__main__":
     print("")
     print("Done, Have a nice day!")
 
-    print("")
-    print("FloorplanToBlender3d Copyright (C) 2021  Daniel Westberg")
-    print("This program comes with ABSOLUTELY NO WARRANTY;")
-    print("This is free software, and you are welcome to redistribute it under certain conditions;")
-    print("")
+    dialog.end_copyright()

@@ -19,8 +19,6 @@ FloorplanToBlender3d
 Copyright (C) 2021 Daniel Westberg
 """
 
-# TODO: fix magic numbers here!
-
 def wall_filter(gray):
     """
     Filter walls
@@ -28,16 +26,17 @@ def wall_filter(gray):
     @Param image
     @Return image of walls
     """
-    ret, thresh = cv2.threshold(gray,0,255,cv2.THRESH_BINARY_INV+cv2.THRESH_OTSU)
+    ret, thresh = cv2.threshold(gray,const.WALL_FILTER_TRESHOLD[0],const.WALL_FILTER_TRESHOLD[1],cv2.THRESH_BINARY_INV+cv2.THRESH_OTSU)
 
     # noise removal
-    kernel = np.ones((3,3),np.uint8)
-    opening = cv2.morphologyEx(thresh,cv2.MORPH_OPEN,kernel, iterations = 2)
+    kernel = np.ones(const.WALL_FILTER_KERNEL_SIZE,np.uint8)
+    opening = cv2.morphologyEx(thresh,cv2.MORPH_OPEN,kernel, iterations = const.WALL_FILTER_MORPHOLOGY_ITERATIONS)
 
-    sure_bg = cv2.dilate(opening,kernel,iterations=3)
+    sure_bg = cv2.dilate(opening,kernel,iterations=const.WALL_FILTER_DILATE_ITERATIONS)
 
-    dist_transform = cv2.distanceTransform(opening,cv2.DIST_L2,5)
-    ret, sure_fg = cv2.threshold(0.5*dist_transform,0.2*dist_transform.max(),255,0)
+    dist_transform = cv2.distanceTransform(opening,cv2.DIST_L2,const.WALL_FILTER_DISTANCE)
+    ret, sure_fg = cv2.threshold(const.WALL_FILTER_DISTANCE_THRESHOLD[0]*dist_transform,const.WALL_FILTER_DISTANCE_THRESHOLD[1]*dist_transform.max(),
+    const.WALL_FILTER_MAX_VALUE,const.WALL_FILTER_THRESHOLD_TECHNIQUE)
 
     sure_fg = np.uint8(sure_fg)
     unknown = cv2.subtract(sure_bg,sure_fg)
@@ -58,7 +57,7 @@ def precise_boxes(detect_img, output_img = None, color = [100,100,0]):
     contours, hierarchy = cv2.findContours(detect_img,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
    
     for cnt in contours:
-        epsilon = 0.001*cv2.arcLength(cnt,True)
+        epsilon = const.PRECISE_BOXES_ACCURACY*cv2.arcLength(cnt,True)
         approx = cv2.approxPolyDP(cnt,epsilon,True)
         if output_img is not None:
             output_img = cv2.drawContours(output_img, [approx], 0, color)
@@ -76,9 +75,10 @@ def __corners_and_draw_lines(img, corners_threshold, room_closing_max_length):
     @Return output image
     """
     # Detect corners (you can play with the parameters here)
-    kernel = np.ones((1,1),np.uint8)
-    dst = cv2.cornerHarris(img ,2,3,0.04)
-    dst = cv2.erode(dst,kernel, iterations = 10)
+    kernel = np.ones(const.PRECISE_HARRIS_KERNEL_SIZE,np.uint8)
+    
+    dst = cv2.cornerHarris(img ,const.PRECISE_HARRIS_BLOCK_SIZE,const.PRECISE_HARRIS_KSIZE,const.PRECISE_HARRIS_K)
+    dst = cv2.erode(dst,kernel, iterations = const.PRECISE_ERODE_ITERATIONS)
     corners = dst > corners_threshold * dst.max()
 
     # Draw lines to close the rooms off by adding a line between corners on the same x or y coordinate
@@ -100,9 +100,9 @@ def __corners_and_draw_lines(img, corners_threshold, room_closing_max_length):
                 cv2.line(img, (x, y1[0]), (x, y2[0]), color, 1)
     return img
 
-def find_rooms(img, noise_removal_threshold=50, corners_threshold=0.01,
-               room_closing_max_length=130,
-               gap_in_wall_min_threshold=5000):
+def find_rooms(img, noise_removal_threshold=const.FIND_ROOMS_NOISE_REMOVAL_THRESHOLD, corners_threshold=const.FIND_ROOMS_CORNERS_THRESHOLD,
+               room_closing_max_length=const.FIND_ROOMS_CLOSING_MAX_LENGTH,
+               gap_in_wall_min_threshold=const.FIND_ROOMS_GAP_IN_WALL_MIN_THRESHOLD):
     """
     src: https://stackoverflow.com/questions/54274610/crop-each-of-them-using-opencv-python
 
@@ -154,7 +154,7 @@ def and_remove_precise_boxes(detect_img, output_img = None, color = [255, 255, 2
 
     for cnt in contours:
        
-        epsilon = 0.001*cv2.arcLength(cnt,True)
+        epsilon = const.REMOVE_PRECISE_BOXES_ACCURACY*cv2.arcLength(cnt,True)
         approx = cv2.approxPolyDP(cnt,epsilon,True)
         if output_img is not None:
             output_img = cv2.drawContours( output_img,  [approx], -1, color, -1);
@@ -171,7 +171,7 @@ def outer_contours(detect_img, output_img = None, color = [255, 255, 255]):
     @Return approx, box
     @Source https://stackoverflow.com/questions/50930033/drawing-lines-and-distance-to-them-on-image-opencv-python
     """
-    ret, thresh = cv2.threshold(detect_img, 230, 255, cv2.THRESH_BINARY_INV)
+    ret, thresh = cv2.threshold(detect_img, const.OUTER_CONTOURS_TRESHOLD[0], const.OUTER_CONTOURS_TRESHOLD[1], cv2.THRESH_BINARY_INV)
 
     contours, hierarchy = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
@@ -181,15 +181,15 @@ def outer_contours(detect_img, output_img = None, color = [255, 255, 255]):
             largest_contour_area = cv2.contourArea(cnt)
             largest_contour = cnt
 
-    epsilon = 0.001*cv2.arcLength(largest_contour,True)
+    epsilon = const.PRECISE_BOXES_ACCURACY*cv2.arcLength(largest_contour,True)
     approx = cv2.approxPolyDP(largest_contour,epsilon,True)
     if output_img is not None:
         output_img = cv2.drawContours(output_img, [approx], 0, color)
     return approx, output_img
 
-def doors(image_path, scale_factor):
+def doors(image_path, scale_factor): 
     model = cv2.imread(const.DOOR_MODEL,0)
-    img = cv2.imread(image_path,0)
+    img = cv2.imread(image_path,0) # TODO: it is not very effective to read image again here!
 
     img = image.cv2_rescale_image(img, scale_factor)
     _, doors = feature_match(img, model)
@@ -197,7 +197,7 @@ def doors(image_path, scale_factor):
 
 def windows(image_path, scale_factor):
     model = cv2.imread(const.DOOR_MODEL,0)
-    img = cv2.imread(image_path,0)
+    img = cv2.imread(image_path,0) # TODO: it is not very effective to read image again here!
 
     img = image.cv2_rescale_image(img, scale_factor)
     windows, _ = feature_match(img, model)   
@@ -206,11 +206,13 @@ def windows(image_path, scale_factor):
 def feature_match(img1, img2):
     """
     Feature match models to floorplans in order to distinguish doors from windows.
+    Also calculate where doors should exist.
+    Compares result with detailed boxes and filter depending on colored pixels to deviate windows, doors and unknowns.
     """
     cap = img1    
     model = img2
     # ORB keypoint detector
-    orb = cv2.ORB_create(nfeatures=10000000, scoreType=cv2.ORB_FAST_SCORE)              
+    orb = cv2.ORB_create(nfeatures=const.WINDOWS_AND_DOORS_FEATURE_N, scoreType=cv2.ORB_FAST_SCORE)              
     # create brute force  matcher object
     bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)  
     # Compute model keypoints and its descriptors
@@ -289,11 +291,14 @@ def feature_match(img1, img2):
     # Remove groups with only singles because we cant calculate rotation then!
     list_grouped_matches_filtered = []
     for match_group in list_grouped_matches:
-        if len(match_group) >= 4 :
+        if len(match_group) >= const.WINDOWS_AND_DOORS_MAX_CORNERS :
             list_grouped_matches_filtered.append(match_group)
         
     # find corners of door in model image
-    corners = cv2.goodFeaturesToTrack(model, 3, 0.01, 20)
+    corners = cv2.goodFeaturesToTrack(model,
+     const.WINDOWS_AND_DOORS_FEATURE_TRACK_MAX_CORNERS,
+      const.WINDOWS_AND_DOORS_FEATURE_TRACK_QUALITY,
+      const.WINDOWS_AND_DOORS_FEATURE_TRACK_MIN_DIST)
     corners = np.int0(corners)
     
     # This is still a little hardcoded but still better than before!
@@ -388,7 +393,7 @@ def feature_match(img1, img2):
         list_of_proper_transformed_doors.append([moved_new_upper_left, moved_new_upper_right, moved_new_down])
      
     gray = wall_filter(img1)
-    gray = ~gray
+    gray = ~gray # TODO: is it necessary to convert to grayscale again?
     rooms, colored_rooms = find_rooms(gray.copy())
     doors, colored_doors = find_details(gray.copy())
     gray_rooms =  cv2.cvtColor(colored_doors,cv2.COLOR_BGR2GRAY)
@@ -422,21 +427,19 @@ def feature_match(img1, img2):
         # bandpassfilter
         total = np.sum(cropped)
         colored = np.sum(cropped > 0)
-        low = 0.001
-        high = 0.00459
+        low = const.WINDOWS_COLORED_PIXELS_THRESHOLD[0]
+        high = const.WINDOWS_COLORED_PIXELS_THRESHOLD[1]
         
         amount_of_colored = colored/total
         
         if(low < amount_of_colored < high):
             windows.append(box)
 
-    return transform.rescale_rect(windows, 1.05), doors
+    return transform.rescale_rect(windows, const.WINDOWS_RESCALE_TO_FIT), doors
 
-
-
-def find_details(img, noise_removal_threshold=50, corners_threshold=0.01,
-               room_closing_max_length=130, gap_in_wall_max_threshold=5000,
-               gap_in_wall_min_threshold=10):
+def find_details(img, noise_removal_threshold=const.DETAILS_NOISE_REMOVAL_THRESHOLD, corners_threshold=const.DETAILS_CORNERS_THRESHOLD,
+               room_closing_max_length=const.DETAILS_CLOSING_MAX_LENGTH, gap_in_wall_max_threshold=const.DETAILS_GAP_IN_WALL_THRESHOLD[1],
+               gap_in_wall_min_threshold=const.DETAILS_GAP_IN_WALL_THRESHOLD[0]):
 
     """
     I have copied and changed this function some...
