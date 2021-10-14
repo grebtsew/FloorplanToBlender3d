@@ -16,7 +16,7 @@ BASE_FORMAT = ".blend"
 
 # Paths to save folder
 BASE_PATH = "Data/"
-TARGET_PATH = "./Target"
+TARGET_PATH = "/Target/"
 BLENDER_SCRIPT_PATH = "Blender/floorplan_to_3dObject_in_blender.py"
 
 # Generators
@@ -129,14 +129,15 @@ DEFAULT_CALIBRATION_IMAGE_PATH='Images/Calibrations/wallcalibration.png'
 DEFAULT_IMAGE_PATH = 'Images/Examples/example.png'
 DEFAULT_OUT_FORMAT = ".blend"
 DEFAULT_OVERWRITE_DATA = "False"
-DEFAULT_BLENDER_INSTALL_PATH = 'C:\\Program Files\\Blender Foundation\\Blender 2.90\\blender.exe'
+MAC_DEFAULT_BLENDER_INSTALL_PATH = "/Applications/Blender.app/Contents/MacOS/Blender"
+LINUX_DEFAULT_BLENDER_INSTALL_PATH = "/usr/local/blender/blender"
+WIN_DEFAULT_BLENDER_INSTALL_PATH = 'C:\\Program Files\\Blender Foundation\\Blender 2.90\\blender.exe'
 DEFAULT_FILE_STRUCTURE= '[[[0,0,0], [0,0,0], [0,0,0]], [[0,0,0], [0,0,0], [0,0,0]], [[0,0,0], [0,0,0], [0,0,0]]]'
 DEFAULT_MODE = 'simple'
 DEFAULT_FEATURES = "True"
 DEFAULT_REMOVE_NOISE = "True"
 DEFAULT_RESCALE_IMAGE = "True"
 DEFAULT_WALL_SIZE_CALIBRATION = "0"
-
 
 # DATA save files names
 FLOOR_VERTS = "floor_verts"

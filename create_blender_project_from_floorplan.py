@@ -131,7 +131,7 @@ if __name__ == "__main__":
             "."+target_path,
             outformat,
             target_base+outformat])
-        print("Object created at:"+program_path+"/"+target_base+outformat)
+        print("Object created at:"+program_path+target_base+outformat)
 
     print("Project created at: " + program_path + target_path)
     print("")

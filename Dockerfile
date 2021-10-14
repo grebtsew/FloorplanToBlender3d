@@ -59,8 +59,8 @@ VOLUME /media
 VOLUME ${PROGAM_PATH}/Server/storage
 
 # Set default blender path in config file (doing this twice is a little hax!)
-RUN sed -i 's#blender_installation_path=.*#blender_installation_path='"${BLENDER_PATH}"'#g' ${PROGAM_PATH}/config.ini
-RUN sed -i 's#blender_installation_path=.*#blender_installation_path='"${BLENDER_PATH}"'#g' ${PROGAM_PATH}/config.ini
+#RUN sed -i 's#blender_installation_path=.*#blender_installation_path='"${BLENDER_PATH}"'#g' ${PROGAM_PATH}/config.ini
+#RUN sed -i 's#blender_installation_path=.*#blender_installation_path='"${BLENDER_PATH}"'#g' ${PROGAM_PATH}/config.ini
 RUN sed -i 's#blender_installation_path=.*#blender_installation_path='"${BLENDER_PATH}"'#g' ${PROGAM_PATH}/Server/config.ini
 RUN sed -i 's#blender_installation_path=.*#blender_installation_path='"${BLENDER_PATH}"'#g' ${PROGAM_PATH}/Server/config.ini
 

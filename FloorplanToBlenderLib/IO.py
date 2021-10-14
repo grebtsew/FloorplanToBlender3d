@@ -3,6 +3,7 @@ import os
 from shutil import which
 import shutil
 import cv2
+import platform
 
 from . import const
 from . import image
@@ -17,6 +18,16 @@ Copyright (C) 2021 Daniel Westberg
 '''
 
 # TODO: add config security check, before start up!
+
+def get_blender_os_path():
+    _platform = platform.system()
+    if _platform.lower() == "linux" or _platform.lower() == "linux2" or _platform.lower() == "ubuntu":
+        return const.LINUX_DEFAULT_BLENDER_INSTALL_PATH
+    elif _platform.lower() == "darwin":
+        return const.MAC_DEFAULT_BLENDER_INSTALL_PATH
+    elif "win" in _platform.lower():
+        return const.WIN_DEFAULT_BLENDER_INSTALL_PATH
+
 
 def read_image(path,  settings=None):
     '''
