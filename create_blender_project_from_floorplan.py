@@ -107,7 +107,7 @@ if __name__ == "__main__":
     if not os.path.exists(target_folder):
         os.makedirs(target_folder)
     
-    target_base = target_folder+"/floorplan"
+    target_base = target_folder+const.TARGET_NAME
     target_path = target_base+const.BASE_FORMAT
     target_path = IO.get_next_target_base_name(target_base, target_path)+const.BASE_FORMAT
     

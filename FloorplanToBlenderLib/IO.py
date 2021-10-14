@@ -131,10 +131,12 @@ def find_program_path(name):
 def get_next_target_base_name(target_base, target_path):
     # If blender target file already exist, get next id
     fid = 0
-    if os.path.isfile(target_path):
-        for file in os.listdir(const.TARGET_PATH):
+    if os.path.isfile("."+target_path):
+        for file in os.listdir("."+const.TARGET_PATH):
             filename = os.fsdecode(file)
             if filename.endswith(const.BASE_FORMAT): 
                 fid += 1
         target_base += str(fid)
+
+    print(target_base, fid, target_path)
     return target_base

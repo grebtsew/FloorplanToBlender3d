@@ -2,7 +2,9 @@
 *test-result
 */storage
 
-/config.ini
+config.ini
+./config.ini
+*/config.ini
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

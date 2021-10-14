@@ -27,7 +27,7 @@ def lines(image, lines):
         image = cv2.polylines(image, line, True, (0,0,255), 1, cv2.LINE_AA)       
     return image
 
-def verts(boxes, image):
+def verts(image, boxes):
     '''
     Write verts as lines and show image
     @Param boxes, numpy array of boxes

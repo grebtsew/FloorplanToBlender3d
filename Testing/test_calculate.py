@@ -15,3 +15,12 @@ import os
 
 def test_calculate():
     assert True
+
+    #average(lst):
+    #points_are_inside_or_close_to_box(door,box):
+    #angle_between_vectors_2d(vector1, vector2):
+    #rect_contains_or_almost_contains_point(pt, box):
+    #box_center(box):
+    #euclidean_distance_2d(p1,p2):
+    #magnitude_2d(point):
+    #normalize_2d(normal):

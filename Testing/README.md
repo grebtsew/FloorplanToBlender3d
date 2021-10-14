@@ -1,10 +1,7 @@
-#Testing
+# Testing
 
 Run all tests by running:
 
-'''
-pytest
-'''
+Run `pytest` in this folder to run all tests. Add --ignore=visuals to ignore gui required tests.
 
-
-TODO: Write actual assert tests in FloorplanToBlenderLib...
+Use `pytest -h` for more information!

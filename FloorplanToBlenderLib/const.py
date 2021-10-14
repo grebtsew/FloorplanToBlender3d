@@ -17,6 +17,7 @@ BASE_FORMAT = ".blend"
 # Paths to save folder
 BASE_PATH = "Data/"
 TARGET_PATH = "/Target/"
+TARGET_NAME = "floorplan"
 BLENDER_SCRIPT_PATH = "Blender/floorplan_to_3dObject_in_blender.py"
 
 # Generators
