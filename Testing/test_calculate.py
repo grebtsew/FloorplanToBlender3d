@@ -14,6 +14,10 @@ except ImportError:
 from subprocess import check_output
 import os
 
+def test_wall_width_average():
+    # TODO
+    assert True
+
 def test_average():
     assert 5 == calculate.average([2,2,8,8])
 

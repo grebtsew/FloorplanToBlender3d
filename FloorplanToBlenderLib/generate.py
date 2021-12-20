@@ -34,7 +34,7 @@ def generate_all_files(img_path, info, position=None, rotation=None):
     settings = config.get(const.SETTINGS)
     features = config.get(const.FEATURES)
     
-    image, gray, scale_factor = IO.read_image(img_path, settings)
+    _, gray, scale_factor = IO.read_image(img_path, settings)
     shape = [1, 1, 0]
 
     print(bool(features[const.STR_FLOORS]), bool(features[const.STR_WALLS]),  features[const.STR_WINDOWS], bool(features[const.STR_WINDOWS]))

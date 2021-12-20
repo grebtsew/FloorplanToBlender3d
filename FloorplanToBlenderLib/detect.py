@@ -2,8 +2,6 @@ import cv2
 import numpy as np
 from . import image
 from . import const
-from . import IO
-from . import draw
 from . import image
 from . import calculate
 from . import transform
@@ -26,7 +24,7 @@ def wall_filter(gray):
     @Param image
     @Return image of walls
     """
-    ret, thresh = cv2.threshold(gray,const.WALL_FILTER_TRESHOLD[0],const.WALL_FILTER_TRESHOLD[1],cv2.THRESH_BINARY_INV+cv2.THRESH_OTSU)
+    _, thresh = cv2.threshold(gray,const.WALL_FILTER_TRESHOLD[0],const.WALL_FILTER_TRESHOLD[1],cv2.THRESH_BINARY_INV+cv2.THRESH_OTSU)
 
     # noise removal
     kernel = np.ones(const.WALL_FILTER_KERNEL_SIZE,np.uint8)
@@ -54,7 +52,7 @@ def precise_boxes(detect_img, output_img = None, color = [100,100,0]):
     """
     res = []
 
-    contours, hierarchy = cv2.findContours(detect_img,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
+    contours, _ = cv2.findContours(detect_img,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
    
     for cnt in contours:
         epsilon = const.PRECISE_BOXES_ACCURACY*cv2.arcLength(cnt,True)

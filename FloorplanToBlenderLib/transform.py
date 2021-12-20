@@ -45,7 +45,7 @@ def rescale_rect(list_of_rects, scale_factor):
 
 def flatten(in_list):
     """
-    Flatten multidim list
+    Flatten multidim list into single dim array
     """
     if in_list == []:
         return []
@@ -57,7 +57,6 @@ def flatten(in_list):
 def rotate_round_origin_vector_2d(origin, point, angle):
     """
     Rotate a point counterclockwise by a given angle around a given origin.
-
     The angle should be given in radians.
     """
     ox, oy = origin

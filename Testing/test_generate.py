@@ -13,5 +13,9 @@ except ImportError:
 from subprocess import check_output
 import os
 
-def test_config():
+# TODO:
+
+def test_validate_shape():
     assert True
+
+

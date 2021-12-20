@@ -1,16 +1,8 @@
-import cv2
-import numpy as np
-
-from . import detect
-from . import IO
-from . import transform
-
 from pyfiglet import Figlet
 
 '''
 Dialog
 This file contains code for handling dialog and can be seen as a gui solution.
-TODO: This is currently unused
 
 FloorplanToBlender3d
 Copyright (C) 2021 Daniel Westberg
@@ -27,7 +19,6 @@ def init():
     print("")
 
 def question(text, default): 
-    # TODO: make input better!
     '''
     @Param text, question string
     @Param default, possible values

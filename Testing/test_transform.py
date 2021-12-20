@@ -13,5 +13,32 @@ except ImportError:
 from subprocess import check_output
 import os
 
-def test_config():
+def test_rescale_rect():
+    assert True
+
+def test_flatten():
+    assert True
+
+def test_rotate_round_origin_vector_2d():
+    assert True
+
+def test_recursive_loop_element():
+    assert True
+
+def test_scale_model_point_to_origin():
+    assert True
+
+def test_verts_to_poslist():
+    assert True
+
+def test_scale_point_to_vector():
+    assert True
+
+def test_create_4xn_verts_and_faces():
+    assert True
+
+def test_create_nx4_verts_and_faces():
+    assert True
+
+def test_create_verts():
     assert True

@@ -13,5 +13,10 @@ except ImportError:
 from subprocess import check_output
 import os
 
-def test_config():
-    assert True
+# TODO:
+
+def test_init():
+    assert dialog.init() == None
+
+def test_end_copyright():
+    assert dialog.end_copyright() == None

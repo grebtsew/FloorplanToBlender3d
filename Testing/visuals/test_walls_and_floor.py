@@ -1,4 +1,3 @@
-import pytest
 import cv2
 import numpy as np
 import sys
@@ -9,33 +8,28 @@ try:
 except ImportError:
     raise ImportError # floorplan to blender lib
 
-from subprocess import check_output
-import os
-
-
-def test():
+def test_wall_and_floor():
     '''
     Receive image, convert
     This function test functions used to create floor and walls
     '''
     # Read floorplan image
-    img = cv2.imread(sys.path[1]+"/../../Images/example2.png")
-    image = img
+    img = cv2.imread(sys.path[1]+"/../../Images/Examples/example2.png")
     # grayscale image
     gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
 
     # Resulting image
-    height, width, channels = img.shape
+    height, width, _ = img.shape
     blank_image = np.zeros((height,width,3), np.uint8) # output image same size as original
 
     # create wall image (filter out small objects from image)
     wall_img = detect.wall_filter(gray)
 
     # detect walls
-    boxes, img = detect.detectPreciseBoxes(wall_img)
+    _, img = detect.precise_boxes(wall_img)
 
     # detect outer Contours (simple floor or roof solution)
-    contour, img = detect.detectOuterContours(gray, blank_image)
+    _, img = detect.outer_contours(gray, blank_image)
 
     cv2.imshow('detected circles',wall_img)
     cv2.imshow('detected circ2s',img)
