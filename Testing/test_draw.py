@@ -24,9 +24,6 @@ def test_draw():
     blank_image = draw.lines(blank_image, [np.array([[25, 70], [25, 160]], np.int32).reshape((-1,1,2))]) 
     blank_image = draw.contours(blank_image, [np.array([[[1,1]], [[200,300]], [[50,400]], [[100,10]]], dtype=np.int32)])
     blank_image = draw.colormap(blank_image)
-    
-    #draw.doors()
-    #draw.verts()
-    #draw.image(1000)
-    #draw.histogram(1)
+    blank_image = draw.doors(blank_image,[[[(200,20),(20,200)],[np.array([[[1,1]], [[200,300]], [[50,400]], [[100,10]]], dtype=np.int32)]]])
+
     assert True

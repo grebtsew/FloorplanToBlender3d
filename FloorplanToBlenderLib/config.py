@@ -81,6 +81,9 @@ def generate_file():
         conf.write(configfile)
 
 def show(conf):
+    """
+    Visualize all config settings
+    """
     for key in conf:  
        print(key, conf[key])
 

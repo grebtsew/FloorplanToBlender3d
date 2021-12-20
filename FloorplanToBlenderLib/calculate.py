@@ -93,6 +93,8 @@ def best_matches_with_modulus_angle(match_list):
 def points_are_inside_or_close_to_box(door,box):
     """
     Calculate if a point is within vicinity of a box.
+    @parameter Door is a list of points
+    @parameter Box is a numpy box
     """
     for point in door:
         if rect_contains_or_almost_contains_point(point, box):
@@ -102,6 +104,7 @@ def points_are_inside_or_close_to_box(door,box):
 def angle_between_vectors_2d(vector1, vector2):
     """
     Get angle between two 2d vectors
+    returns radians
     """
     x1, y1 = vector1
     x2, y2 = vector2
@@ -135,16 +138,28 @@ def rect_contains_or_almost_contains_point(pt, box):
     return is_inside or almost_inside
 
 def box_center(box):
+    """
+    Get center position of box
+    """
     x,y,w,h = cv2.boundingRect(box)
     return (x+w/2, y+h/2)
 
 def euclidean_distance_2d(p1,p2):
+    """
+    Calculate euclidean distance between two points
+    """
     return math.sqrt(abs(math.pow(p1[0]-p2[0],2) - math.pow(p1[1]-p2[1],2)))
 
 def magnitude_2d(point):
+    """
+    Calculate magnitude of two points
+    """
     return math.sqrt(point[0]*point[0] + point[1]*point[1])
 
 def normalize_2d(normal):
+    """
+    Calculate normalized point
+    """
     mag = magnitude_2d(normal)
     for i, val in enumerate(normal):
         normal[i] = val/mag

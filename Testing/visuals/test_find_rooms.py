@@ -38,4 +38,7 @@ def test_find_rooms_in_image():
     cv2.waitKey(1)
     cv2.destroyAllWindows()
 
+    draw.histogram(gray_rooms, wait=1)
+    draw.image(gray, wait=10)
+
     assert True # got to end successfully

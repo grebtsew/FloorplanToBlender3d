@@ -13,5 +13,29 @@ except ImportError:
 from subprocess import check_output
 import os
 
-def test_config():
+def test_read_calibration():
+    assert True
+
+def test_create_image_scale_calibration():
+    assert True
+
+def test_generate_file():
+    assert True
+
+def test_show():
+    assert True
+
+def test_update():
+    assert True
+
+def test_file_exist():
+    assert True
+
+def test_get_all():
+    assert True
+
+def test_get():
+    assert True
+
+def test_get_default():
     assert True

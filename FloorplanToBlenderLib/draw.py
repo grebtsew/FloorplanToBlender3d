@@ -11,18 +11,30 @@ This file contains functions and tools for visualization of data.
 '''
 
 def image(image, title="FTBL", wait=0):
+    """
+    Show image using cv2 functions
+    """
     cv2.imshow(title, image)
     cv2.waitKey(wait)
 
 def points(image, points):
+    """
+    Draw points on image
+    """
     for point in points:
         image = cv2.circle(image, point, radius=4, color=(0, 0, 0), thickness=5)
     return image
 
 def contours(image, contours):
+    """
+    Draw contours on image
+    """
     return cv2.drawContours(image, contours, -1, (0,255,0), 3)
   
 def lines(image, lines):
+    """
+    Draw lines on image
+    """
     for line in lines:
         image = cv2.polylines(image, line, True, (0,0,255), 1, cv2.LINE_AA)       
     return image
@@ -51,6 +63,10 @@ def boxes(image, boxes, text=""):
     return image
 
 def doors(img, doors):
+    """
+    Draw doors on image
+    Doors in list with format [[points],[box]]
+    """
     for door in doors:
         img = points(img, door[0])
         img = boxes(img, door[1])
