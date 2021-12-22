@@ -1,8 +1,4 @@
-
-import pytest
-import cv2
 import numpy as np
-import os
 import sys
 
 try:
@@ -10,9 +6,6 @@ try:
     from FloorplanToBlenderLib import * # floorplan to blender lib
 except ImportError:
     raise ImportError # floorplan to blender lib
-
-from subprocess import check_output
-import os
 
 def test_wall_width_average():
     # TODO

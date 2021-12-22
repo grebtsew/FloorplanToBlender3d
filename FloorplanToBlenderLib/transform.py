@@ -74,22 +74,24 @@ def scale_model_point_to_origin( origin, point,x_scale, y_scale):
     dx, dy = (point[0] - origin[0], point[1] - origin[1])
     return (dx * x_scale, dy * y_scale)
 
-def recursive_loop_element(thelist, res):
+
+def flatten_iterative_safe(thelist, res):
     '''
-    Recursive loop element
-    A recursive function transforming any sized array to a one dimensional array
+    Flatten iterative safe
+    A iterative flatten function using types to specify depths, handling empty elements
+    Useful when flattening floorplan verts
     @Param thelist, incoming list
-    @Param res, resulting list
+    @Param res, resulting list, preferably []
     '''
     if not thelist:
         return res
     else:
         if isinstance(thelist[0], int) or isinstance(thelist[0], float):
             res.append(thelist[0])
-            return recursive_loop_element(thelist[1:], res)
+            return flatten_iterative_safe(thelist[1:], res)
         else:
-            res.extend( recursive_loop_element(thelist[0], []))
-            return  recursive_loop_element(thelist[1:], res)
+            res.extend( flatten_iterative_safe(thelist[0], []))
+            return  flatten_iterative_safe(thelist[1:], res)
 
 def verts_to_poslist(verts):
     '''
@@ -98,7 +100,7 @@ def verts_to_poslist(verts):
     @Param verts of undecided size
     @Return res, list of position
     '''
-    list_of_elements = recursive_loop_element(verts, [])
+    list_of_elements = flatten_iterative_safe(verts, [])
 
     res = []
     i = 0

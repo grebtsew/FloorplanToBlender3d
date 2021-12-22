@@ -1,7 +1,3 @@
-import pytest
-import cv2
-import numpy as np
-import os
 import sys
 
 try:
@@ -10,12 +6,5 @@ try:
 except ImportError:
     raise ImportError # floorplan to blender lib
 
-from subprocess import check_output
-import os
-
-# TODO:
-
 def test_validate_shape():
-    assert True
-
-
+    assert generate.validate_shape([1,1,1],[2,3,4])

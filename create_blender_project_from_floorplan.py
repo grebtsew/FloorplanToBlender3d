@@ -4,6 +4,18 @@ import os
 
 # TODO: remove objects outside of detected floor!
 
+# TODO:s need fixing before next merge with main -
+# - finish tests
+# - finish notebook 
+# - finish floorplan stacking atleast 100+
+# - test dockerfile
+# - create CI/CD action
+# - secure window and door detections, as selectable settings
+# - go through all TODO:s and solve easy to fix ones
+# - updated demos
+# - update readme
+# - detect blender installation position
+
 '''
 Create Blender Project from floorplan
 This file contains a simple example implementation of creations of 3d models from
