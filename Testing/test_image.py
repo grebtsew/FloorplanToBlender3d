@@ -1,4 +1,5 @@
 import sys
+import numpy as np
 
 try:
     sys.path.insert(0, sys.path[0] + "/..")
@@ -6,34 +7,27 @@ try:
 except ImportError:
     raise ImportError  # floorplan to blender lib
 
-
-def test_pil_rescale_image():
-    assert True
+height = 500
+width = 500
+blank_image = np.zeros((height, width, 3), np.uint8)
+gray = np.ones((height, width), dtype=np.uint8)
 
 
 def test_cv2_rescale_image():
-    assert True
-
-
-def test_pil_to_cv2():
+    _ = image.cv2_rescale_image(blank_image, 3)
     assert True
 
 
 def test_calculate_scale_factor():
+    _ = image.calculate_scale_factor(20, 30)
     assert True
 
 
 def test_denoising():
-    assert True
-
-
-def test_remove_noise():
-    assert True
-
-
-def test_mark_outside_black():
+    _ = image.denoising(blank_image)
     assert True
 
 
 def test_detect_wall_rescale():
+    _ = image.detect_wall_rescale(blank_image, blank_image)
     assert True

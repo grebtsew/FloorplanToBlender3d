@@ -6,40 +6,27 @@ try:
 except ImportError:
     raise ImportError  # floorplan to blender lib
 
-# TODO
-
-
-def test_read_calibration():
-    assert True
-
-
-def test_create_image_scale_calibration():
-    assert True
-
 
 def test_generate_file():
-    assert True
+    assert None == config.generate_file()
 
 
 def test_show():
-    assert True
-
-
-def test_update():
-    assert True
-
-
-def test_file_exist():
-    assert True
+    conf = config.get_all()
+    assert None == config.show(conf)
 
 
 def test_get_all():
-    assert True
+    assert config.get_all()
+
+
+def test_file_exist():
+    assert config.file_exist("./test_config.py")
 
 
 def test_get():
-    assert True
+    assert config.get("FEATURES")
 
 
 def test_get_default():
-    assert True
+    assert config.get_default()

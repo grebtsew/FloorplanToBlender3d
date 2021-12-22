@@ -58,7 +58,7 @@ def create_image_scale_calibration(got_settings=False):
         calibrations = {
             const.STR_CALIBRATION_IMAGE_PATH: default_calibration_image,
             const.STR_WALL_SIZE_CALIBRATION: str(
-                image.calculate_wall_width_average(calibration_img)
+                calculate.wall_width_average(calibration_img)
             ),
         }
 
