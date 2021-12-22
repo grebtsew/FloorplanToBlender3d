@@ -5,30 +5,43 @@ from . import detect
 from . import calculate
 from . import const
 
-'''
+"""
 Image
 This file contains code for image processing, used when creating blender project.
 Contains functions for tweeking and filter images for better results.
 
 FloorplanToBlender3d
 Copyright (C) 2021 Daniel Westberg
-'''
+"""
 
-def pil_rescale_image(image,factor ):
+
+def pil_rescale_image(image, factor):
     width, height = image.size
-    return image.resize((int(width*factor),int(height*factor)), resample=Image.BOX)
+    return image.resize((int(width * factor), int(height * factor)), resample=Image.BOX)
 
-def cv2_rescale_image(image,factor):
-    return cv2.resize(image, None, fx=factor, fy=factor )
+
+def cv2_rescale_image(image, factor):
+    return cv2.resize(image, None, fx=factor, fy=factor)
+
 
 def pil_to_cv2(image):
     return cv2.cvtColor(np.asarray(image), cv2.COLOR_RGB2BGR)
 
-def calculate_scale_factor( preferred : float, value : float):
-    return preferred/value
+
+def calculate_scale_factor(preferred: float, value: float):
+    return preferred / value
+
 
 def denoising(img):
-    return cv2.fastNlMeansDenoisingColored(img,None,const.IMAGE_H,const.IMAGE_HCOLOR,const.IMAGE_TEMPLATE_SIZE,const.IMAGE_SEARCH_SIZE)
+    return cv2.fastNlMeansDenoisingColored(
+        img,
+        None,
+        const.IMAGE_H,
+        const.IMAGE_HCOLOR,
+        const.IMAGE_TEMPLATE_SIZE,
+        const.IMAGE_SEARCH_SIZE,
+    )
+
 
 def remove_noise(img, noise_removal_threshold):
     """
@@ -48,6 +61,7 @@ def remove_noise(img, noise_removal_threshold):
             cv2.fillPoly(mask, [contour], 255)
     return mask
 
+
 def mark_outside_black(img, mask):
     """
     Mark white background as black
@@ -64,12 +78,12 @@ def mark_outside_black(img, mask):
     img[mask == 0] = 0
     return img, mask
 
-def detect_wall_rescale(reference_size, image): # TODO: print if image is rescaled!
-    '''
-    detect how much an image is to be rescaled
-    '''
-    image_wall_size = calculate.wall_width_average(image)
-    if image_wall_size is None: # No walls could be found!
-        return None
-    return calculate_scale_factor(float(reference_size),image_wall_size )
 
+def detect_wall_rescale(reference_size, image):  # TODO: print if image is rescaled!
+    """
+    detect how much an image is to be rescaled
+    """
+    image_wall_size = calculate.wall_width_average(image)
+    if image_wall_size is None:  # No walls could be found!
+        return None
+    return calculate_scale_factor(float(reference_size), image_wall_size)

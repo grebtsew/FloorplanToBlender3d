@@ -117,3 +117,7 @@ Resolved version issues:
 * If a later `OpenCV` library version than 3.4.1.15 for python is used, several changes has to be done in the `/FloorplanToBlender3d/detect.py` file.
 Please create an issue if you encounter any problems with this implementation.
 
+# Code format
+
+For autoformating in python we use the black library. It requires python version 3.6.0+.
+To use it install using `pip install black` and then run in root folder `black ./*`

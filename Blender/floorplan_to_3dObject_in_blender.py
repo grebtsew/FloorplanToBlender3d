@@ -5,7 +5,7 @@ import sys
 import math
 import os.path
 
-'''
+"""
 Floorplan to Blender
 
 FloorplanToBlender3d
@@ -27,25 +27,27 @@ HOW TO: (old style)
 6. Run script
 
 This code is tested on Windows 10, Blender 2.79, in January 2019.
-'''
+"""
 
-'''
+"""
 Our helpful functions
-'''
+"""
 
 # TODO: restructure this file with a class and help-function to save a lot of lines of code!
 
+
 def read_from_file(file_path):
-    '''
+    """
     Read from file
     read verts data from file
     @Param file_path, path to file
     @Return data
-    '''
-    #Now read the file back into a Python list object
-    with open(file_path+'.txt', 'r') as f:
+    """
+    # Now read the file back into a Python list object
+    with open(file_path + ".txt", "r") as f:
         data = json.loads(f.read())
     return data
+
 
 def init_object(name):
     # Create new blender object and return references to mesh and object
@@ -54,14 +56,16 @@ def init_object(name):
     bpy.context.collection.objects.link(myobject)
     return myobject, mymesh
 
-def average(lst): 
-    return sum(lst) / len(lst) 
+
+def average(lst):
+    return sum(lst) / len(lst)
+
 
 def get_mesh_center(verts):
     # Calculate center location of a mesh from verts
-    x=[]
-    y=[]
-    z=[]
+    x = []
+    y = []
+    z = []
 
     for vert in verts:
         x.append(vert[0])
@@ -69,6 +73,7 @@ def get_mesh_center(verts):
         z.append(vert[2])
 
     return [average(x), average(y), average(z)]
+
 
 def subtract_center_verts(verts1, verts2):
     # Remove verts1 from all verts in verts2, return result, verts1 & verts2 must have same shape!
@@ -78,13 +83,14 @@ def subtract_center_verts(verts1, verts2):
         verts2[i][2] -= verts1[2]
     return verts2
 
-def create_custom_mesh(objname, verts, faces, pos = None, rot = None, mat = None, cen = None):
-    '''
+
+def create_custom_mesh(objname, verts, faces, pos=None, rot=None, mat=None, cen=None):
+    """
     @Param objname, name of new mesh
     @Param pos, object position [x, y, z]
     @Param vertex, corners
     @Param faces, buildorder
-    '''
+    """
     # Create mesh and object
     myobject, mymesh = init_object(objname)
 
@@ -92,16 +98,16 @@ def create_custom_mesh(objname, verts, faces, pos = None, rot = None, mat = None
     # Find center of verts
     center = get_mesh_center(verts)
     # Subtract center from verts before creation
-    proper_verts = subtract_center_verts(center,verts)
+    proper_verts = subtract_center_verts(center, verts)
 
     # Generate mesh data
     mymesh.from_pydata(proper_verts, [], faces)
     # Calculate the edges
     mymesh.update(calc_edges=True)
 
-    parent_center = [0,0,0]
+    parent_center = [0, 0, 0]
     if cen is not None:
-        parent_center = [int(cen[0]/2),int(cen[1]/2),int(cen[2])]
+        parent_center = [int(cen[0] / 2), int(cen[1] / 2), int(cen[2])]
 
     # Move object to input verts location
     myobject.location.x = center[0] - parent_center[0]
@@ -118,95 +124,123 @@ def create_custom_mesh(objname, verts, faces, pos = None, rot = None, mat = None
         myobject.rotation_euler = rot
 
     # add contraint for pivot point
-    #pivot = myobject.constraints.new(type='PIVOT')
-    
+    # pivot = myobject.constraints.new(type='PIVOT')
+
     # add material
-    if mat is None: # add random color
-        myobject.data.materials.append(create_mat( np.random.randint(0, 40, size=4))) #add the material to the object
+    if mat is None:  # add random color
+        myobject.data.materials.append(
+            create_mat(np.random.randint(0, 40, size=4))
+        )  # add the material to the object
     else:
-        myobject.data.materials.append(mat) #add the material to the object
+        myobject.data.materials.append(mat)  # add the material to the object
     return myobject
 
+
 def create_mat(rgb_color):
-    mat = bpy.data.materials.new(name="MaterialName") #set new material to variable
-    mat.diffuse_color = rgb_color #change to random color
+    mat = bpy.data.materials.new(name="MaterialName")  # set new material to variable
+    mat.diffuse_color = rgb_color  # change to random color
     return mat
 
-'''
+
+"""
 Main functionality here!
-'''
+"""
+
+
 def main(argv):
-    '''
+    """
     Create Walls
     All walls are square
     Therefore we split data into two files
-    '''
+    """
 
     # Remove starting object cube
     # Select all
     objs = bpy.data.objects
     objs.remove(objs["Cube"], do_unlink=True)
 
-    if(len(argv) > 7): # Note YOU need 8 arguments!
+    if len(argv) > 7:  # Note YOU need 8 arguments!
         program_path = argv[5]
         target = argv[6]
     else:
         exit(0)
 
-
-    '''
+    """
     Instantiate
-    '''
-    for i in range(7,len(argv)):
+    """
+    for i in range(7, len(argv)):
         base_path = argv[i]
         create_floorplan(base_path, program_path, i)
 
-    '''
+    """
     Save to file
     TODO add several save modes here!
-    '''
-    bpy.ops.wm.save_as_mainfile(filepath=program_path + target) #"/floorplan.blend"
+    """
+    bpy.ops.wm.save_as_mainfile(filepath=program_path + target)  # "/floorplan.blend"
 
-    '''
+    """
     Send correct exit code
-    '''
+    """
     exit(0)
 
 
-def create_floorplan(base_path,program_path, name=0):
+def create_floorplan(base_path, program_path, name=0):
 
-    parent, parent_mesh = init_object("Floorplan"+str(name))
+    parent, parent_mesh = init_object("Floorplan" + str(name))
 
-    path_to_wall_vertical_faces_file = program_path +"/" + base_path + "wall_vertical_faces"
-    path_to_wall_vertical_verts_file = program_path +"/" + base_path + "wall_vertical_verts"
+    path_to_wall_vertical_faces_file = (
+        program_path + "/" + base_path + "wall_vertical_faces"
+    )
+    path_to_wall_vertical_verts_file = (
+        program_path + "/" + base_path + "wall_vertical_verts"
+    )
 
-    path_to_wall_horizontal_faces_file = program_path +"/" + base_path + "wall_horizontal_faces"
-    path_to_wall_horizontal_verts_file = program_path +"/" + base_path + "wall_horizontal_verts"
+    path_to_wall_horizontal_faces_file = (
+        program_path + "/" + base_path + "wall_horizontal_faces"
+    )
+    path_to_wall_horizontal_verts_file = (
+        program_path + "/" + base_path + "wall_horizontal_verts"
+    )
 
-    path_to_floor_faces_file = program_path +"/" +base_path + "floor_faces"
-    path_to_floor_verts_file = program_path +"/" +base_path + "floor_verts"
+    path_to_floor_faces_file = program_path + "/" + base_path + "floor_faces"
+    path_to_floor_verts_file = program_path + "/" + base_path + "floor_verts"
 
-    path_to_rooms_faces_file = program_path +"/" + base_path + "room_faces"
-    path_to_rooms_verts_file = program_path +"/" + base_path + "room_verts"
+    path_to_rooms_faces_file = program_path + "/" + base_path + "room_faces"
+    path_to_rooms_verts_file = program_path + "/" + base_path + "room_verts"
 
-    path_to_doors_vertical_faces_file = program_path +"\\" + base_path + "door_vertical_faces"
-    path_to_doors_vertical_verts_file = program_path +"\\" + base_path + "door_vertical_verts"
+    path_to_doors_vertical_faces_file = (
+        program_path + "\\" + base_path + "door_vertical_faces"
+    )
+    path_to_doors_vertical_verts_file = (
+        program_path + "\\" + base_path + "door_vertical_verts"
+    )
 
-    path_to_doors_horizontal_faces_file = program_path +"\\" + base_path + "door_horizontal_faces"
-    path_to_doors_horizontal_verts_file = program_path +"\\" + base_path + "door_horizontal_verts"
+    path_to_doors_horizontal_faces_file = (
+        program_path + "\\" + base_path + "door_horizontal_faces"
+    )
+    path_to_doors_horizontal_verts_file = (
+        program_path + "\\" + base_path + "door_horizontal_verts"
+    )
 
-    path_to_windows_vertical_faces_file = program_path +"\\" + base_path + "window_vertical_faces"
-    path_to_windows_vertical_verts_file = program_path +"\\" + base_path + "window_vertical_verts"
+    path_to_windows_vertical_faces_file = (
+        program_path + "\\" + base_path + "window_vertical_faces"
+    )
+    path_to_windows_vertical_verts_file = (
+        program_path + "\\" + base_path + "window_vertical_verts"
+    )
 
-    path_to_windows_horizontal_faces_file = program_path +"\\" + base_path + "window_horizontal_faces"
-    path_to_windows_horizontal_verts_file = program_path +"\\" + base_path + "window_horizontal_verts"
+    path_to_windows_horizontal_faces_file = (
+        program_path + "\\" + base_path + "window_horizontal_faces"
+    )
+    path_to_windows_horizontal_verts_file = (
+        program_path + "\\" + base_path + "window_horizontal_verts"
+    )
 
+    path_to_transform_file = program_path + "/" + base_path + "transform"
 
-    path_to_transform_file = program_path+"/" + base_path + "transform"
-
-    '''
+    """
     Get transform
-    '''
+    """
     # read from file
     transform = read_from_file(path_to_transform_file)
 
@@ -220,14 +254,18 @@ def create_floorplan(base_path,program_path, name=0):
     parent.rotation_euler = (0, math.pi, 0)
 
     # Set Cursor start
-    bpy.context.scene.cursor.location = (0,0,0)
+    bpy.context.scene.cursor.location = (0, 0, 0)
 
-    '''
+    """
     Create Walls
-    '''
+    """
 
-    if os.path.isfile(path_to_wall_vertical_verts_file+".txt") and os.path.isfile(path_to_wall_vertical_faces_file+".txt") \
-    and os.path.isfile(path_to_wall_horizontal_verts_file+".txt") and os.path.isfile(path_to_wall_horizontal_faces_file+".txt"):
+    if (
+        os.path.isfile(path_to_wall_vertical_verts_file + ".txt")
+        and os.path.isfile(path_to_wall_vertical_faces_file + ".txt")
+        and os.path.isfile(path_to_wall_horizontal_verts_file + ".txt")
+        and os.path.isfile(path_to_wall_horizontal_faces_file + ".txt")
+    ):
         # get image wall data
         verts = read_from_file(path_to_wall_vertical_verts_file)
         faces = read_from_file(path_to_wall_vertical_faces_file)
@@ -240,12 +278,19 @@ def create_floorplan(base_path,program_path, name=0):
         wall_parent, wall_parent_mesh = init_object("Walls")
 
         for walls in verts:
-            boxname = "Box"+str(boxcount)
+            boxname = "Box" + str(boxcount)
             for wall in walls:
-                wallname = "Wall"+str(wallcount)
+                wallname = "Wall" + str(wallcount)
 
                 obj = create_custom_mesh(
-                    boxname + wallname, wall, faces, pos=pos, rot=rot, cen=cen, mat=create_mat((0.5, 0.5, 0.5, 1)))
+                    boxname + wallname,
+                    wall,
+                    faces,
+                    pos=pos,
+                    rot=rot,
+                    cen=cen,
+                    mat=create_mat((0.5, 0.5, 0.5, 1)),
+                )
                 obj.parent = wall_parent
 
                 wallcount += 1
@@ -260,18 +305,29 @@ def create_floorplan(base_path,program_path, name=0):
         wallcount = 0
 
         for i in range(0, len(verts)):
-            roomname = "VertWalls"+str(i)
+            roomname = "VertWalls" + str(i)
             obj = create_custom_mesh(
-                roomname, verts[i], faces[i], pos=pos, rot=rot, cen=cen, mat=create_mat((0.5, 0.5, 0.5, 1)))
+                roomname,
+                verts[i],
+                faces[i],
+                pos=pos,
+                rot=rot,
+                cen=cen,
+                mat=create_mat((0.5, 0.5, 0.5, 1)),
+            )
             obj.parent = wall_parent
 
         wall_parent.parent = parent
-    
-    '''
+
+    """
     Create Windows
-    '''
-    if os.path.isfile(path_to_windows_vertical_verts_file+".txt") and os.path.isfile(path_to_windows_vertical_faces_file+".txt") \
-     and os.path.isfile(path_to_windows_horizontal_verts_file+".txt") and os.path.isfile(path_to_windows_horizontal_faces_file+".txt"):
+    """
+    if (
+        os.path.isfile(path_to_windows_vertical_verts_file + ".txt")
+        and os.path.isfile(path_to_windows_vertical_faces_file + ".txt")
+        and os.path.isfile(path_to_windows_horizontal_verts_file + ".txt")
+        and os.path.isfile(path_to_windows_horizontal_faces_file + ".txt")
+    ):
         # get image wall data
         verts = read_from_file(path_to_windows_vertical_verts_file)
         faces = read_from_file(path_to_windows_vertical_faces_file)
@@ -284,17 +340,23 @@ def create_floorplan(base_path,program_path, name=0):
         wall_parent, wall_parent_mesh = init_object("Windows")
 
         for walls in verts:
-            boxname = "Box"+str(boxcount)
+            boxname = "Box" + str(boxcount)
             for wall in walls:
-                wallname = "Wall"+str(wallcount)
+                wallname = "Wall" + str(wallcount)
 
                 obj = create_custom_mesh(
-                    boxname + wallname, wall, faces, pos=pos, rot=rot, cen=cen, mat=create_mat((0.5, 0.5, 0.5, 1)))
+                    boxname + wallname,
+                    wall,
+                    faces,
+                    pos=pos,
+                    rot=rot,
+                    cen=cen,
+                    mat=create_mat((0.5, 0.5, 0.5, 1)),
+                )
                 obj.parent = wall_parent
 
                 wallcount += 1
             boxcount += 1
-
 
         # get windows
         verts = read_from_file(path_to_windows_horizontal_verts_file)
@@ -305,20 +367,30 @@ def create_floorplan(base_path,program_path, name=0):
         wallcount = 0
 
         for i in range(0, len(verts)):
-            roomname = "VertWindow"+str(i)
+            roomname = "VertWindow" + str(i)
             obj = create_custom_mesh(
-                roomname, verts[i], faces[i], pos=pos, rot=rot, cen=cen, mat=create_mat((0.5, 0.5, 0.5, 1)))
+                roomname,
+                verts[i],
+                faces[i],
+                pos=pos,
+                rot=rot,
+                cen=cen,
+                mat=create_mat((0.5, 0.5, 0.5, 1)),
+            )
             obj.parent = wall_parent
 
         wall_parent.parent = parent
 
-
-    '''
+    """
     Create Doors
-    '''
-    if os.path.isfile(path_to_doors_vertical_verts_file+".txt") and os.path.isfile(path_to_doors_vertical_faces_file+".txt") \
-     and os.path.isfile(path_to_doors_horizontal_verts_file+".txt") and os.path.isfile(path_to_doors_horizontal_faces_file+".txt"):
-    
+    """
+    if (
+        os.path.isfile(path_to_doors_vertical_verts_file + ".txt")
+        and os.path.isfile(path_to_doors_vertical_faces_file + ".txt")
+        and os.path.isfile(path_to_doors_horizontal_verts_file + ".txt")
+        and os.path.isfile(path_to_doors_horizontal_faces_file + ".txt")
+    ):
+
         # get image wall data
         verts = read_from_file(path_to_doors_vertical_verts_file)
         faces = read_from_file(path_to_doors_vertical_faces_file)
@@ -331,17 +403,23 @@ def create_floorplan(base_path,program_path, name=0):
         wall_parent, wall_parent_mesh = init_object("Doors")
 
         for walls in verts:
-            boxname = "Box"+str(boxcount)
+            boxname = "Box" + str(boxcount)
             for wall in walls:
-                wallname = "Wall"+str(wallcount)
+                wallname = "Wall" + str(wallcount)
 
                 obj = create_custom_mesh(
-                    boxname + wallname, wall, faces, pos=pos, rot=rot, cen=cen, mat=create_mat((0.5, 0.5, 0.5, 1)))
+                    boxname + wallname,
+                    wall,
+                    faces,
+                    pos=pos,
+                    rot=rot,
+                    cen=cen,
+                    mat=create_mat((0.5, 0.5, 0.5, 1)),
+                )
                 obj.parent = wall_parent
 
                 wallcount += 1
             boxcount += 1
-
 
         # get windows
         verts = read_from_file(path_to_doors_horizontal_verts_file)
@@ -352,30 +430,41 @@ def create_floorplan(base_path,program_path, name=0):
         wallcount = 0
 
         for i in range(0, len(verts)):
-            roomname = "VertWindow"+str(i)
+            roomname = "VertWindow" + str(i)
             obj = create_custom_mesh(
-                roomname, verts[i], faces[i], pos=pos, rot=rot, cen=cen, mat=create_mat((0.5, 0.5, 0.5, 1)))
+                roomname,
+                verts[i],
+                faces[i],
+                pos=pos,
+                rot=rot,
+                cen=cen,
+                mat=create_mat((0.5, 0.5, 0.5, 1)),
+            )
             obj.parent = wall_parent
 
         wall_parent.parent = parent
 
-    '''
+    """
     Create Floor
-    '''
-    if os.path.isfile(path_to_floor_verts_file+".txt") and os.path.isfile(path_to_floor_faces_file+".txt"):
-    
+    """
+    if os.path.isfile(path_to_floor_verts_file + ".txt") and os.path.isfile(
+        path_to_floor_faces_file + ".txt"
+    ):
+
         # get image wall data
         verts = read_from_file(path_to_floor_verts_file)
         faces = read_from_file(path_to_floor_faces_file)
 
         # Create mesh from data
-        cornername="Floor"
-        obj = create_custom_mesh(cornername, verts, [faces], pos=pos, mat=create_mat((40,1,1,1)), cen=cen)
+        cornername = "Floor"
+        obj = create_custom_mesh(
+            cornername, verts, [faces], pos=pos, mat=create_mat((40, 1, 1, 1)), cen=cen
+        )
         obj.parent = parent
 
-        '''
+        """
         Create rooms
-        '''
+        """
         # get image wall data
         verts = read_from_file(path_to_rooms_verts_file)
         faces = read_from_file(path_to_rooms_faces_file)
@@ -383,12 +472,15 @@ def create_floorplan(base_path,program_path, name=0):
         # Create parent
         room_parent, room_parent_mesh = init_object("Rooms")
 
-        for i in range(0,len(verts)):
-            roomname="Room"+str(i)
-            obj = create_custom_mesh(roomname, verts[i], faces[i], pos=pos, rot=rot, cen=cen)
+        for i in range(0, len(verts)):
+            roomname = "Room" + str(i)
+            obj = create_custom_mesh(
+                roomname, verts[i], faces[i], pos=pos, rot=rot, cen=cen
+            )
             obj.parent = room_parent
 
         room_parent.parent = parent
-    
+
+
 if __name__ == "__main__":
     main(sys.argv)

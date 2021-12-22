@@ -1,7 +1,7 @@
-'''
+"""
 Some examples for collecting images and content from pdf files
 DEPRECATED!
-'''
+"""
 
 
 import fitz
@@ -9,29 +9,31 @@ import cv2
 
 import numpy as np
 
-#pip install minecart
+# pip install minecart
 import minecart
 
-pdffile = open('ivar_planlosningar.pdf', 'rb')
+pdffile = open("ivar_planlosningar.pdf", "rb")
 doc = minecart.Document(pdffile)
 
-page = doc.get_page(0) # getting a single page
+page = doc.get_page(0)  # getting a single page
 
-#iterating through all pages
+# iterating through all pages
 for page in doc.iter_pages():
     im = page.images[0].as_pil()  # requires pillow
     display(im)
 
-'''
+"""
 https://stackoverflow.com/questions/53059007/python-opencv
-'''
+"""
+
+
 def pix2np(pix):
     im = np.frombuffer(pix.samples, dtype=np.uint8).reshape(pix.h, pix.w, pix.n)
     im = np.ascontiguousarray(im[..., [2, 1, 0]])  # rgb to bgr
     return im
 
 
-'''
+"""
 doc = fitz.open("ivar_planlosningar.pdf")
 for i in range(len(doc)):
     for img in doc.getPageImageList(i):
@@ -50,10 +52,10 @@ for i in range(len(doc)):
         except:
             pass
 
-'''
+"""
 
 
-'''
+"""
 https://stackoverflow.com/questions/2693820/extract-images-from-pdf-without-resampling-in-python
 import PyPDF2
 
@@ -91,4 +93,4 @@ if __name__ == '__main__':
                     img.close()
         except:
             print("error")
-'''
+"""

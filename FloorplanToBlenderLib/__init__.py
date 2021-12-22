@@ -1,4 +1,4 @@
-'''
+"""
 FloorplanToBlender3d
 Copyright (C) 2019 Daniel Westberg
 
@@ -15,6 +15,19 @@ transform...
 dialog...
 execution...
 
-'''
+"""
 
-__all__ = ['image', 'detect', 'generate', 'IO', 'transform', 'dialog', 'execution', 'const', 'generator','draw', 'calculate', 'config']
+__all__ = [
+    "image",
+    "detect",
+    "generate",
+    "IO",
+    "transform",
+    "dialog",
+    "execution",
+    "const",
+    "generator",
+    "draw",
+    "calculate",
+    "config",
+]

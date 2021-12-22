@@ -9,16 +9,20 @@ import os
 import numpy as np
 from PIL import Image
 
+
 def main():
-    example_image_path = os.path.dirname(os.path.realpath(__file__))+"/../../Images/example.png"
+    example_image_path = (
+        os.path.dirname(os.path.realpath(__file__)) + "/../../Images/example.png"
+    )
 
     img = cv2.imread(example_image_path)
 
-    dst = cv2.fastNlMeansDenoisingColored(img,None,10,10,7,21)
+    dst = cv2.fastNlMeansDenoisingColored(img, None, 10, 10, 7, 21)
 
     cv2.imshow("origin", img)
     cv2.imshow("denoised", dst)
     cv2.waitKey(0)
+
 
 if __name__ == "__main__":
     main()

@@ -3,28 +3,30 @@ import json
 import shutil
 import os
 
-'''
+"""
 FloorplanToBlender3d
 Copyright (C) 2021 Daniel Westberg
-'''
+"""
+
 
 def sendFileHeaders(_api_ref, file):
     _api_ref.send_response(200)
-    _api_ref.send_header("Content-type", 'multipart/form-_data')
+    _api_ref.send_header("Content-type", "multipart/form-_data")
     fs = os.fstat(file.fileno())
     _api_ref.send_header("Content-Length", str(fs[6]))
     _api_ref.send_header("Last-Modified", _api_ref.date_time_string(fs.st_mtime))
     _api_ref.end_headers()
 
-def returnFile( path, _api_ref):
+
+def returnFile(path, _api_ref):
     with open(path, "rb") as file:
         sendFileHeaders(_api_ref, file)
         shutil.copyfileobj(file, _api_ref.wfile)
     return "File sent!"
 
-class Get(Api):
 
-    def __init__(self,  client ,  shared_variables ) :
+class Get(Api):
+    def __init__(self, client, shared_variables):
         super().__init__(client, shared_variables)
         # All all viable functions here!
         self.dispatched_calls["info"] = self.info
@@ -36,7 +38,7 @@ class Get(Api):
         self.dispatched_calls["process"] = self.process
         self.dispatched_calls["processes"] = self.processes
 
-    def info(self, _api_ref, _data,*args, **kwargs) -> str:
+    def info(self, _api_ref, _data, *args, **kwargs) -> str:
         """Returns information about server implementation as JSON."""
         res = dict()
         res["client_address"] = _api_ref.client_address
@@ -47,11 +49,11 @@ class Get(Api):
         res["server_version"] = _api_ref.server_version
         res["sys_version"] = _api_ref.sys_version
         res["protocol_version"] = _api_ref.protocol_version
-        res["supported_image_formats"] =  self.shared.supported_image_formats
+        res["supported_image_formats"] = self.shared.supported_image_formats
         res["supported_blender_formats"] = self.shared.supported_blender_formats
         return json.dumps(res)
 
-    def process(self, pid:str, *args, **kwargs) -> str:
+    def process(self, pid: str, *args, **kwargs) -> str:
         """Get a specific process as JSON."""
         p = self.shared.get_process(pid)
         if p is None:
@@ -74,13 +76,13 @@ class Get(Api):
     def processes(self, *args, **kwargs) -> str:
         """Get all processes as JSON."""
         return json.dumps(self.shared.all_processes)
-    
-    def image(self, _api_ref, id:str, *args, **kwargs) -> str:
+
+    def image(self, _api_ref, id: str, *args, **kwargs) -> str:
         """Return imagefile of id specified in JSON."""
         # check that file exist
         return returnFile(self.shared.get_image_path(id), _api_ref)
-        
-    def object(self, _api_ref, id:str, oformat:str, *args, **kwargs) -> str:
+
+    def object(self, _api_ref, id: str, oformat: str, *args, **kwargs) -> str:
         """Return objectfile of id specified in JSON."""
         # check if file exist
         obj = self.shared.get_object_path(id, oformat)
