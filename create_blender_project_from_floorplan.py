@@ -9,18 +9,17 @@ from FloorplanToBlenderLib import (
 import os
 
 # TODO: remove objects outside of detected floor!
-
 # TODO:s need fixing before next merge with main -
-# - finish tests
 # - finish notebook
 # - finish floorplan stacking atleast 100+
 # - test dockerfile
-# - create CI/CD action
 # - secure window and door detections, as selectable settings
-# - go through all TODO:s and solve easy to fix ones
+# - go through all TODO:s and solve easy to fix ones, create issues for the rest
+# - multi model doors
 # - updated demos
 # - update readme
 # - detect blender installation position
+# - create CI/CD action
 
 """
 Create Blender Project from floorplan

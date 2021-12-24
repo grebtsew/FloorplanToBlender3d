@@ -10,7 +10,7 @@ Testing core functions from library
 
 floorplan_lib_path = os.path.dirname(os.path.realpath(__file__)) + "/../../"
 example_image_path = (
-    os.path.dirname(os.path.realpath(__file__)) + "/../../Images/example.png"
+    os.path.dirname(os.path.realpath(__file__)) + "/../../Images/Examples/example.png"
 )
 
 
@@ -39,7 +39,7 @@ def detect_windows_and_doors_boxes(img, door_list):
     gray_rooms = cv2.cvtColor(colored_doors, cv2.COLOR_BGR2GRAY)
 
     # get box positions for rooms
-    boxes, gray_rooms = detect.detectPreciseBoxes(gray_rooms, blank_image)
+    boxes, gray_rooms = detect.precise_boxes(gray_rooms, blank_image)
 
     cv2.imshow("input", img)
     cv2.imshow("doors and windows", gray_rooms)
@@ -473,10 +473,10 @@ Therefore the developers created ORB. And it seems to be working fine!
 
 if __name__ == "__main__":
     door_image_path = (
-        os.path.dirname(os.path.realpath(__file__)) + "/../../Images/door.png"
+        os.path.dirname(os.path.realpath(__file__)) + "/../../Images/Models/Doors/door.png"
     )
     example_image_path = (
-        os.path.dirname(os.path.realpath(__file__)) + "/../../Images/example.png"
+        os.path.dirname(os.path.realpath(__file__)) + "/../../Images/Examples/example.png"
     )
 
     img0 = cv2.imread(example_image_path)
