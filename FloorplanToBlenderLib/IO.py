@@ -4,7 +4,7 @@ from shutil import which
 import shutil
 import cv2
 import platform
-from sys import platform
+from sys import platform as pf
 
 from . import const
 from . import image
@@ -20,7 +20,6 @@ Copyright (C) 2021 Daniel Westberg
 
 # TODO: add config security check, before start up!
 
-
 def find_files(filename, search_path):
    """
    Find filename in root search path
@@ -31,13 +30,13 @@ def find_files(filename, search_path):
    return None
 
 def blender_installed():
-   if platform == "linux" or platform == "linux2":
+   if pf == "linux" or pf == "linux2":
    # linux
       return find_files("blender","C:")
-   elif platform == "darwin":
+   elif pf == "darwin":
       # OS X
       return find_files("blender","C:")
-   elif platform == "win32":
+   elif pf == "win32":
       # Windows
       return find_files("blender.exe","C:\\")
 
