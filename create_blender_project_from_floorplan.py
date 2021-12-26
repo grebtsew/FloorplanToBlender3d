@@ -10,7 +10,6 @@ import os
 
 # TODO: remove objects outside of detected floor!
 # TODO:s need fixing before next merge with main -
-# - finish notebook
 # - finish floorplan stacking atleast 100+
 # - test dockerfile
 # - secure window and door detections, as selectable settings
@@ -18,7 +17,6 @@ import os
 # - multi model doors
 # - updated demos
 # - update readme
-# - detect blender installation position
 # - create CI/CD action
 
 """
@@ -39,6 +37,7 @@ if __name__ == "__main__":
     blender_install_path = ""
 
     data_folder = const.BASE_PATH
+
     target_folder = const.TARGET_PATH
 
     image_path, blender_install_path, file_structure, mode = config.get_default()
@@ -61,6 +60,12 @@ if __name__ == "__main__":
         image_paths = var.split()
     else:
         image_paths = image_path.split()
+
+    # Detect where/if blender is installed on pc
+    auto_blender_install_path =IO.blender_installed()
+
+    if auto_blender_install_path is not None:
+        blender_install_path = auto_blender_install_path
 
     var = input(
         "Please enter your blender installation path [default = "
@@ -141,8 +146,8 @@ if __name__ == "__main__":
     print("Creates blender project")
     print("")
 
-    if not os.path.exists(target_folder):
-        os.makedirs(target_folder)
+    if not os.path.exists("."+target_folder):
+        os.makedirs("."+target_folder)
 
     target_base = target_folder + const.TARGET_NAME
     target_path = target_base + const.BASE_FORMAT

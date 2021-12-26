@@ -4,6 +4,7 @@ from shutil import which
 import shutil
 import cv2
 import platform
+from sys import platform
 
 from . import const
 from . import image
@@ -19,6 +20,26 @@ Copyright (C) 2021 Daniel Westberg
 
 # TODO: add config security check, before start up!
 
+
+def find_files(filename, search_path):
+   """
+   Find filename in root search path
+   """
+   for root, _, files in os.walk(search_path):
+      if filename in files:
+        return os.path.join(root, filename)
+   return None
+
+def blender_installed():
+   if platform == "linux" or platform == "linux2":
+   # linux
+      return find_files("blender","C:")
+   elif platform == "darwin":
+      # OS X
+      return find_files("blender","C:")
+   elif platform == "win32":
+      # Windows
+      return find_files("blender.exe","C:\\")
 
 def get_blender_os_path():
     _platform = platform.system()
@@ -153,5 +174,5 @@ def get_next_target_base_name(target_base, target_path):
                 fid += 1
         target_base += str(fid)
 
-    print(target_base, fid, target_path)
+    #print(target_base, fid, target_path)
     return target_base
