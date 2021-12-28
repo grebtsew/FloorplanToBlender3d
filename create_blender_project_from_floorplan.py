@@ -10,13 +10,18 @@ import os
 
 # TODO: remove objects outside of detected floor!
 # TODO:s need fixing before next merge with main -
-# - finish floorplan stacking atleast 100+
+# - axis stack
+# - cube stack
+# - cylinder stack
+# - margin
+# - add floor / roof
 # - test dockerfile
 # - secure window and door detections, as selectable settings
 # - go through all TODO:s and solve easy to fix ones, create issues for the rest
 # - multi model doors
 # - updated demos
 # - update readme
+# - use logging
 # - create CI/CD action
 
 """
@@ -122,7 +127,13 @@ if __name__ == "__main__":
     print("")
     print("Clean datafiles")
 
-    IO.clean_data_folder(data_folder)
+    print("")
+    var = input(
+        "Clear all cached data before run: [default = yes] : "
+    )
+
+    if not var or var.lower() == "yes" or var.lower() == "y":
+        IO.clean_data_folder(data_folder)
 
     # Generate data files
     data_paths = list()

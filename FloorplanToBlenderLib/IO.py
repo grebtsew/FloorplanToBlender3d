@@ -20,6 +20,26 @@ Copyright (C) 2021 Daniel Westberg
 
 # TODO: add config security check, before start up!
 
+
+def find_reuseable_data(image_path, path):
+    """
+    Checks if floorplan data already exists and can be reused
+    Then return the path to data
+    @Param path, path to image
+    @Return path to image data, else return None
+    """
+    for _, dirs, _ in os.walk(path):
+        for dir in dirs:
+            try:
+                with open(path + dir + const.TRANSFORM_PATH) as f:
+                    data = f.read()
+                js = json.loads(data) 
+                if image_path == js[const.STR_IMAGE_PATH]:
+                    return js[const.STR_ORIGIN_PATH], js[const.STR_SHAPE]
+            except IOError:
+                continue
+    return None, None
+
 def find_files(filename, search_path):
    """
    Find filename in root search path
@@ -30,15 +50,19 @@ def find_files(filename, search_path):
    return None
 
 def blender_installed():
-   if pf == "linux" or pf == "linux2":
-   # linux
-      return find_files("blender","C:")
-   elif pf == "darwin":
-      # OS X
-      return find_files("blender","C:")
-   elif pf == "win32":
-      # Windows
-      return find_files("blender.exe","C:\\")
+    """
+    Find path to blender installation
+    Might be error prune, tested on ubuntu and windows
+    """
+    if pf == "linux" or pf == "linux2":
+        # linux
+        return find_files("blender","C:")
+    elif pf == "darwin":
+        # OS X
+        return find_files("blender","C:")
+    elif pf == "win32":
+        # Windows
+        return find_files("blender.exe","C:\\")
 
 def get_blender_os_path():
     _platform = platform.system()
@@ -61,7 +85,7 @@ def read_image(path, settings=None):
     # Read floorplan image
     img = cv2.imread(path)
     if img is None:
-        print("ERROR: Image " + path + " could not be read by OpenCV library.")
+        print(f"ERROR: Image {path} could not be read by OpenCV library.")
         raise IOError
 
     scale_factor = 1
@@ -85,6 +109,11 @@ def read_image(path, settings=None):
 
     return img, cv2.cvtColor(img, cv2.COLOR_BGR2GRAY), scale_factor
 
+def readlines_file(path):
+    res = []
+    with open(path, "r") as f:
+        res = f.readlines()
+    return res
 
 def save_to_file(file_path, data, show=True):
     """
@@ -98,7 +127,6 @@ def save_to_file(file_path, data, show=True):
 
     if show:
         print("Created file : " + file_path + const.SAVE_DATA_FORMAT)
-
 
 def read_from_file(file_path):
     """
@@ -116,7 +144,7 @@ def read_from_file(file_path):
 def clean_data_folder(folder):
     """
     Remove old data files
-    Don't wanna fill memory
+    Don't want to fill memory
     @Param folder, path to data folder
     """
     for root, dirs, files in os.walk(folder):
@@ -133,14 +161,18 @@ def create_new_floorplan_path(path):
     @Return end path
     """
     res = 0
-    for root, dirs, files in os.walk(path):
-        for dir in dirs:
+    for _, dirs, _ in os.walk(path):
+        for _ in dirs:
             try:
-                res = int(dir) + 1
+                name_not_found = True
+                while name_not_found:
+                    if not os.path.exists(path + str(res) + "/"):
+                        break
+                    res +=1
             except Exception:
                 continue
+            
     res = path + str(res) + "/"
-    # create dir
     if not os.path.exists(res):
         os.makedirs(res)
     return res
@@ -164,7 +196,10 @@ def find_program_path(name):
 
 
 def get_next_target_base_name(target_base, target_path):
-    # If blender target file already exist, get next id
+    """
+    Generate appropriate next target name
+    If blender target file already exist, get next id
+    """
     fid = 0
     if os.path.isfile("." + target_path):
         for file in os.listdir("." + const.TARGET_PATH):
@@ -173,5 +208,4 @@ def get_next_target_base_name(target_base, target_path):
                 fid += 1
         target_base += str(fid)
 
-    #print(target_base, fid, target_path)
     return target_base

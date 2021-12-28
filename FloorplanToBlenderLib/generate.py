@@ -1,6 +1,4 @@
-from . import detect
 from . import IO
-from . import transform
 from . import const
 from . import config
 
@@ -14,7 +12,6 @@ A temp storage of calculated data and a way to transfer data to the blender scri
 FloorplanToBlender3d
 Copyright (C) 2021 Daniel Westberg
 """
-
 
 def generate_all_files(img_path, info, position=None, rotation=None):
     """
@@ -40,37 +37,41 @@ def generate_all_files(img_path, info, position=None, rotation=None):
     # Get path to save data
     path = IO.create_new_floorplan_path(const.BASE_PATH)
 
-    settings = config.get(const.SETTINGS)
-    features = config.get(const.FEATURES)
+    origin_path, shape = IO.find_reuseable_data(img_path, const.BASE_PATH)
 
-    _, gray, scale_factor = IO.read_image(img_path, settings)
-    shape = []
+    if origin_path is None: # TODO: Make this optional!
+        origin_path = path
 
-    print(
-        bool(features[const.STR_FLOORS]),
-        bool(features[const.STR_WALLS]),
-        features[const.STR_WINDOWS],
-        bool(features[const.STR_WINDOWS]),
-    )
+        settings = config.get(const.SETTINGS)
+        features = config.get(const.FEATURES)
 
-    if eval(features[const.STR_FLOORS]):
-        shape = Floor(gray, path, info).shape
+        _, gray, scale_factor = IO.read_image(img_path, settings)
 
-    if eval(features[const.STR_WALLS]):
-        new_shape = Wall(gray, path, info).shape
-        shape = validate_shape(shape, new_shape)
+        print(
+            bool(features[const.STR_FLOORS]),
+            bool(features[const.STR_WALLS]),
+            features[const.STR_WINDOWS],
+            bool(features[const.STR_WINDOWS]),
+        )
 
-    if eval(features[const.STR_ROOMS]):
-        new_shape = Room(gray, path, info).shape
-        shape = validate_shape(shape, new_shape)
+        if eval(features[const.STR_FLOORS]):
+            shape = Floor(gray, path, info).shape
 
-    if eval(features[const.STR_WINDOWS]):
-        Window(gray, path, img_path, scale_factor, info)
+        if eval(features[const.STR_WALLS]):
+            new_shape = Wall(gray, path, info).shape
+            shape = validate_shape(shape, new_shape)
 
-    if eval(features[const.STR_DOORS]):
-        Door(gray, path, img_path, scale_factor, info)
+        if eval(features[const.STR_ROOMS]):
+            new_shape = Room(gray, path, info).shape
+            shape = validate_shape(shape, new_shape)
 
-    generate_transform_file(img_path, path, info, position, rotation, shape)
+        if eval(features[const.STR_WINDOWS]):
+            Window(gray, path, img_path, scale_factor, info)
+
+        if eval(features[const.STR_DOORS]):
+            Door(gray, path, img_path, scale_factor, info)
+
+    generate_transform_file(img_path, path, info, position, rotation, shape, path, origin_path)
 
     if position is not None:
         shape = [shape[0]+position[0], shape[1]+position[1], shape[2]+position[2]]
@@ -92,7 +93,7 @@ def validate_shape(old_shape, new_shape):
     return shape
 
 
-def generate_transform_file(img_path, path, info, position, rotation, shape):
+def generate_transform_file(img_path, path, info, position, rotation, shape, data_path, origin_path): # TODO: add scaling
     """
     Generate transform of file
     A transform contains information about an objects position, rotation.
@@ -106,22 +107,25 @@ def generate_transform_file(img_path, path, info, position, rotation, shape):
     # create map
     transform = {}
     if position is None:
-        transform["position"] = (0, 0, 0)
+        transform[const.STR_POSITION] = (0, 0, 0)
     else:
-        transform["position"] = position
+        transform[const.STR_POSITION] = position
 
     if rotation is None:
-        transform["rotation"] = (0, 0, 0)
+        transform[const.STR_ROTATION] = (0, 0, 0)
     else:
-        transform["rotation"] = rotation
+        transform[const.STR_ROTATION] = rotation
 
     if shape is None:
-        transform["shape"] = (0, 0, 0)
+        transform[const.STR_SHAPE] = (0, 0, 0)
     else:
-        transform["shape"] = shape
+        transform[const.STR_SHAPE] = shape
 
-    transform["image"] = img_path
-    transform["origin"] = "TODO" # use this value to reuse model data
+    transform[const.STR_IMAGE_PATH] = img_path
+
+    transform[const.STR_ORIGIN_PATH] = origin_path 
+
+    transform[const.STR_DATA_PATH] = data_path 
 
     IO.save_to_file(path + "transform", transform, info)
 

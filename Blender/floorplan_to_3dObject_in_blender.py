@@ -34,7 +34,7 @@ Our helpful functions
 """
 
 # TODO: restructure this file with a class and help-function to save a lot of lines of code!
-
+# TODO: fix index should be same as floorplan folder
 
 def read_from_file(file_path):
     """
@@ -184,63 +184,19 @@ def main(argv):
     exit(0)
 
 
-def create_floorplan(base_path, program_path, name=0):
+def create_floorplan(base_path, program_path, name=None):
 
-    parent, parent_mesh = init_object("Floorplan" + str(name))
+    if name is None:
+        name = 0
 
-    path_to_wall_vertical_faces_file = (
-        program_path + "/" + base_path + "wall_vertical_faces"
-    )
-    path_to_wall_vertical_verts_file = (
-        program_path + "/" + base_path + "wall_vertical_verts"
-    )
-
-    path_to_wall_horizontal_faces_file = (
-        program_path + "/" + base_path + "wall_horizontal_faces"
-    )
-    path_to_wall_horizontal_verts_file = (
-        program_path + "/" + base_path + "wall_horizontal_verts"
-    )
-
-    path_to_floor_faces_file = program_path + "/" + base_path + "floor_faces"
-    path_to_floor_verts_file = program_path + "/" + base_path + "floor_verts"
-
-    path_to_rooms_faces_file = program_path + "/" + base_path + "room_faces"
-    path_to_rooms_verts_file = program_path + "/" + base_path + "room_verts"
-
-    path_to_doors_vertical_faces_file = (
-        program_path + "\\" + base_path + "door_vertical_faces"
-    )
-    path_to_doors_vertical_verts_file = (
-        program_path + "\\" + base_path + "door_vertical_verts"
-    )
-
-    path_to_doors_horizontal_faces_file = (
-        program_path + "\\" + base_path + "door_horizontal_faces"
-    )
-    path_to_doors_horizontal_verts_file = (
-        program_path + "\\" + base_path + "door_horizontal_verts"
-    )
-
-    path_to_windows_vertical_faces_file = (
-        program_path + "\\" + base_path + "window_vertical_faces"
-    )
-    path_to_windows_vertical_verts_file = (
-        program_path + "\\" + base_path + "window_vertical_verts"
-    )
-
-    path_to_windows_horizontal_faces_file = (
-        program_path + "\\" + base_path + "window_horizontal_faces"
-    )
-    path_to_windows_horizontal_verts_file = (
-        program_path + "\\" + base_path + "window_horizontal_verts"
-    )
-
+    parent, _ = init_object("Floorplan" + str(name))
+    
+    """
+    Get transform data
+    """
+    
     path_to_transform_file = program_path + "/" + base_path + "transform"
 
-    """
-    Get transform
-    """
     # read from file
     transform = read_from_file(path_to_transform_file)
 
@@ -250,11 +206,64 @@ def create_floorplan(base_path, program_path, name=0):
     # Calculate and move floorplan shape to center
     cen = transform["shape"]
 
+    # Where data is stored, if shared between floorplans
+    path_to_data = transform["origin_path"]
+
     # rotate to fix mirrored floorplan
     parent.rotation_euler = (0, math.pi, 0)
 
     # Set Cursor start
     bpy.context.scene.cursor.location = (0, 0, 0)
+
+
+    path_to_wall_vertical_faces_file = (
+        program_path + "/" + path_to_data + "wall_vertical_faces"
+    )
+    path_to_wall_vertical_verts_file = (
+        program_path + "/" + path_to_data + "wall_vertical_verts"
+    )
+
+    path_to_wall_horizontal_faces_file = (
+        program_path + "/" + path_to_data + "wall_horizontal_faces"
+    )
+    path_to_wall_horizontal_verts_file = (
+        program_path + "/" + path_to_data + "wall_horizontal_verts"
+    )
+
+    path_to_floor_faces_file = program_path + "/" + path_to_data + "floor_faces"
+    path_to_floor_verts_file = program_path + "/" + path_to_data + "floor_verts"
+
+    path_to_rooms_faces_file = program_path + "/" + path_to_data + "room_faces"
+    path_to_rooms_verts_file = program_path + "/" + path_to_data + "room_verts"
+
+    path_to_doors_vertical_faces_file = (
+        program_path + "\\" + path_to_data + "door_vertical_faces"
+    )
+    path_to_doors_vertical_verts_file = (
+        program_path + "\\" + path_to_data + "door_vertical_verts"
+    )
+
+    path_to_doors_horizontal_faces_file = (
+        program_path + "\\" + path_to_data + "door_horizontal_faces"
+    )
+    path_to_doors_horizontal_verts_file = (
+        program_path + "\\" + path_to_data + "door_horizontal_verts"
+    )
+
+    path_to_windows_vertical_faces_file = (
+        program_path + "\\" + path_to_data + "window_vertical_faces"
+    )
+    path_to_windows_vertical_verts_file = (
+        program_path + "\\" + path_to_data + "window_vertical_verts"
+    )
+
+    path_to_windows_horizontal_faces_file = (
+        program_path + "\\" + path_to_data + "window_horizontal_faces"
+    )
+    path_to_windows_horizontal_verts_file = (
+        program_path + "\\" + path_to_data + "window_horizontal_verts"
+    )
+
 
     """
     Create Walls

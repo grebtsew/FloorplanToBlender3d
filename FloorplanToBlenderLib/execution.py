@@ -18,8 +18,46 @@ def simple_single(image_path, show=True):
     filepath, _ = generate.generate_all_files(image_path, show)
     return filepath
 
+def multiple_axis(image_paths, axis, dir=1, pos=None, rot=None, sca=None):
+    """
+    Generates several new apartments along axis "x","y","z"
+    @Param pos,rot,sca - offset, rotation and scaling
+    @Param dir - determines +/- direction along axis
+    @Param image_paths - list of path to images
+    @Param horizontal - if apartments should stack horizontal or vertical
+    @Return paths to image data
+    """
+    # Generate data files
+    data_paths = list()
+    fshape = None
+    # for each input image path!
+    for image_path in image_paths: 
+        # TODO: check if image data already is generated
+        # TODO: don't overwrite old data
 
-def multiple_simple(image_paths, horizontal=True): # TODO: use axis instead
+        # Calculate positions and rotations here!
+        if fshape is not None:
+            # Generate all data for imagepath
+            if axis == "y": 
+                filepath, fshape = generate.generate_all_files(
+                    image_path, True, position=(0, dir*fshape[1], 0)
+                )
+            elif axis == "x":
+                filepath, fshape = generate.generate_all_files(
+                    image_path, True, position=(dir*fshape[0], 0, 0)
+                )
+            elif axis == "z":
+                filepath, fshape = generate.generate_all_files(
+                    image_path, True, position=(0, 0, dir*fshape[2])
+                )
+        else:
+            filepath, fshape = generate.generate_all_files(image_path, True)
+
+        # add path to send to blender
+        data_paths.append(filepath)
+    return data_paths
+
+def multiple_simple(image_paths, horizontal=True): 
     """
     Generates several new apartments
     @Param image_paths - list of path to images
@@ -33,7 +71,7 @@ def multiple_simple(image_paths, horizontal=True): # TODO: use axis instead
     for image_path in image_paths: 
         # TODO: check if image data already is generated
         # TODO: don't overwrite old data
-        
+
         # Calculate positions and rotations here!
         if fshape is not None:
             # Generate all data for imagepath
@@ -53,6 +91,18 @@ def multiple_simple(image_paths, horizontal=True): # TODO: use axis instead
         data_paths.append(filepath)
     return data_paths
 
+def multiple_cylinder(image_paths, amount_per_level, radie, degree, dir=1, pos=None, rot=None, sca=None): # TODO
+    """
+    Generates several new apartments in a cylindric shape
+    @Param pos,rot,sca - offset, rotation and scaling
+    @Param dir - determines +/- direction along y axis
+    @Param image_paths - list of path to images
+    @Param amount_per_level - how many apartments should be added to the circle
+    @Param radie - radie size
+    @Param degree - how many degree should the circle be, 0-360
+    @Return paths to image data
+    """
+    pass
 
 def multiple_coord(image_paths):
     """
