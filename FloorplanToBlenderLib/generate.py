@@ -44,7 +44,7 @@ def generate_all_files(img_path, info, position=None, rotation=None):
     features = config.get(const.FEATURES)
 
     _, gray, scale_factor = IO.read_image(img_path, settings)
-    shape = [1, 1, 0]
+    shape = []
 
     print(
         bool(features[const.STR_FLOORS]),
@@ -71,6 +71,9 @@ def generate_all_files(img_path, info, position=None, rotation=None):
         Door(gray, path, img_path, scale_factor, info)
 
     generate_transform_file(img_path, path, info, position, rotation, shape)
+
+    if position is not None:
+        shape = [shape[0]+position[0], shape[1]+position[1], shape[2]+position[2]]
 
     return path, shape
 
@@ -116,6 +119,9 @@ def generate_transform_file(img_path, path, info, position, rotation, shape):
         transform["shape"] = (0, 0, 0)
     else:
         transform["shape"] = shape
+
+    transform["image"] = img_path
+    transform["origin"] = "TODO" # use this value to reuse model data
 
     IO.save_to_file(path + "transform", transform, info)
 

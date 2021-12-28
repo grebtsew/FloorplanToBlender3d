@@ -19,7 +19,7 @@ def simple_single(image_path, show=True):
     return filepath
 
 
-def multiple_simple(image_paths, horizontal=True):
+def multiple_simple(image_paths, horizontal=True): # TODO: use axis instead
     """
     Generates several new apartments
     @Param image_paths - list of path to images
@@ -30,12 +30,14 @@ def multiple_simple(image_paths, horizontal=True):
     data_paths = list()
     fshape = None
     # for each input image path!
-    for image_path in image_paths:
+    for image_path in image_paths: 
+        # TODO: check if image data already is generated
+        # TODO: don't overwrite old data
+        
         # Calculate positions and rotations here!
-
         if fshape is not None:
             # Generate all data for imagepath
-            if horizontal:
+            if horizontal: 
                 filepath, fshape = generate.generate_all_files(
                     image_path, True, position=(0, fshape[1], 0)
                 )
