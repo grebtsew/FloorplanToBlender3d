@@ -157,7 +157,7 @@ WIN_DEFAULT_BLENDER_INSTALL_PATH = (
     "C:\\Program Files\\Blender Foundation\\Blender 2.90\\blender.exe"
 )
 DEFAULT_FILE_STRUCTURE = "[[[0,0,0], [0,0,0], [0,0,0]], [[0,0,0], [0,0,0], [0,0,0]], [[0,0,0], [0,0,0], [0,0,0]]]"
-DEFAULT_MODE = "simple"
+DEFAULT_MODE = "HVSTACK"
 DEFAULT_FEATURES = "True"
 DEFAULT_REMOVE_NOISE = "True"
 DEFAULT_RESCALE_IMAGE = "True"

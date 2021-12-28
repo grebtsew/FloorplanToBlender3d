@@ -30,4 +30,5 @@ __all__ = [
     "draw",
     "calculate",
     "config",
+    "stacking",
 ]

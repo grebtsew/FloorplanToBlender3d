@@ -77,7 +77,7 @@ def generate_file():
         const.STR_OUT_FORMAT: const.DEFAULT_OUT_FORMAT,
         const.STR_OVERWRITE_DATA: const.DEFAULT_OVERWRITE_DATA,  # TODO: implement!
         const.STR_BLENDER_INSTALL_PATH: IO.get_blender_os_path(),
-        const.STR_FILE_STRUCTURE: const.DEFAULT_FILE_STRUCTURE,
+        #const.STR_FILE_STRUCTURE: const.DEFAULT_FILE_STRUCTURE,
         const.STR_MODE: const.DEFAULT_MODE,
     }
 

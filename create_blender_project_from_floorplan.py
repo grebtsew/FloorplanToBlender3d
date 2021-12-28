@@ -5,6 +5,7 @@ from FloorplanToBlenderLib import (
     const,
     execution,
     dialog,
+    stacking,
 )  # floorplan to blender lib
 import os
 
@@ -32,6 +33,49 @@ floorplans. You will need blender and an image of a floorplan to make this work.
 FloorplanToBlender3d
 Copyright (C) 2021 Daniel Westberg
 """
+def create_blender_project(data_paths):
+    if not os.path.exists("." + target_folder):
+        os.makedirs("." + target_folder)
+
+    target_base = target_folder + const.TARGET_NAME
+    target_path = target_base + const.BASE_FORMAT
+    target_path = (
+        IO.get_next_target_base_name(target_base, target_path) + const.BASE_FORMAT
+    )
+
+    # Create blender project
+    check_output(
+        [
+            blender_install_path,
+            "-noaudio",  # this is a dockerfile ubuntu hax fix
+            "--background",
+            "--python",
+            blender_script_path,
+            program_path,  # Send this as parameter to script
+            target_path,
+        ]
+        + data_paths
+    )
+
+    # Transform .blend project to another format!
+    if outformat != ".blend":
+        check_output(
+            [
+                blender_install_path,
+                "-noaudio",  # this is a dockerfile ubuntu hax fix
+                "--background",
+                "--python",
+                "./Blender/blender_export_any.py",
+                "." + target_path,
+                outformat,
+                target_base + outformat,
+            ]
+        )
+        print("Object created at:" + program_path + target_base + outformat)
+
+        print("Project created at: " + program_path + target_path)
+
+
 if __name__ == "__main__":
     """
     Do not change variables in this file but rather in ./config.ini or ./FloorplanToBlenderLib/const.py
@@ -67,7 +111,7 @@ if __name__ == "__main__":
         image_paths = image_path.split()
 
     # Detect where/if blender is installed on pc
-    auto_blender_install_path =IO.blender_installed()
+    auto_blender_install_path = IO.blender_installed()
 
     if auto_blender_install_path is not None:
         blender_install_path = auto_blender_install_path
@@ -128,9 +172,7 @@ if __name__ == "__main__":
     print("Clean datafiles")
 
     print("")
-    var = input(
-        "Clear all cached data before run: [default = yes] : "
-    )
+    var = input("Clear all cached data before run: [default = yes] : ")
 
     if not var or var.lower() == "yes" or var.lower() == "y":
         IO.clean_data_folder(data_folder)
@@ -140,16 +182,56 @@ if __name__ == "__main__":
     fshape = None
 
     # Ask how floorplans shall be structured
-    if len(image_paths) > 1:  # TODO:, default multi execution is [ "+mode +" ]")
+    if len(image_paths) > 1:
         print("There are currently " + str(len(image_paths)) + " floorplans to create.")
 
         var = input(
-            "Do you want to build horizontal? [Yes] : "
-        )  # TODO: vertical + matrix
+            "Which mode do you want to  use for multi floorplan stacking [AXIS,CYLINDER,FILE,HVSTACK,SEPARATED] [default = "
+            + mode
+            + " ] ?"
+        )
         if var:
-            data_paths = execution.multiple_simple(image_paths, False)
-        else:
-            data_paths = execution.multiple_simple(image_paths, True)
+            mode = var
+
+        if mode == "HVSTACK":
+            var = input("Do you want to build horizontal? [Yes] : ")
+            if var:
+                data_paths = execution.multiple_simple(image_paths, False)
+            else:
+                data_paths = execution.multiple_simple(image_paths, True)
+        elif mode == "AXIS":
+            
+            axis = "-z"
+            var = input(
+                f"Which axis do you want to stack on [X,-X,Y,-Y,Z,-Z] [default = {axis}] : "
+            )
+            if var:
+                axis = var
+            dir = 1
+            if axis[0] == "-":
+                dir = -1
+                axis = axis[1]
+            data_paths = execution.multiple_axis(image_paths, axis, dir)
+        elif mode == "CYLINDER":
+            degrees = 360
+            radie = 10
+            amount = 4
+            var = input(f"How many degrees [0-360] [default = {degrees}] : ")
+            if var:
+                degrees = var
+            var = input(f"How many floorplans per level [default = {amount}] : ")
+            if var:
+                amount = var
+            var = input(f"Radie [default = {radie}] : ")
+            if var:
+                radie = var
+            data_paths = execution.multiple_cylinder(
+                image_paths, amount, radie, degrees, dir
+            )
+        elif mode == "FILE":
+            data_paths = stacking.parse_stacking_file("./Stacking/example.txt")
+        elif mode == "SEPARATED":
+            data_paths = [[execution.simple_single(image)] for image in image_paths]
     else:
         data_paths = [execution.simple_single(image_paths[0])]
 
@@ -157,46 +239,12 @@ if __name__ == "__main__":
     print("Creates blender project")
     print("")
 
-    if not os.path.exists("."+target_folder):
-        os.makedirs("."+target_folder)
+    if mode == "SEPARATED":
+        for data_path in data_paths:
+            create_blender_project(data_path)
+    else: 
+        create_blender_project(data_paths)
 
-    target_base = target_folder + const.TARGET_NAME
-    target_path = target_base + const.BASE_FORMAT
-    target_path = (
-        IO.get_next_target_base_name(target_base, target_path) + const.BASE_FORMAT
-    )
-
-    # Create blender project
-    check_output(
-        [
-            blender_install_path,
-            "-noaudio",  # this is a dockerfile ubuntu hax fix
-            "--background",
-            "--python",
-            blender_script_path,
-            program_path,  # Send this as parameter to script
-            target_path,
-        ]
-        + data_paths
-    )
-
-    # Transform .blend project to another format!
-    if outformat != ".blend":
-        check_output(
-            [
-                blender_install_path,
-                "-noaudio",  # this is a dockerfile ubuntu hax fix
-                "--background",
-                "--python",
-                "./Blender/blender_export_any.py",
-                "." + target_path,
-                outformat,
-                target_base + outformat,
-            ]
-        )
-        print("Object created at:" + program_path + target_base + outformat)
-
-    print("Project created at: " + program_path + target_path)
     print("")
     print("Done, Have a nice day!")
 

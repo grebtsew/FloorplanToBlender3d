@@ -36,6 +36,7 @@ Our helpful functions
 # TODO: restructure this file with a class and help-function to save a lot of lines of code!
 # TODO: fix index should be same as floorplan folder
 
+
 def read_from_file(file_path):
     """
     Read from file
@@ -148,14 +149,8 @@ Main functionality here!
 
 
 def main(argv):
-    """
-    Create Walls
-    All walls are square
-    Therefore we split data into two files
-    """
-
+    
     # Remove starting object cube
-    # Select all
     objs = bpy.data.objects
     objs.remove(objs["Cube"], do_unlink=True)
 
@@ -167,6 +162,7 @@ def main(argv):
 
     """
     Instantiate
+    Each argument after 7 will be a floorplan path
     """
     for i in range(7, len(argv)):
         base_path = argv[i]
@@ -190,11 +186,11 @@ def create_floorplan(base_path, program_path, name=None):
         name = 0
 
     parent, _ = init_object("Floorplan" + str(name))
-    
+
     """
     Get transform data
     """
-    
+
     path_to_transform_file = program_path + "/" + base_path + "transform"
 
     # read from file
@@ -205,7 +201,7 @@ def create_floorplan(base_path, program_path, name=None):
 
     # Calculate and move floorplan shape to center
     cen = transform["shape"]
-
+    
     # Where data is stored, if shared between floorplans
     path_to_data = transform["origin_path"]
 
@@ -214,7 +210,6 @@ def create_floorplan(base_path, program_path, name=None):
 
     # Set Cursor start
     bpy.context.scene.cursor.location = (0, 0, 0)
-
 
     path_to_wall_vertical_faces_file = (
         program_path + "/" + path_to_data + "wall_vertical_faces"
@@ -264,7 +259,6 @@ def create_floorplan(base_path, program_path, name=None):
         program_path + "\\" + path_to_data + "window_horizontal_verts"
     )
 
-
     """
     Create Walls
     """
@@ -284,7 +278,7 @@ def create_floorplan(base_path, program_path, name=None):
         wallcount = 0
 
         # Create parent
-        wall_parent, wall_parent_mesh = init_object("Walls")
+        wall_parent, _ = init_object("Walls")
 
         for walls in verts:
             boxname = "Box" + str(boxcount)
@@ -346,7 +340,7 @@ def create_floorplan(base_path, program_path, name=None):
         wallcount = 0
 
         # Create parent
-        wall_parent, wall_parent_mesh = init_object("Windows")
+        wall_parent, _ = init_object("Windows")
 
         for walls in verts:
             boxname = "Box" + str(boxcount)
@@ -409,7 +403,7 @@ def create_floorplan(base_path, program_path, name=None):
         wallcount = 0
 
         # Create parent
-        wall_parent, wall_parent_mesh = init_object("Doors")
+        wall_parent, _ = init_object("Doors")
 
         for walls in verts:
             boxname = "Box" + str(boxcount)

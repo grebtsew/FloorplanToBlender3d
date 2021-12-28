@@ -1,4 +1,6 @@
 from . import generate
+import numpy as np
+from scipy.spatial.transform import Rotation as R
 
 """
 Execution
@@ -8,7 +10,6 @@ FloorplanToBlender3d
 Copyright (C) 2021 Daniel Westberg
 """
 
-
 def simple_single(image_path, show=True):
     """
     Generate one simple floorplan
@@ -17,6 +18,7 @@ def simple_single(image_path, show=True):
     """
     filepath, _ = generate.generate_all_files(image_path, show)
     return filepath
+
 
 def multiple_axis(image_paths, axis, dir=1, pos=None, rot=None, sca=None):
     """
@@ -31,24 +33,21 @@ def multiple_axis(image_paths, axis, dir=1, pos=None, rot=None, sca=None):
     data_paths = list()
     fshape = None
     # for each input image path!
-    for image_path in image_paths: 
-        # TODO: check if image data already is generated
-        # TODO: don't overwrite old data
-
+    for image_path in image_paths:
         # Calculate positions and rotations here!
         if fshape is not None:
             # Generate all data for imagepath
-            if axis == "y": 
+            if axis == "y":
                 filepath, fshape = generate.generate_all_files(
-                    image_path, True, position=(0, dir*fshape[1], 0)
+                    image_path, True, position=(0, fshape[1], 0), dir=dir
                 )
             elif axis == "x":
                 filepath, fshape = generate.generate_all_files(
-                    image_path, True, position=(dir*fshape[0], 0, 0)
+                    image_path, True, position=(fshape[0], 0, 0), dir=dir
                 )
             elif axis == "z":
                 filepath, fshape = generate.generate_all_files(
-                    image_path, True, position=(0, 0, dir*fshape[2])
+                    image_path, True, position=(0, 0, fshape[2]), dir=dir
                 )
         else:
             filepath, fshape = generate.generate_all_files(image_path, True)
@@ -57,7 +56,8 @@ def multiple_axis(image_paths, axis, dir=1, pos=None, rot=None, sca=None):
         data_paths.append(filepath)
     return data_paths
 
-def multiple_simple(image_paths, horizontal=True): 
+
+def multiple_simple(image_paths, horizontal=True):
     """
     Generates several new apartments
     @Param image_paths - list of path to images
@@ -68,20 +68,17 @@ def multiple_simple(image_paths, horizontal=True):
     data_paths = list()
     fshape = None
     # for each input image path!
-    for image_path in image_paths: 
-        # TODO: check if image data already is generated
-        # TODO: don't overwrite old data
-
+    for image_path in image_paths:
         # Calculate positions and rotations here!
         if fshape is not None:
             # Generate all data for imagepath
-            if horizontal: 
+            if horizontal:
                 filepath, fshape = generate.generate_all_files(
                     image_path, True, position=(0, fshape[1], 0)
                 )
             else:
                 filepath, fshape = generate.generate_all_files(
-                    image_path, True, position=(fshape[0], 0, 0)
+                    image_path, True, position=(0, 0, fshape[2])
                 )
 
         else:
@@ -91,9 +88,25 @@ def multiple_simple(image_paths, horizontal=True):
         data_paths.append(filepath)
     return data_paths
 
-def multiple_cylinder(image_paths, amount_per_level, radie, degree, dir=1, pos=None, rot=None, sca=None): # TODO
+def rotate_around_axis(axis, vec, degrees):
+    rotation_radians = np.radians(degrees)
+    rotation_vector = rotation_radians * axis
+    rotation = R.from_rotvec(rotation_vector)
+    return rotation.apply(vec)
+
+from math import atan2,degrees
+
+def AngleBtw2Points(pointA, pointB):
+  changeInX = pointB[0] - pointA[0]
+  changeInY = pointB[1] - pointA[1]
+  return degrees(atan2(changeInY,changeInX)) 
+
+def multiple_cylinder(
+    image_paths, amount_per_level, radie, degree, dir=None, pos=None, rot=None, sca=None
+):  
     """
     Generates several new apartments in a cylindric shape
+    It is a naive solutions but works for some floorplans
     @Param pos,rot,sca - offset, rotation and scaling
     @Param dir - determines +/- direction along y axis
     @Param image_paths - list of path to images
@@ -102,35 +115,40 @@ def multiple_cylinder(image_paths, amount_per_level, radie, degree, dir=1, pos=N
     @Param degree - how many degree should the circle be, 0-360
     @Return paths to image data
     """
-    pass
-
-def multiple_coord(image_paths):
-    """
-    Generates new apartments with fixed coordinates!
-    @Param image_paths - list of tuples containing [(img_path, pos)]
-    @Return paths to image data
-    """
     # Generate data files
+    if pos is None:
+        pos = (0,0,0)
+    if rot is None:
+        rot = (0,0,0)
+    if sca is None:
+        sca = (0,0,0)
+    if dir is None:
+        dir = 1
     data_paths = list()
-    fshape = None
-    # for each input image path!
-    for tup in image_paths:
-        image_path = tup[0]
-        pos = tup[1]
-        # Calculate positions and rotations here!
+    curr_index = 0
+    curr_level = 0
+    degree_step = int(degree/amount_per_level)
+    start_pos = (pos[0],pos[1]+radie,pos[2])
 
-        if pos is not None:
-            filepath, fshape = generate.generate_all_files(
-                image_path, True, position=(pos[0], pos[1], pos[2])
-            )
-        else:
-            if fshape is not None:
-                filepath, fshape = generate.generate_all_files(
-                    image_path, True, position=(fshape[0], fshape[1], fshape[2])
-                )
-            else:
-                filepath, fshape = generate.generate_all_files(image_path, True)
+    # for each input image path!
+    for image_path in image_paths:
+        
+        if curr_index == amount_per_level:
+            curr_level += 1
+            curr_index = 0
+        
+        curr_pos = rotate_around_axis(np.array([0, 0, 1]), start_pos, degree_step*curr_index)
+        curr_pos = (int(curr_pos[0]),int(curr_pos[1]), int(curr_pos[2]))
+
+        curr_rot = (0,0,int(degree_step*curr_index))
+
+        filepath, _ = generate.generate_all_files(
+            image_path, True, position=(curr_pos[0],curr_pos[1],curr_level), rotation=curr_rot
+        )
 
         # add path to send to blender
         data_paths.append(filepath)
+
+        curr_index +=1
+
     return data_paths

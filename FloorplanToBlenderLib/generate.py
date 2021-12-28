@@ -13,15 +13,20 @@ FloorplanToBlender3d
 Copyright (C) 2021 Daniel Westberg
 """
 
-def generate_all_files(img_path, info, position=None, rotation=None):
+
+def generate_all_files(img_path, info, position=None, rotation=None, dir=None):
     """
     Generate all data files
     @Param image path
+    @Param dir build in negative or positive direction
     @Param info, boolean if should be printed
     @Param position, vector of float
     @Param rotation, vector of float
     @Return path to generated file, shape
     """
+
+    if dir is None:
+        dir = 1
 
     if info:
         print(
@@ -39,7 +44,7 @@ def generate_all_files(img_path, info, position=None, rotation=None):
 
     origin_path, shape = IO.find_reuseable_data(img_path, const.BASE_PATH)
 
-    if origin_path is None: # TODO: Make this optional!
+    if origin_path is None:  # TODO: Make this optional!
         origin_path = path
 
         settings = config.get(const.SETTINGS)
@@ -71,10 +76,12 @@ def generate_all_files(img_path, info, position=None, rotation=None):
         if eval(features[const.STR_DOORS]):
             Door(gray, path, img_path, scale_factor, info)
 
-    generate_transform_file(img_path, path, info, position, rotation, shape, path, origin_path)
+    generate_transform_file(
+        img_path, path, info, position, rotation, shape, path, origin_path
+    )
 
     if position is not None:
-        shape = [shape[0]+position[0], shape[1]+position[1], shape[2]+position[2]]
+        shape = [dir*shape[0] + position[0], dir*shape[1] + position[1], dir*shape[2] + position[2]]
 
     return path, shape
 
@@ -93,7 +100,9 @@ def validate_shape(old_shape, new_shape):
     return shape
 
 
-def generate_transform_file(img_path, path, info, position, rotation, shape, data_path, origin_path): # TODO: add scaling
+def generate_transform_file(
+    img_path, path, info, position, rotation, shape, data_path, origin_path
+):  # TODO: add scaling
     """
     Generate transform of file
     A transform contains information about an objects position, rotation.
@@ -123,9 +132,9 @@ def generate_transform_file(img_path, path, info, position, rotation, shape, dat
 
     transform[const.STR_IMAGE_PATH] = img_path
 
-    transform[const.STR_ORIGIN_PATH] = origin_path 
+    transform[const.STR_ORIGIN_PATH] = origin_path
 
-    transform[const.STR_DATA_PATH] = data_path 
+    transform[const.STR_DATA_PATH] = data_path
 
     IO.save_to_file(path + "transform", transform, info)
 

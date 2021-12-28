@@ -473,10 +473,12 @@ Therefore the developers created ORB. And it seems to be working fine!
 
 if __name__ == "__main__":
     door_image_path = (
-        os.path.dirname(os.path.realpath(__file__)) + "/../../Images/Models/Doors/door.png"
+        os.path.dirname(os.path.realpath(__file__))
+        + "/../../Images/Models/Doors/door.png"
     )
     example_image_path = (
-        os.path.dirname(os.path.realpath(__file__)) + "/../../Images/Examples/example.png"
+        os.path.dirname(os.path.realpath(__file__))
+        + "/../../Images/Examples/example.png"
     )
 
     img0 = cv2.imread(example_image_path)

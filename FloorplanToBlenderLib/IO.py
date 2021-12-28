@@ -33,21 +33,23 @@ def find_reuseable_data(image_path, path):
             try:
                 with open(path + dir + const.TRANSFORM_PATH) as f:
                     data = f.read()
-                js = json.loads(data) 
+                js = json.loads(data)
                 if image_path == js[const.STR_IMAGE_PATH]:
                     return js[const.STR_ORIGIN_PATH], js[const.STR_SHAPE]
             except IOError:
                 continue
     return None, None
 
+
 def find_files(filename, search_path):
-   """
-   Find filename in root search path
-   """
-   for root, _, files in os.walk(search_path):
-      if filename in files:
-        return os.path.join(root, filename)
-   return None
+    """
+    Find filename in root search path
+    """
+    for root, _, files in os.walk(search_path):
+        if filename in files:
+            return os.path.join(root, filename)
+    return None
+
 
 def blender_installed():
     """
@@ -56,13 +58,14 @@ def blender_installed():
     """
     if pf == "linux" or pf == "linux2":
         # linux
-        return find_files("blender","C:")
+        return find_files("blender", "C:")
     elif pf == "darwin":
         # OS X
-        return find_files("blender","C:")
+        return find_files("blender", "C:")
     elif pf == "win32":
         # Windows
-        return find_files("blender.exe","C:\\")
+        return find_files("blender.exe", "C:\\")
+
 
 def get_blender_os_path():
     _platform = platform.system()
@@ -109,11 +112,13 @@ def read_image(path, settings=None):
 
     return img, cv2.cvtColor(img, cv2.COLOR_BGR2GRAY), scale_factor
 
+
 def readlines_file(path):
     res = []
     with open(path, "r") as f:
         res = f.readlines()
     return res
+
 
 def save_to_file(file_path, data, show=True):
     """
@@ -127,6 +132,7 @@ def save_to_file(file_path, data, show=True):
 
     if show:
         print("Created file : " + file_path + const.SAVE_DATA_FORMAT)
+
 
 def read_from_file(file_path):
     """
@@ -168,10 +174,10 @@ def create_new_floorplan_path(path):
                 while name_not_found:
                     if not os.path.exists(path + str(res) + "/"):
                         break
-                    res +=1
+                    res += 1
             except Exception:
                 continue
-            
+
     res = path + str(res) + "/"
     if not os.path.exists(res):
         os.makedirs(res)

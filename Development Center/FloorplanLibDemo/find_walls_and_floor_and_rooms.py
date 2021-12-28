@@ -61,7 +61,7 @@ def test(path):
     Detect rooms
     """
     rooms, colored_rooms = detect.find_rooms(gray.copy())
-    
+
     gray_rooms = cv2.cvtColor(colored_rooms, cv2.COLOR_BGR2GRAY)
     boxes, blank_image = detect.precise_boxes(
         gray_rooms, blank_image, color=(0, 100, 200)
