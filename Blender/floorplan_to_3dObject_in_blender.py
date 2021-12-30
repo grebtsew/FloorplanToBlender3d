@@ -26,7 +26,7 @@ HOW TO: (old style)
 5. Open this file "alt+o"
 6. Run script
 
-This code is tested on Windows 10, Blender 2.79, in January 2019.
+This code is tested on Windows 10, Blender 2.93, in December 2021.
 """
 
 """
@@ -35,7 +35,6 @@ Our helpful functions
 
 # TODO: restructure this file with a class and help-function to save a lot of lines of code!
 # TODO: fix index should be same as floorplan folder
-
 
 def read_from_file(file_path):
     """
@@ -48,7 +47,6 @@ def read_from_file(file_path):
     with open(file_path + ".txt", "r") as f:
         data = json.loads(f.read())
     return data
-
 
 def init_object(name):
     # Create new blender object and return references to mesh and object
@@ -106,7 +104,7 @@ def create_custom_mesh(objname, verts, faces, pos=None, rot=None, mat=None, cen=
     # Calculate the edges
     mymesh.update(calc_edges=True)
 
-    parent_center = [0, 0, 0]
+    parent_center = [0,0,0]
     if cen is not None:
         parent_center = [int(cen[0] / 2), int(cen[1] / 2), int(cen[2])]
 
@@ -114,18 +112,6 @@ def create_custom_mesh(objname, verts, faces, pos=None, rot=None, mat=None, cen=
     myobject.location.x = center[0] - parent_center[0]
     myobject.location.y = center[1] - parent_center[1]
     myobject.location.z = center[2] - parent_center[2]
-
-    # Move to Custom Location
-    if pos is not None:
-        myobject.location.x += pos[0]
-        myobject.location.y += pos[1]
-        myobject.location.z += pos[2]
-
-    if rot is not None:
-        myobject.rotation_euler = rot
-
-    # add contraint for pivot point
-    # pivot = myobject.constraints.new(type='PIVOT')
 
     # add material
     if mat is None:  # add random color
@@ -201,12 +187,9 @@ def create_floorplan(base_path, program_path, name=None):
 
     # Calculate and move floorplan shape to center
     cen = transform["shape"]
-    
+
     # Where data is stored, if shared between floorplans
     path_to_data = transform["origin_path"]
-
-    # rotate to fix mirrored floorplan
-    parent.rotation_euler = (0, math.pi, 0)
 
     # Set Cursor start
     bpy.context.scene.cursor.location = (0, 0, 0)
@@ -483,6 +466,15 @@ def create_floorplan(base_path, program_path, name=None):
             obj.parent = room_parent
 
         room_parent.parent = parent
+
+    # Perform Floorplan final position, rotation and scale
+    if rot is not None:
+        parent.rotation_euler = [math.radians(rot[0]), math.radians(rot[1]), math.radians(rot[2])]
+
+    if pos is not None:
+        parent.location.x += pos[0]
+        parent.location.y += pos[1]
+        parent.location.z += pos[2]
 
 
 if __name__ == "__main__":
