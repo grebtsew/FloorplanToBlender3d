@@ -31,4 +31,5 @@ __all__ = [
     "calculate",
     "config",
     "stacking",
+    "floorplan",
 ]

@@ -99,7 +99,7 @@ def generate_file():
         const.STR_WALL_SIZE_CALIBRATION: const.DEFAULT_WALL_SIZE_CALIBRATION,
     }
 
-    with open(const.CONFIG_FILE_NAME, "w") as configfile:
+    with open(const.SYSTEM_CONFIG_FILE_NAME, "w") as configfile:
         conf.write(configfile)
 
 
@@ -117,7 +117,7 @@ def update(label, values):
     """
     conf = get_all()
     conf[label] = values
-    with open(const.CONFIG_FILE_NAME, "w") as configfile:
+    with open(const.SYSTEM_CONFIG_FILE_NAME, "w") as configfile:
         conf.write(configfile)
 
 
@@ -130,16 +130,16 @@ def file_exist(name):
     return os.path.isfile(name)
 
 
-def get_all():
+def get_all(path=None):
     """
     Read and return values
     @Return default values
     """
     config = configparser.ConfigParser()
 
-    if not file_exist(const.CONFIG_FILE_NAME):
+    if not file_exist(const.SYSTEM_CONFIG_FILE_NAME):
         generate_file()
-    config.read(const.CONFIG_FILE_NAME)
+    config.read(const.SYSTEM_CONFIG_FILE_NAME)
     return config
 
 
@@ -150,9 +150,9 @@ def get(label):
     """
     conf = configparser.ConfigParser()
 
-    if not file_exist(const.CONFIG_FILE_NAME):
+    if not file_exist(const.SYSTEM_CONFIG_FILE_NAME):
         generate_file()
-    conf.read(const.CONFIG_FILE_NAME)
+    conf.read(const.SYSTEM_CONFIG_FILE_NAME)
     return conf[label]
 
 
@@ -163,9 +163,9 @@ def get_default():
     """
     config = configparser.ConfigParser()
 
-    if not file_exist(const.CONFIG_FILE_NAME):
+    if not file_exist(const.SYSTEM_CONFIG_FILE_NAME):
         generate_file()
-    config.read(const.CONFIG_FILE_NAME)
+    config.read(const.SYSTEM_CONFIG_FILE_NAME)
     return (
         config[const.DEFAULT][const.STR_IMAGE_PATH],
         config[const.DEFAULT][const.STR_BLENDER_INSTALL_PATH],

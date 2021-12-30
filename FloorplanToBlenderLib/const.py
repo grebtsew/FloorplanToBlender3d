@@ -108,7 +108,8 @@ DEBUG_ROOM = False
 DEBUG_WALL = False
 
 # CONFIG
-CONFIG_FILE_NAME = "config.ini"
+SYSTEM_CONFIG_FILE_NAME = "./Configs/system.ini"
+IMAGE_DEFAULT_CONFIG_FILE_NAME = "./Configs/default.ini"
 
 # CONFIG field/key names
 # These values are used as backup incase config.ini can't be found.

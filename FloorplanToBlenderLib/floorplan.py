@@ -6,7 +6,7 @@ FloorplanToBlender3d
 Copyright (C) 2021 Daniel Westberg
 """
 
-def new_floorplan():
+def new_floorplan(config):
     """
     Creates and returns a new floorplan class from config file
     """
@@ -22,4 +22,4 @@ class floorplan():
         pass
 
     def __str__(self):
-        pass
+        print(vars(self))
