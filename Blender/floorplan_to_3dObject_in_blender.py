@@ -456,7 +456,7 @@ def create_floorplan(base_path, program_path, name=None):
         faces = read_from_file(path_to_rooms_faces_file)
 
         # Create parent
-        room_parent, room_parent_mesh = init_object("Rooms")
+        room_parent, _ = init_object("Rooms")
 
         for i in range(0, len(verts)):
             roomname = "Room" + str(i)
@@ -469,7 +469,8 @@ def create_floorplan(base_path, program_path, name=None):
 
     # Perform Floorplan final position, rotation and scale
     if rot is not None:
-        parent.rotation_euler = [math.radians(rot[0]), math.radians(rot[1]), math.radians(rot[2])]
+        # compensate for mirrored image
+        parent.rotation_euler = [math.radians(rot[0])+math.pi, math.radians(rot[1]), math.radians(rot[2])] 
 
     if pos is not None:
         parent.location.x += pos[0]

@@ -9,20 +9,18 @@ from FloorplanToBlenderLib import (
 )  # floorplan to blender lib
 import os
 
-# TODO: remove objects outside of detected floor!
 # TODO:s need fixing before next merge with main -
-# - axis stack
-# - cube stack
-# - cylinder stack
+# - floorplan class
+# - floorplan config
 # - margin
 # - add floor / roof
 # - test dockerfile
 # - secure window and door detections, as selectable settings
 # - go through all TODO:s and solve easy to fix ones, create issues for the rest
-# - multi model doors
-# - updated demos
+# - create issue for multi model doors
+# - create issue for use logging and f''
+# - update demos
 # - update readme
-# - use logging
 # - create CI/CD action
 
 """

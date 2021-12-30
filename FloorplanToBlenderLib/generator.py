@@ -93,8 +93,15 @@ class Wall(Generator):
 
         # create wall image (filter out small objects from image)
         wall_img = detect.wall_filter(gray)
+
         # detect walls
-        boxes, img = detect.precise_boxes(wall_img)
+        boxes, _ = detect.precise_boxes(wall_img)
+
+        # detect contour
+        contour, _ = detect.outer_contours(gray)
+
+        # remove walls outside of contour
+        boxes = calculate.remove_walls_not_in_contour(boxes, contour)
 
         # Convert boxes to verts and faces, vertically
         self.verts, self.faces, wall_amount = transform.create_nx4_verts_and_faces(
