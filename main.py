@@ -91,6 +91,7 @@ if __name__ == "__main__":
     image_path, blender_install_path, file_structure, mode = config.get_default()
 
     # Set other paths (don't need to change these)
+    floorplans = []
     program_path = os.path.dirname(os.path.realpath(__file__))
     blender_script_path = const.BLENDER_SCRIPT_PATH
 
@@ -132,7 +133,11 @@ if __name__ == "__main__":
             + "]: "
         )
         if var:
+            # TODO: space separated list off configs!
             config_path = var
+            
+            floorplans.append(floorplan.new_floorplan(c) for c in config_path.split(" "))
+            #floorplans = [floorplan.new_floorplan(config)]
         else:
             
             var = input(
@@ -179,8 +184,8 @@ if __name__ == "__main__":
             # Delete config file to reset it to default
             config.update(const.SETTINGS, settings)
 
-            floorplans = [floorplan.new_floorplan(config)]
-            
+            floorplans = [floorplan.new_floorplan(config) for _ in image_paths]
+
 
         print("")
         var = input(
