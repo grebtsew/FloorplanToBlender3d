@@ -140,7 +140,7 @@ The server implementation comes with an automatically generated [Swagger API](ht
 ![swagger](Images/swaggerdemo.gif)
 
 ## Usages in other applications
-If you are interested in code for these demos let me know and I will release the source code.
+If you are interested in code for these demos they are accessable in another repository [here](https://github.com/grebtsew/ARFloorplanDemo).
 
 ### AR foundation place floorplans in world
 
