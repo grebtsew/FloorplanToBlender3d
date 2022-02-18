@@ -13,8 +13,7 @@ FloorplanToBlender3d
 Copyright (C) 2021 Daniel Westberg
 """
 
-
-def generate_all_files(img_path, info, position=None, rotation=None, dir=None):
+def generate_all_files(floorplan, info):
     """
     Generate all data files
     @Param image path
@@ -25,63 +24,54 @@ def generate_all_files(img_path, info, position=None, rotation=None, dir=None):
     @Return path to generated file, shape
     """
 
-    if dir is None:
-        dir = 1
+    if floorplan.dir is None:
+        floorplan.dir = 1
 
     if info:
         print(
             " ----- Generate ",
-            img_path,
+            floorplan.image_path,
             " at pos ",
-            position,
+            floorplan.position,
             " rot ",
-            rotation,
+            floorplan.rotation,
             " -----",
         )
 
     # Get path to save data
     path = IO.create_new_floorplan_path(const.BASE_PATH)
 
-    origin_path, shape = IO.find_reuseable_data(img_path, const.BASE_PATH)
+    origin_path, shape = IO.find_reuseable_data(floorplan.image_path, const.BASE_PATH)
 
     if origin_path is None:  # TODO: Make this optional!
         origin_path = path
 
-        settings = config.get(const.SETTINGS)
-        features = config.get(const.FEATURES)
+        _, gray, scale_factor = IO.read_image(floorplan.image_path, floorplan)
 
-        _, gray, scale_factor = IO.read_image(img_path, settings)
 
-        print(
-            bool(features[const.STR_FLOORS]),
-            bool(features[const.STR_WALLS]),
-            features[const.STR_WINDOWS],
-            bool(features[const.STR_WINDOWS]),
-        )
-
-        if eval(features[const.STR_FLOORS]):
+        if floorplan.floors:
             shape = Floor(gray, path, info).shape
 
-        if eval(features[const.STR_WALLS]):
+        if floorplan.walls:
             new_shape = Wall(gray, path, info).shape
             shape = validate_shape(shape, new_shape)
 
-        if eval(features[const.STR_ROOMS]):
+        if floorplan.rooms:
             new_shape = Room(gray, path, info).shape
             shape = validate_shape(shape, new_shape)
 
-        if eval(features[const.STR_WINDOWS]):
-            Window(gray, path, img_path, scale_factor, info)
+        if floorplan.windows:
+            Window(gray, path, floorplan.image_path, scale_factor, info)
 
-        if eval(features[const.STR_DOORS]):
-            Door(gray, path, img_path, scale_factor, info)
+        if floorplan.doors:
+            Door(gray, path, floorplan.image_path, scale_factor, info)
 
     generate_transform_file(
-        img_path, path, info, position, rotation, shape, path, origin_path
+        floorplan.image_path, path, info, floorplan.position, floorplan.rotation, shape, path, origin_path
     )
 
-    if position is not None:
-        shape = [dir*shape[0] + position[0], dir*shape[1] + position[1], dir*shape[2] + position[2]]
+    if floorplan.position is not None:
+        shape = [dir*shape[0] + floorplan.position[0], dir*shape[1] + floorplan.position[1], dir*shape[2] + floorplan.position[2]]
 
     return path, shape
 

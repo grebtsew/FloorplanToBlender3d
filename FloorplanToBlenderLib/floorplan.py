@@ -26,7 +26,17 @@ class floorplan():
             conf = const.IMAGE_DEFAULT_CONFIG_FILE_NAME
         
         settings = config.get_all(conf)
-        locals().update(settings) # generate variables from settings
+        settings_dict = {s:dict(settings.items(s)) for s in settings.sections()}
+        for group in settings_dict.items(): # ignore group names
+            for item in group[1].items():
+                #cor_dict = dict([(item[0],item[1])])
+                #self.locals().update(cor_dict) # generate variables from settings
+                exec (item[0] + '=' + item[1])
+
+        # Debug
+        print(self.out_format, "test")
+        #print("All variables in class: ",vars(self)) # print all variables
+        #print("All local variables", locals())
 
     def __str__(self):
         print(vars(self))

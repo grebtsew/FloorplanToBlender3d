@@ -84,7 +84,13 @@ def generate_file():
         const.STR_IMAGE_PATH: const.DEFAULT_IMAGE_PATH,
         const.STR_OUT_FORMAT: const.DEFAULT_OUT_FORMAT,
         const.STR_MODE: const.DEFAULT_MODE,
-        "COLOR": None,
+        "COLOR": "None",
+    }
+
+    conf["TRANSFORM"] = {
+        "position" : "(0,0,0)",
+        "rotation" : "(0,0,0)",
+        "dir" : "0",
     }
 
     conf[const.FEATURES] = {
@@ -120,7 +126,7 @@ def update(path, label, values):
     """
     Update a config category
     """
-    conf = get_all()
+    conf = get_all(path)
     conf[label] = values
     with open(path, "w") as configfile:
         conf.write(configfile)
@@ -148,20 +154,33 @@ def get_all(path):
     return config
 
 
-def get(config_path, label):
+def get(config_path, label=None):
     """
     Read and return values
     @Return default values
     """
+    
     conf = configparser.ConfigParser()
 
     if not file_exist(config_path):
         generate_file()
     conf.read(config_path)
-    return conf[label]
+
+    if label is None:
+        return conf
+    else:
+        return conf[label]
+
+def get_default_image_path():
+    config = configparser.ConfigParser()
+
+    if not file_exist(const.IMAGE_DEFAULT_CONFIG_FILE_NAME):
+        generate_file()
+    config.read(const.IMAGE_DEFAULT_CONFIG_FILE_NAME)
+    return config["IMAGE"][const.STR_IMAGE_PATH]
 
 
-def get_default():
+def get_default_blender_installation_path():
     """
     Read and return default values
     @Return default values
@@ -171,6 +190,4 @@ def get_default():
     if not file_exist(const.SYSTEM_CONFIG_FILE_NAME):
         generate_file()
     config.read(const.SYSTEM_CONFIG_FILE_NAME)
-    return (
-        config["SYSTEM"][const.STR_BLENDER_INSTALL_PATH],
-    )
+    return config["SYSTEM"][const.STR_BLENDER_INSTALL_PATH]

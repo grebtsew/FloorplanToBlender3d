@@ -23,6 +23,7 @@ import os
 # - update demos
 # - update readme
 # - create CI/CD action
+# - update license dates
 
 """
 Create Blender Project from floorplan
@@ -88,7 +89,7 @@ if __name__ == "__main__":
 
     target_folder = const.TARGET_PATH
 
-    image_path, blender_install_path, file_structure, mode = config.get_default()
+    blender_install_path = config.get_default_blender_installation_path() # TODO: update this
 
     # Set other paths (don't need to change these)
     floorplans = []
@@ -126,12 +127,13 @@ if __name__ == "__main__":
         if var:
             blender_install_path = var
 
-        config_path = "./Configs/config.ini"
+        config_path = "./Configs/default.ini"
         var = input(
             "Use default config or import from file [default = "
             + config_path
             + "]: "
         )
+
         if var:
             # TODO: space separated list off configs!
             config_path = var
@@ -139,7 +141,7 @@ if __name__ == "__main__":
             floorplans.append(floorplan.new_floorplan(c) for c in config_path.split(" "))
             #floorplans = [floorplan.new_floorplan(config)]
         else:
-            
+            image_path = config.get_default_image_path() # TODO: update this
             var = input(
             "Please enter your floorplan image paths seperated by space [default = "
             + image_path
@@ -148,9 +150,10 @@ if __name__ == "__main__":
             if var:
                 image_paths = var.split()
             else:
+                #TODO: get default image_path, mode
                 image_paths = image_path.split()
 
-            outformat = config.get(const.DEFAULT)[const.STR_OUT_FORMAT]
+            outformat = config.get(const.IMAGE_DEFAULT_CONFIG_FILE_NAME, "IMAGE")[const.STR_OUT_FORMAT]
             var = input(
                 "Please enter your preferred blender supported output format [default = "
                 + outformat
@@ -160,33 +163,32 @@ if __name__ == "__main__":
                 outformat = var
 
             # Advanced Settings
-            settings = config.get(const.SETTINGS)  # TODO: fix and update config file
+            settings = config.get(const.IMAGE_DEFAULT_CONFIG_FILE_NAME)  # TODO: fix and update config file
 
             var = input("Do you want to change advanced settings [default = No]: ")
             if var == "Yes" or var == "yes":
                 var = input(
-                    "Use noise removal [default = " + settings[const.STR_REMOVE_NOISE] + "]: "
+                    "Use noise removal [default = " + settings[const.SETTINGS][const.STR_REMOVE_NOISE] + "]: "
                 )
                 if var == "Yes" or var == "yes":
-                    settings[const.STR_REMOVE_NOISE] = "True"
+                    settings[const.SETTINGS][const.STR_REMOVE_NOISE] = "True"
                 elif var == "No" or var == "no":
-                    settings[const.STR_REMOVE_NOISE] = "False"
+                    settings[const.SETTINGS][const.STR_REMOVE_NOISE] = "False"
 
                 var = input(
                     "Use auto image resize [default = " + const.STR_RESCALE_IMAGE + "]: "
                 )
                 if var == "Yes" or var == "yes":
-                    settings[const.STR_RESCALE_IMAGE] = "True"
+                    settings[const.SETTINGS][const.STR_RESCALE_IMAGE] = "True"
                 elif var == "No" or var == "no":
-                    settings[const.STR_RESCALE_IMAGE] = "False"
+                    settings[const.SETTINGS][const.STR_RESCALE_IMAGE] = "False"
             
             # Save new settings to config file
             # Delete config file to reset it to default
-            config.update(const.SETTINGS, settings)
+            config.update(const.IMAGE_DEFAULT_CONFIG_FILE_NAME, const.SETTINGS, settings)
 
-            floorplans = [floorplan.new_floorplan(config) for _ in image_paths]
-
-
+            floorplans = [floorplan.new_floorplan(config_path) for _ in image_paths] # Load all configs into memory
+           
         print("")
         var = input(
             "This program is about to run and create blender3d project, continue? : "

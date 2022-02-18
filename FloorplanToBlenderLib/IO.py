@@ -81,7 +81,7 @@ def get_blender_os_path():
         return const.WIN_DEFAULT_BLENDER_INSTALL_PATH
 
 
-def read_image(path, settings=None):
+def read_image(path, floorplan=None):
     """
     Read image, resize/rescale and return with grayscale
     """
@@ -92,10 +92,10 @@ def read_image(path, settings=None):
         raise IOError
 
     scale_factor = 1
-    if settings is not None:
-        if settings[const.STR_REMOVE_NOISE]:
+    if floorplan is not None:
+        if floorplan.STR_REMOVE_NOISE:
             img = image.denoising(img)
-        if settings[const.STR_RESCALE_IMAGE]:
+        if floorplan.STR_RESCALE_IMAGE:
 
             calibrations = config.read_calibration()
             scale_factor = image.detect_wall_rescale(
