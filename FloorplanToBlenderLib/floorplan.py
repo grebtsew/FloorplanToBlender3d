@@ -5,7 +5,7 @@ Floorplan
 This file contains functions for handling the floorplan class.
 
 FloorplanToBlender3d
-Copyright (C) 2021 Daniel Westberg
+Copyright (C) 2022 Daniel Westberg
 """
 
 def new_floorplan(config):
@@ -24,19 +24,14 @@ class floorplan():
         if conf is None:
             # use default
             conf = const.IMAGE_DEFAULT_CONFIG_FILE_NAME
-        
+        self.create_variables_from_config(conf)
+
+    def __str__(self):
+        print(vars(self))
+
+    def create_variables_from_config(self, conf):
         settings = config.get_all(conf)
         settings_dict = {s:dict(settings.items(s)) for s in settings.sections()}
         for group in settings_dict.items(): # ignore group names
             for item in group[1].items():
-                #cor_dict = dict([(item[0],item[1])])
-                #self.locals().update(cor_dict) # generate variables from settings
-                exec (item[0] + '=' + item[1])
-
-        # Debug
-        print(self.out_format, "test")
-        #print("All variables in class: ",vars(self)) # print all variables
-        #print("All local variables", locals())
-
-    def __str__(self):
-        print(vars(self))
+                setattr(self, item[0], item[1])
