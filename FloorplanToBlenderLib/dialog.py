@@ -5,7 +5,7 @@ Dialog
 This file contains code for handling dialog and can be seen as a gui solution.
 
 FloorplanToBlender3d
-Copyright (C) 2021 Daniel Westberg
+Copyright (C) 2022 Daniel Westberg
 """
 
 
@@ -32,7 +32,7 @@ def question(text, default):
 
 def end_copyright():
     print("")
-    print("FloorplanToBlender3d Copyright (C) 2021  Daniel Westberg")
+    print("FloorplanToBlender3d Copyright (C) 2022  Daniel Westberg")
     print("This program comes with ABSOLUTELY NO WARRANTY;")
     print(
         "This is free software, and you are welcome to redistribute it under certain conditions;"

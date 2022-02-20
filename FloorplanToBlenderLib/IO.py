@@ -2,9 +2,12 @@ import json
 import os
 from shutil import which
 import shutil
+from typing import Type
 import cv2
 import platform
 from sys import platform as pf
+import numpy as np
+import codecs
 
 from . import const
 from . import image
@@ -93,13 +96,14 @@ def read_image(path, floorplan=None):
 
     scale_factor = 1
     if floorplan is not None:
-        if floorplan.STR_REMOVE_NOISE:
+        if floorplan.remove_noise:
             img = image.denoising(img)
-        if floorplan.STR_RESCALE_IMAGE:
+        if floorplan.rescale_image:
 
-            calibrations = config.read_calibration()
+            calibrations = config.read_calibration(floorplan)
+            floorplan.wall_size_calibration = calibrations # Store for debug
             scale_factor = image.detect_wall_rescale(
-                float(calibrations[const.STR_WALL_SIZE_CALIBRATION]), img
+                float(calibrations), img
             )
             if scale_factor is None:
                 print(
@@ -119,6 +123,13 @@ def readlines_file(path):
         res = f.readlines()
     return res
 
+def ndarrayJsonDumps(obj):
+    if type(obj).__module__ == np.__name__:
+        if isinstance(obj, np.ndarray):
+            return obj.tolist()
+        else:
+            return obj.item()
+    raise TypeError('Unknown type:', type(obj))
 
 def save_to_file(file_path, data, show=True):
     """
@@ -128,7 +139,10 @@ def save_to_file(file_path, data, show=True):
     @Param data, data to write to file
     """
     with open(file_path + const.SAVE_DATA_FORMAT, "w") as f:
-        f.write(json.dumps(data))
+        try:
+            f.write(json.dumps(data))
+        except TypeError:
+                f.write(json.dumps(data, default=ndarrayJsonDumps)) # little haxy
 
     if show:
         print("Created file : " + file_path + const.SAVE_DATA_FORMAT)

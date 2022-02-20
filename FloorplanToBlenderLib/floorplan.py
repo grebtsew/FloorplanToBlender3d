@@ -1,3 +1,5 @@
+import json
+
 from . import const
 from . import config
 """
@@ -34,4 +36,7 @@ class floorplan():
         settings_dict = {s:dict(settings.items(s)) for s in settings.sections()}
         for group in settings_dict.items(): # ignore group names
             for item in group[1].items():
-                setattr(self, item[0], item[1])
+                setattr(self, item[0], json.loads(item[1]))
+        
+        # Debug
+        #print(vars(self))

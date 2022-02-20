@@ -1,3 +1,5 @@
+from enum import Enum 
+
 """
 Const
 This file contains contants to remove "magic" numbers and strings.
@@ -27,6 +29,12 @@ SUPPORTED_BLENDER_FORMATS = (
     ".3ds",
 )
 BASE_FORMAT = ".blend"
+
+class MODE(Enum):
+    AXIS = 0
+    HV = 1
+    CYLINDER = 2
+    SINGLE = 3
 
 # Paths to save folder
 BASE_PATH = "Data/"
@@ -157,12 +165,11 @@ LINUX_DEFAULT_BLENDER_INSTALL_PATH = "/usr/local/blender/blender"
 WIN_DEFAULT_BLENDER_INSTALL_PATH = (
     "C:\\Program Files\\Blender Foundation\\Blender 2.90\\blender.exe"
 )
-DEFAULT_FILE_STRUCTURE = "[[[0,0,0], [0,0,0], [0,0,0]], [[0,0,0], [0,0,0], [0,0,0]], [[0,0,0], [0,0,0], [0,0,0]]]"
 DEFAULT_MODE = "HVSTACK"
-DEFAULT_FEATURES = "True"
-DEFAULT_REMOVE_NOISE = "True"
-DEFAULT_RESCALE_IMAGE = "True"
-DEFAULT_WALL_SIZE_CALIBRATION = "0"
+DEFAULT_FEATURES = True
+DEFAULT_REMOVE_NOISE = True
+DEFAULT_RESCALE_IMAGE = True
+DEFAULT_WALL_SIZE_CALIBRATION = 0
 
 # DATA save files names
 FLOOR_VERTS = "floor_verts"

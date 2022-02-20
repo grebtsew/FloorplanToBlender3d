@@ -1,6 +1,7 @@
 from . import generate
 import numpy as np
 from scipy.spatial.transform import Rotation as R
+from math import atan2,degrees
 
 """
 Execution
@@ -10,22 +11,22 @@ FloorplanToBlender3d
 Copyright (C) 2021 Daniel Westberg
 """
 
-def simple_single(image_path, show=True):
+def simple_single(floorplan, show=True):
     """
     Generate one simple floorplan
     @Param image_path path to image
     @Return path to generated files
     """
-    filepath, _ = generate.generate_all_files(image_path, show)
+    filepath, _ = generate.generate_all_files(floorplan, show)
     return filepath
 
 
-def multiple_axis(image_paths, axis, dir=1, pos=None, rot=None, sca=None):
+def multiple_axis(floorplans, axis, dir=1, pos=None, rot=None, sca=None):
     """
     Generates several new apartments along axis "x","y","z"
     @Param pos,rot,sca - offset, rotation and scaling
     @Param dir - determines +/- direction along axis
-    @Param image_paths - list of path to images
+    @Param floorplans - list of path to images
     @Param horizontal - if apartments should stack horizontal or vertical
     @Return paths to image data
     """
@@ -33,31 +34,30 @@ def multiple_axis(image_paths, axis, dir=1, pos=None, rot=None, sca=None):
     data_paths = list()
     fshape = None
     # for each input image path!
-    for image_path in image_paths:
+    for floorplan in floorplans:
         # Calculate positions and rotations here!
         if fshape is not None:
             # Generate all data for imagepath
             if axis == "y":
                 filepath, fshape = generate.generate_all_files(
-                    image_path, True, position=(0, fshape[1], 0), dir=dir
+                    floorplan, True, position=np.array([0, fshape[1], 0]), dir=dir
                 )
             elif axis == "x":
                 filepath, fshape = generate.generate_all_files(
-                    image_path, True, position=(fshape[0], 0, 0), dir=dir
+                    floorplan, True, position=np.array([fshape[0], 0, 0]), dir=dir
                 )
             elif axis == "z":
                 filepath, fshape = generate.generate_all_files(
-                    image_path, True, position=(0, 0, fshape[2]), dir=dir
+                    floorplan, True, position=np.array([0, 0, fshape[2]]), dir=dir
                 )
         else:
-            filepath, fshape = generate.generate_all_files(image_path, True)
+            filepath, fshape = generate.generate_all_files(floorplan, True)
 
         # add path to send to blender
         data_paths.append(filepath)
     return data_paths
 
-
-def multiple_simple(image_paths, horizontal=True):
+def multiple_simple(floorplans, horizontal=True):
     """
     Generates several new apartments
     @Param image_paths - list of path to images
@@ -68,21 +68,21 @@ def multiple_simple(image_paths, horizontal=True):
     data_paths = list()
     fshape = None
     # for each input image path!
-    for image_path in image_paths:
+    for floorplan in floorplans:
         # Calculate positions and rotations here!
         if fshape is not None:
             # Generate all data for imagepath
             if horizontal:
                 filepath, fshape = generate.generate_all_files(
-                    image_path, True, position=(0, fshape[1], 0)
+                    floorplan, True, position=np.array([0, fshape[1], 0])
                 )
             else:
                 filepath, fshape = generate.generate_all_files(
-                    image_path, True, position=(0, 0, fshape[2])
+                    floorplan, True, position=np.array([0, 0, fshape[2]])
                 )
 
         else:
-            filepath, fshape = generate.generate_all_files(image_path, True)
+            filepath, fshape = generate.generate_all_files(floorplan, True)
 
         # add path to send to blender
         data_paths.append(filepath)
@@ -94,15 +94,13 @@ def rotate_around_axis(axis, vec, degrees):
     rotation = R.from_rotvec(rotation_vector)
     return rotation.apply(vec)
 
-from math import atan2,degrees
-
 def AngleBtw2Points(pointA, pointB):
   changeInX = pointB[0] - pointA[0]
   changeInY = pointB[1] - pointA[1]
   return degrees(atan2(changeInY,changeInX)) 
 
 def multiple_cylinder(
-    image_paths, amount_per_level, radie, degree, dir=None, pos=None, rot=None, sca=None
+    floorplans, amount_per_level, radie, degree, dir=None, pos=None, rot=None, sca=None
 ):  
     """
     Generates several new apartments in a cylindric shape
@@ -131,7 +129,7 @@ def multiple_cylinder(
     start_pos = (pos[0],pos[1]+radie,pos[2])
 
     # for each input image path!
-    for image_path in image_paths:
+    for floorplan in floorplans:
         
         if curr_index == amount_per_level:
             curr_level += 1
@@ -140,10 +138,10 @@ def multiple_cylinder(
         curr_pos = rotate_around_axis(np.array([0, 0, 1]), start_pos, degree_step*curr_index)
         curr_pos = (int(curr_pos[0]),int(curr_pos[1]), int(curr_pos[2]))
 
-        curr_rot = (0,0,int(degree_step*curr_index))
+        curr_rot = np.array([0,0,int(degree_step*curr_index)])
 
         filepath, _ = generate.generate_all_files(
-            image_path, True, position=(curr_pos[0],curr_pos[1],curr_level), rotation=curr_rot
+            floorplan, True, position=np.array([curr_pos[0],curr_pos[1],curr_level]), rotation=curr_rot
         )
 
         # add path to send to blender

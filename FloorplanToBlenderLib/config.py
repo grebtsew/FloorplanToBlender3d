@@ -1,6 +1,8 @@
 import configparser
 import os
 import cv2
+import json
+import numpy as np
 
 from . import IO
 from . import const
@@ -17,51 +19,24 @@ Copyright (C) 2021 Daniel Westberg
 # TODO: add config security check, before start up!
 # TODO: safe read, use this func instead of repeating code everywhere!
 
-def read_calibration(config_path):
+def read_calibration(floorplan):
     """
     Read all calibrations
     """
-    calibrations = get(config_path, const.WALL_CALIBRATION)
-    if calibrations is None:
-        calibrations = create_image_scale_calibration()
-    elif calibrations[const.STR_CALIBRATION_IMAGE_PATH] == "":  # TODO: fix if deleted!
-        calibrations = create_image_scale_calibration()
-    elif (
-        float(calibrations[const.STR_WALL_SIZE_CALIBRATION]) == 0
-    ):  # TODO: fix if deleted!
-        calibrations = create_image_scale_calibration(True)
-    return calibrations
+    if floorplan.wall_size_calibration == 0:
+        floorplan.wall_size_calibration = create_image_scale_calibration(floorplan)
+    return floorplan.wall_size_calibration
 
 
-def create_image_scale_calibration(got_settings=False):
+def create_image_scale_calibration(floorplan, got_settings=False):
     """
     Create and save image size calibrations
     """
-    default_calibration_image = const.DEFAULT_CALIBRATION_IMAGE_PATH
-    if got_settings:
-        calibration_img = cv2.imread(default_calibration_image)
-        calibrations = {
-            const.STR_CALIBRATION_IMAGE_PATH: default_calibration_image,
-            const.STR_WALL_SIZE_CALIBRATION: str(
-                calculate.wall_width_average(calibration_img)
-            ),
-        }
-
-        update(const.WALL_CALIBRATION, calibrations)
-    else:
-        calibration_config = get(const.WALL_CALIBRATION)
-        calibration_img = cv2.imread(
-            calibration_config[const.STR_CALIBRATION_IMAGE_PATH]
-        )
-        calibrations = {
-            const.STR_CALIBRATION_IMAGE_PATH: default_calibration_image,
-            const.STR_WALL_SIZE_CALIBRATION: str(
-                calculate.wall_width_average(calibration_img)
-            ),
-        }
-
-        update(const.WALL_CALIBRATION, calibrations)
-    return calibrations
+    
+    calibration_img = cv2.imread(
+        floorplan.calibration_image_path
+    )    
+    return calculate.wall_width_average(calibration_img)
 
 
 def generate_file():
@@ -73,6 +48,7 @@ def generate_file():
     conf["SYSTEM"] = {
         const.STR_OVERWRITE_DATA: const.DEFAULT_OVERWRITE_DATA,  # TODO: implement!
         const.STR_BLENDER_INSTALL_PATH: IO.get_blender_os_path(),
+        const.STR_OUT_FORMAT: json.dumps(const.DEFAULT_OUT_FORMAT),
     }
 
     with open(const.SYSTEM_CONFIG_FILE_NAME, "w") as configfile:
@@ -81,34 +57,33 @@ def generate_file():
     # create Default floorplan Settings
     conf = configparser.ConfigParser()
     conf["IMAGE"] = {
-        const.STR_IMAGE_PATH: const.DEFAULT_IMAGE_PATH,
-        const.STR_OUT_FORMAT: const.DEFAULT_OUT_FORMAT,
-        const.STR_MODE: const.DEFAULT_MODE,
-        "COLOR": "None",
+        const.STR_IMAGE_PATH: json.dumps(const.DEFAULT_IMAGE_PATH),
+        const.STR_OUT_FORMAT: json.dumps(const.DEFAULT_OUT_FORMAT),
+        const.STR_MODE: json.dumps(const.DEFAULT_MODE),
+        "COLOR": json.dumps([0,0,0]),
     }
 
     conf["TRANSFORM"] = {
-        "position" : "(0,0,0)",
-        "rotation" : "(0,0,0)",
-        "dir" : "0",
+        "position" : json.dumps([0,0,0]),
+        "rotation" : json.dumps([0,0,0]),
     }
 
     conf[const.FEATURES] = {
-        const.STR_FLOORS: const.DEFAULT_FEATURES,
-        const.STR_ROOMS: const.DEFAULT_FEATURES,
-        const.STR_WALLS: const.DEFAULT_FEATURES,
-        const.STR_DOORS: const.DEFAULT_FEATURES,
-        const.STR_WINDOWS: const.DEFAULT_FEATURES,
+        const.STR_FLOORS: json.dumps(const.DEFAULT_FEATURES),
+        const.STR_ROOMS: json.dumps(const.DEFAULT_FEATURES),
+        const.STR_WALLS: json.dumps(const.DEFAULT_FEATURES),
+        const.STR_DOORS: json.dumps(const.DEFAULT_FEATURES),
+        const.STR_WINDOWS: json.dumps(const.DEFAULT_FEATURES),
     }
 
     conf[const.SETTINGS] = {
-        const.STR_REMOVE_NOISE: const.DEFAULT_REMOVE_NOISE,
-        const.STR_RESCALE_IMAGE: const.DEFAULT_RESCALE_IMAGE,
+        const.STR_REMOVE_NOISE: json.dumps(const.DEFAULT_REMOVE_NOISE),
+        const.STR_RESCALE_IMAGE: json.dumps(const.DEFAULT_RESCALE_IMAGE),
     }
 
     conf[const.WALL_CALIBRATION] = {
-        const.STR_CALIBRATION_IMAGE_PATH: const.DEFAULT_CALIBRATION_IMAGE_PATH,
-        const.STR_WALL_SIZE_CALIBRATION: const.DEFAULT_WALL_SIZE_CALIBRATION,
+        const.STR_CALIBRATION_IMAGE_PATH: json.dumps(const.DEFAULT_CALIBRATION_IMAGE_PATH),
+        const.STR_WALL_SIZE_CALIBRATION: json.dumps(const.DEFAULT_WALL_SIZE_CALIBRATION),
     }
 
     with open(const.IMAGE_DEFAULT_CONFIG_FILE_NAME, "w") as configfile:
@@ -122,12 +97,13 @@ def show(conf):
         print(key, conf[key])
 
 
-def update(path, label, values):
+def update(path, key, config):
     """
     Update a config category
+    With a config object
     """
     conf = get_all(path)
-    conf[label] = values
+    conf[key] = config
     with open(path, "w") as configfile:
         conf.write(configfile)
 
@@ -146,48 +122,30 @@ def get_all(path):
     Read and return values
     @Return default values
     """
-    config = configparser.ConfigParser()
-
-    if not file_exist(path):
-        generate_file()
-    config.read(path)
-    return config
+    return get(path)
 
 
-def get(config_path, label=None):
+def get(config_path, *args):
     """
     Read and return values
     @Return default values
     """
-    
     conf = configparser.ConfigParser()
 
     if not file_exist(config_path):
         generate_file()
     conf.read(config_path)
+    
+    for key in args:
+        conf = conf[key]
 
-    if label is None:
+    if args is None:
         return conf
     else:
-        return conf[label]
+        return conf
 
 def get_default_image_path():
-    config = configparser.ConfigParser()
-
-    if not file_exist(const.IMAGE_DEFAULT_CONFIG_FILE_NAME):
-        generate_file()
-    config.read(const.IMAGE_DEFAULT_CONFIG_FILE_NAME)
-    return config["IMAGE"][const.STR_IMAGE_PATH]
-
+    return get(const.IMAGE_DEFAULT_CONFIG_FILE_NAME, "IMAGE",const.STR_IMAGE_PATH )
 
 def get_default_blender_installation_path():
-    """
-    Read and return default values
-    @Return default values
-    """
-    config = configparser.ConfigParser()
-
-    if not file_exist(const.SYSTEM_CONFIG_FILE_NAME):
-        generate_file()
-    config.read(const.SYSTEM_CONFIG_FILE_NAME)
-    return config["SYSTEM"][const.STR_BLENDER_INSTALL_PATH]
+    return get(const.SYSTEM_CONFIG_FILE_NAME, "SYSTEM", const.STR_BLENDER_INSTALL_PATH)

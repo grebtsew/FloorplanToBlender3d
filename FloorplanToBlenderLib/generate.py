@@ -1,6 +1,7 @@
 from . import IO
 from . import const
 from . import config
+import numpy as np
 
 from FloorplanToBlenderLib.generator import Door, Floor, Room, Wall, Window
 
@@ -13,7 +14,7 @@ FloorplanToBlender3d
 Copyright (C) 2021 Daniel Westberg
 """
 
-def generate_all_files(floorplan, info):
+def generate_all_files(floorplan, info, world_direction = None, world_position = np.array([0,0,0]), world_rotation = np.array([0,0,0])):
     """
     Generate all data files
     @Param image path
@@ -24,17 +25,17 @@ def generate_all_files(floorplan, info):
     @Return path to generated file, shape
     """
 
-    if floorplan.dir is None:
-        floorplan.dir = 1
+    if world_direction is None:
+        world_direction = 1
 
     if info:
         print(
             " ----- Generate ",
             floorplan.image_path,
             " at pos ",
-            floorplan.position,
+            floorplan.position+world_position,
             " rot ",
-            floorplan.rotation,
+            floorplan.rotation+world_rotation,
             " -----",
         )
 
@@ -43,7 +44,7 @@ def generate_all_files(floorplan, info):
 
     origin_path, shape = IO.find_reuseable_data(floorplan.image_path, const.BASE_PATH)
 
-    if origin_path is None:  # TODO: Make this optional!
+    if origin_path is None: 
         origin_path = path
 
         _, gray, scale_factor = IO.read_image(floorplan.image_path, floorplan)
@@ -67,11 +68,11 @@ def generate_all_files(floorplan, info):
             Door(gray, path, floorplan.image_path, scale_factor, info)
 
     generate_transform_file(
-        floorplan.image_path, path, info, floorplan.position, floorplan.rotation, shape, path, origin_path
+        floorplan.image_path, path, info, floorplan.position, world_position, floorplan.rotation, world_rotation, shape, path, origin_path
     )
 
     if floorplan.position is not None:
-        shape = [dir*shape[0] + floorplan.position[0], dir*shape[1] + floorplan.position[1], dir*shape[2] + floorplan.position[2]]
+        shape = [world_direction*shape[0] + floorplan.position[0], world_direction*shape[1] + floorplan.position[1], world_direction*shape[2] + floorplan.position[2]]
 
     return path, shape
 
@@ -91,7 +92,7 @@ def validate_shape(old_shape, new_shape):
 
 
 def generate_transform_file(
-    img_path, path, info, position, rotation, shape, data_path, origin_path
+    img_path, path, info, position, world_position, rotation, world_rotation, shape, data_path, origin_path
 ):  # TODO: add scaling
     """
     Generate transform of file
@@ -114,6 +115,16 @@ def generate_transform_file(
         transform[const.STR_ROTATION] = (0, 0, 0)
     else:
         transform[const.STR_ROTATION] = rotation
+
+    if world_position is None:
+        transform["world_position"] = (0, 0, 0)
+    else:
+        transform["world_position"] = world_position
+
+    if world_rotation is None:
+        transform["world_rotation"] = (0, 0, 0)
+    else:
+        transform["world_rotation"] = world_rotation
 
     if shape is None:
         transform[const.STR_SHAPE] = (0, 0, 0)
