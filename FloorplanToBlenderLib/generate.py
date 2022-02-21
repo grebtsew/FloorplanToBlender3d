@@ -14,7 +14,7 @@ FloorplanToBlender3d
 Copyright (C) 2021 Daniel Westberg
 """
 
-def generate_all_files(floorplan, info, world_direction = None, world_position = np.array([0,0,0]), world_rotation = np.array([0,0,0])):
+def generate_all_files(floorplan, info, world_direction = None,world_scale=np.array([1,1,1]), world_position = np.array([0,0,0]), world_rotation = np.array([0,0,0])):
     """
     Generate all data files
     @Param image path
@@ -24,7 +24,7 @@ def generate_all_files(floorplan, info, world_direction = None, world_position =
     @Param rotation, vector of float
     @Return path to generated file, shape
     """
-
+    # TODO: fix scale!
     if world_direction is None:
         world_direction = 1
 

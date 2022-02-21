@@ -58,14 +58,13 @@ def generate_file():
     conf = configparser.ConfigParser()
     conf["IMAGE"] = {
         const.STR_IMAGE_PATH: json.dumps(const.DEFAULT_IMAGE_PATH),
-        const.STR_OUT_FORMAT: json.dumps(const.DEFAULT_OUT_FORMAT),
-        const.STR_MODE: json.dumps(const.DEFAULT_MODE),
         "COLOR": json.dumps([0,0,0]),
     }
 
     conf["TRANSFORM"] = {
         "position" : json.dumps([0,0,0]),
         "rotation" : json.dumps([0,0,0]),
+        "scale" : json.dumps([0,0,0]),
     }
 
     conf[const.FEATURES] = {

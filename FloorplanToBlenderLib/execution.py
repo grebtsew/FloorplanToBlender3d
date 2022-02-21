@@ -21,7 +21,7 @@ def simple_single(floorplan, show=True):
     return filepath
 
 
-def multiple_axis(floorplans, axis, dir=1, pos=None, rot=None, sca=None):
+def multiple_axis(floorplans, axis, dir=1, margin=[0,0,0], worldpositionoffset=[0,0,0], worldrotationoffset=[0,0,0], worldscale=[0,0,0]):
     """
     Generates several new apartments along axis "x","y","z"
     @Param pos,rot,sca - offset, rotation and scaling
@@ -40,47 +40,16 @@ def multiple_axis(floorplans, axis, dir=1, pos=None, rot=None, sca=None):
             # Generate all data for imagepath
             if axis == "y":
                 filepath, fshape = generate.generate_all_files(
-                    floorplan, True, position=np.array([0, fshape[1], 0]), dir=dir
+                    floorplan, True,world_scale=worldscale, world_position=np.array([0, fshape[1], 0])+worldpositionoffset+margin, world_rotation=worldrotationoffset, dir=dir
                 )
             elif axis == "x":
                 filepath, fshape = generate.generate_all_files(
-                    floorplan, True, position=np.array([fshape[0], 0, 0]), dir=dir
+                    floorplan, True,world_scale=worldscale, world_position=np.array([fshape[0], 0, 0])+worldpositionoffset+margin, world_rotation=worldrotationoffset, dir=dir
                 )
             elif axis == "z":
                 filepath, fshape = generate.generate_all_files(
-                    floorplan, True, position=np.array([0, 0, fshape[2]]), dir=dir
+                    floorplan, True, world_scale=worldscale, world_position=np.array([0, 0, fshape[2]])+worldpositionoffset+margin, world_rotation=worldrotationoffset, dir=dir
                 )
-        else:
-            filepath, fshape = generate.generate_all_files(floorplan, True)
-
-        # add path to send to blender
-        data_paths.append(filepath)
-    return data_paths
-
-def multiple_simple(floorplans, horizontal=True):
-    """
-    Generates several new apartments
-    @Param image_paths - list of path to images
-    @Param horizontal - if apartments should stack horizontal or vertical
-    @Return paths to image data
-    """
-    # Generate data files
-    data_paths = list()
-    fshape = None
-    # for each input image path!
-    for floorplan in floorplans:
-        # Calculate positions and rotations here!
-        if fshape is not None:
-            # Generate all data for imagepath
-            if horizontal:
-                filepath, fshape = generate.generate_all_files(
-                    floorplan, True, position=np.array([0, fshape[1], 0])
-                )
-            else:
-                filepath, fshape = generate.generate_all_files(
-                    floorplan, True, position=np.array([0, 0, fshape[2]])
-                )
-
         else:
             filepath, fshape = generate.generate_all_files(floorplan, True)
 

@@ -1,13 +1,10 @@
 # Example 
 # Line description:
-#<COMMAND> <IMAGEPATH> <AMOUNT> <STACKINGTYPE> <STACKINGMARGIN> <POSITION> <ROTATION> <SCALE>
-# <AMOUNTPERLEVEL> <RADIE> <DEGREES> <IMAGECONFIGPATH>
+# HELP:
+# <SEPARATECOMMAND> space
+# <FILECOMMAND> <PATHTOSTACKINGFILE> space
+# <ADDCOMMAND> <CONFIGPATH> <IMAGEPATH> <AMOUNT> <STACKINGTYPE> <STACKINGMARGIN> <WORLDPOSITION> <WORLDROTATION> <WORLDSCALE>
+# <AMOUNTPERLEVEL> <RADIE> <DEGREES>  space
 # It is ok to leave arguments empty with "_" or leave them entierly if default is wanted.
 
-ADD Images/Examples/example.png 3 x 0 [0,0,0] [0,0,0] [1,1,1]
-
-ADD Images/Examples/example.png 3 -x 1 [0,0,10] [0,180,0] [1,1,1]
-
-ADD Images/Examples/example.png 9 cylinder _ [0,0,20] [0,180,0] [1,1,1] 3 10 360
-
-ADD Images/Examples/example.png 1 _ _ [5,0,0] [45,45,0] [1,1,1] _ _ _ Configs/example.ini
+ADD "_" "Images/Examples/example.png" 9 "cylinder" [0,0,0] [0,0,20] [0,180,0] [1,1,1] 3 10 360 

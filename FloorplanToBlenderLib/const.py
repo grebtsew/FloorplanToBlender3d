@@ -32,9 +32,7 @@ BASE_FORMAT = ".blend"
 
 class MODE(Enum):
     AXIS = 0
-    HV = 1
-    CYLINDER = 2
-    SINGLE = 3
+    CYLINDER = 1
 
 # Paths to save folder
 BASE_PATH = "Data/"

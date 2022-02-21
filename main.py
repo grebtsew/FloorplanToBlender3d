@@ -30,7 +30,7 @@ This file contains a simple example implementation of creations of 3d models fro
 floorplans. You will need blender and an image of a floorplan to make this work.
 
 FloorplanToBlender3d
-Copyright (C) 2021 Daniel Westberg
+Copyright (C) 2022 Daniel Westberg
 """
 def create_blender_project(data_paths):
     if not os.path.exists("." + target_folder):
@@ -93,33 +93,43 @@ if __name__ == "__main__":
     dialog.init()
     data_paths = list()
 
+    # Detect where/if blender is installed on pc
+    auto_blender_install_path = IO.blender_installed() # TODO: add this to system.config!
+
+    if auto_blender_install_path is not None:
+        blender_install_path = auto_blender_install_path
+
+    var = input(
+        "Please enter your blender installation path [default = "
+        + blender_install_path
+        + "]: "
+    )
+    if var:
+        blender_install_path = var
+
+
     var = input(
         "Do you want to build from StackingFile or ConfigFile list ? [default = ConfigFile]: "
     )
-    if var:
-        stacking_def_path = "./Stacking/example.txt"
+    if True: # var
+        stacking_def_path = "./Stacking/all_separated_example.txt"
         var = input(
         f"Enter path to Stacking file : [default = {stacking_def_path}]: "
         )
         if var:    
             stacking_def_path = var
         data_paths = stacking.parse_stacking_file(stacking_def_path)
-    else:
-        
-        # Detect where/if blender is installed on pc
-        auto_blender_install_path = IO.blender_installed() # TODO: add this to system.config!
 
-        if auto_blender_install_path is not None:
-            blender_install_path = auto_blender_install_path
-
+        print("")
         var = input(
-            "Please enter your blender installation path [default = "
-            + blender_install_path
-            + "]: "
+            "This program is about to run and create blender3d project, continue? : "
         )
         if var:
-            blender_install_path = var
+            print("Program stopped.")
+            exit(0)
 
+    else:
+        
         config_path = "./Configs/default.ini"
         var = input(
             "Use default config or import from file paths separated by space [default = "
