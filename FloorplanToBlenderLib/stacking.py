@@ -27,7 +27,6 @@ def parse_stacking_file(path):
         args = line.split(" ")
         command = args[0]
 
-
         if command[0] in ["#","\n",""," "]:  # ignore commented lines
             continue
         
@@ -35,7 +34,7 @@ def parse_stacking_file(path):
             args.remove("\n")
         except Exception:
             pass
-        
+
         new_args = []
         for cmd in args:
             if cmd == "\"_\"":
@@ -44,12 +43,6 @@ def parse_stacking_file(path):
                 new_args.append(cmd)
         args = new_args
 
-
-        if command == "SEPARATE":
-            worlds.append(world)
-            world = []
-
-        
         argstring = ""
         for index,arg in enumerate(args[1:]):
             if index == len(args[1:])-1:
@@ -57,19 +50,21 @@ def parse_stacking_file(path):
             else:
                 argstring += arg+","
 
-
         print(">Line",index,"Command:",command+"("+argstring+")")
 
-        world.append(eval(command+"("+argstring+")"))
-
-        print("OK")
-
-        if line == array_of_commands[-1]:
+        if command == "SEPARATE":
             worlds.append(world)
+            world = []
+            
+        else:
+            world.extend(eval(command+"("+argstring+")") )
+            
 
-    print(path + " DONE!")
-
+    worlds.extend(world)
     return worlds
+
+def SEPARATE():
+    pass
 
 def FILE(stacking_file_path):
     return parse_stacking_file(stacking_file_path)
@@ -94,6 +89,9 @@ def ADD(
     if config is None:
         conf = const.IMAGE_DEFAULT_CONFIG_FILE_NAME
 
+    if amount is None:
+        amount = 1
+
     floorplans = []
     for _ in range(amount):
         floorplans.append(floorplan.new_floorplan(conf))
@@ -107,13 +105,15 @@ def ADD(
         floorplans = new_floorplans
 
     dir = 1
+    if mode is None:
+        mode = "x"
     if mode[0] == "-":
         dir = -1
         mode = mode[1]
 
-    if mode == "cylinder":
-        return execution.multiple_cylinder(
-            floorplans, amount_per_level, radie, degree, dir, margin, worldpositionoffset, worldrotationoffset, worldscale
+    if mode == "cylinder":        
+        return  execution.multiple_cylinder(
+            floorplans, amount_per_level, radie, degree, world_direction=dir, world_position=worldpositionoffset, world_rotation=worldrotationoffset, world_scale=worldscale
         )
     else:
         return execution.multiple_axis(floorplans, mode, dir, margin, worldpositionoffset, worldrotationoffset, worldscale)

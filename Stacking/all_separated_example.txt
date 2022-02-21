@@ -6,13 +6,16 @@
 # <FILECOMMAND> <PATHTOSTACKINGFILE> space
 # <ADDCOMMAND> <CONFIGPATH> <IMAGEPATH> <AMOUNT> <STACKINGTYPE> <STACKINGMARGIN> <WORLDPOSITION> <WORLDROTATION> <WORLDSCALE>
 # <AMOUNTPERLEVEL> <RADIE> <DEGREES>  space
-# It is ok to leave arguments empty with "_" or leave them entierly if default is wanted.
+# It is ok to leave arguments empty with "_" if default is wanted.
 
 FILE "./Stacking/axis_example.txt" 
-SEPARATE
+SEPARATE 
 
 FILE "./Stacking/cylinder_example.txt" 
-SEPARATE
+SEPARATE 
 
 FILE "./Stacking/multiple_example.txt" 
+SEPARATE 
+
+FILE "./Stacking/simple_example.txt" 
 SEPARATE

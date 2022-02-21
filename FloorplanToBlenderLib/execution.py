@@ -21,7 +21,7 @@ def simple_single(floorplan, show=True):
     return filepath
 
 
-def multiple_axis(floorplans, axis, dir=1, margin=[0,0,0], worldpositionoffset=[0,0,0], worldrotationoffset=[0,0,0], worldscale=[0,0,0]):
+def multiple_axis(floorplans, axis, dir=1, margin=np.array([0,0,0]), worldpositionoffset=np.array([0,0,0]), worldrotationoffset=np.array([0,0,0]), worldscale=np.array([1,1,1])):
     """
     Generates several new apartments along axis "x","y","z"
     @Param pos,rot,sca - offset, rotation and scaling
@@ -44,11 +44,11 @@ def multiple_axis(floorplans, axis, dir=1, margin=[0,0,0], worldpositionoffset=[
                 )
             elif axis == "x":
                 filepath, fshape = generate.generate_all_files(
-                    floorplan, True,world_scale=worldscale, world_position=np.array([fshape[0], 0, 0])+worldpositionoffset+margin, world_rotation=worldrotationoffset, dir=dir
+                    floorplan, True,world_scale=worldscale, world_position=np.array([fshape[0], 0, 0])+worldpositionoffset+margin, world_rotation=worldrotationoffset, world_direction=dir
                 )
             elif axis == "z":
                 filepath, fshape = generate.generate_all_files(
-                    floorplan, True, world_scale=worldscale, world_position=np.array([0, 0, fshape[2]])+worldpositionoffset+margin, world_rotation=worldrotationoffset, dir=dir
+                    floorplan, True, world_scale=worldscale, world_position=np.array([0, 0, fshape[2]])+worldpositionoffset+margin, world_rotation=worldrotationoffset, world_direction=dir
                 )
         else:
             filepath, fshape = generate.generate_all_files(floorplan, True)
@@ -69,7 +69,7 @@ def AngleBtw2Points(pointA, pointB):
   return degrees(atan2(changeInY,changeInX)) 
 
 def multiple_cylinder(
-    floorplans, amount_per_level, radie, degree, dir=None, pos=None, rot=None, sca=None
+    floorplans, amount_per_level, radie, degree, world_direction=None, world_position=np.array([0,0,0]), world_rotation=np.array([0,0,0]), world_scale=np.array([1,1,1])
 ):  
     """
     Generates several new apartments in a cylindric shape
@@ -82,20 +82,12 @@ def multiple_cylinder(
     @Param degree - how many degree should the circle be, 0-360
     @Return paths to image data
     """
-    # Generate data files
-    if pos is None:
-        pos = (0,0,0)
-    if rot is None:
-        rot = (0,0,0)
-    if sca is None:
-        sca = (0,0,0)
-    if dir is None:
-        dir = 1
+    #TODO: add functionallity here!
     data_paths = list()
     curr_index = 0
     curr_level = 0
     degree_step = int(degree/amount_per_level)
-    start_pos = (pos[0],pos[1]+radie,pos[2])
+    start_pos = (world_position[0],world_position[1]+radie,world_position[2])
 
     # for each input image path!
     for floorplan in floorplans:
@@ -110,12 +102,12 @@ def multiple_cylinder(
         curr_rot = np.array([0,0,int(degree_step*curr_index)])
 
         filepath, _ = generate.generate_all_files(
-            floorplan, True, position=np.array([curr_pos[0],curr_pos[1],curr_level]), rotation=curr_rot
+            floorplan, True, world_position=np.array([curr_pos[0]+world_position[0],curr_pos[1]+world_position[1],curr_level+world_position[2]]), world_rotation=curr_rot, world_scale=world_scale
         )
-
+        
         # add path to send to blender
         data_paths.append(filepath)
-
+        
         curr_index +=1
 
     return data_paths
