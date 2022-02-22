@@ -1,6 +1,6 @@
 from . import IO
 from . import const
-from . import config
+from . import transform
 import numpy as np
 
 from FloorplanToBlenderLib.generator import Door, Floor, Room, Wall, Window
@@ -24,18 +24,19 @@ def generate_all_files(floorplan, info, world_direction = None,world_scale=np.ar
     @Param rotation, vector of float
     @Return path to generated file, shape
     """
-    # TODO: fix scale!
     if world_direction is None:
         world_direction = 1
+
+    scale = [floorplan.scale[0]*world_scale[0],floorplan.scale[1]*world_scale[1],floorplan.scale[2]*world_scale[2]]
 
     if info:
         print(
             " ----- Generate ",
             floorplan.image_path,
             " at pos ",
-            floorplan.position+world_position,
+            transform.list_to_nparray(floorplan.position)+transform.list_to_nparray(world_position),
             " rot ",
-            floorplan.rotation+world_rotation,
+            transform.list_to_nparray(floorplan.rotation)+transform.list_to_nparray(world_rotation),
             " -----",
         )
 
@@ -51,28 +52,28 @@ def generate_all_files(floorplan, info, world_direction = None,world_scale=np.ar
 
 
         if floorplan.floors:
-            shape = Floor(gray, path, info).shape
+            shape = Floor(gray, path, scale, info).shape
 
         if floorplan.walls:
-            new_shape = Wall(gray, path, info).shape
+            new_shape = Wall(gray, path, scale, info).shape
             shape = validate_shape(shape, new_shape)
 
         if floorplan.rooms:
-            new_shape = Room(gray, path, info).shape
+            new_shape = Room(gray, path, scale, info).shape
             shape = validate_shape(shape, new_shape)
 
         if floorplan.windows:
-            Window(gray, path, floorplan.image_path, scale_factor, info)
+            Window(gray, path, floorplan.image_path, scale_factor, scale, info)
 
         if floorplan.doors:
-            Door(gray, path, floorplan.image_path, scale_factor, info)
+            Door(gray, path, floorplan.image_path, scale_factor, scale, info)
 
     generate_transform_file(
         floorplan.image_path, path, info, floorplan.position, world_position, floorplan.rotation, world_rotation, shape, path, origin_path
     )
 
     if floorplan.position is not None:
-        shape = [world_direction*shape[0] + floorplan.position[0], world_direction*shape[1] + floorplan.position[1], world_direction*shape[2] + floorplan.position[2]]
+        shape = [world_direction*shape[0] + floorplan.position[0]+world_position[0], world_direction*shape[1] + floorplan.position[1]+world_position[1], world_direction*shape[2] + floorplan.position[2]+world_position[2]]
 
     return path, shape
 
@@ -93,7 +94,7 @@ def validate_shape(old_shape, new_shape):
 
 def generate_transform_file(
     img_path, path, info, position, world_position, rotation, world_rotation, shape, data_path, origin_path
-):  # TODO: add scaling
+):  
     """
     Generate transform of file
     A transform contains information about an objects position, rotation.
@@ -107,27 +108,17 @@ def generate_transform_file(
     # create map
     transform = {}
     if position is None:
-        transform[const.STR_POSITION] = (0, 0, 0)
+        transform[const.STR_POSITION] = np.array([0, 0, 0])
     else:
-        transform[const.STR_POSITION] = position
+        transform[const.STR_POSITION] = position+ world_position
 
     if rotation is None:
-        transform[const.STR_ROTATION] = (0, 0, 0)
+        transform[const.STR_ROTATION] = np.array([0, 0, 0])
     else:
-        transform[const.STR_ROTATION] = rotation
-
-    if world_position is None:
-        transform["world_position"] = (0, 0, 0)
-    else:
-        transform["world_position"] = world_position
-
-    if world_rotation is None:
-        transform["world_rotation"] = (0, 0, 0)
-    else:
-        transform["world_rotation"] = world_rotation
+        transform[const.STR_ROTATION] = rotation + world_rotation
 
     if shape is None:
-        transform[const.STR_SHAPE] = (0, 0, 0)
+        transform[const.STR_SHAPE] = np.array([0, 0, 0])
     else:
         transform[const.STR_SHAPE] = shape
 

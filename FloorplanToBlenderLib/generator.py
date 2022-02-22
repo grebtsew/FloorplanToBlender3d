@@ -10,7 +10,6 @@ from . import const
 from . import draw
 from . import calculate
 
-
 class Generator:
     __metaclass__ = abc.ABCMeta
     # create verts (points 3d), points to use in mesh creations
@@ -20,15 +19,18 @@ class Generator:
     # Height of waLL
     height = const.WALL_HEIGHT
     # Scale pixel value to 3d pos
-    scale = const.PIXEL_TO_3D_SCALE
+    pixelscale = const.PIXEL_TO_3D_SCALE
+    # Object scale
+    scale = np.array([1,1,1])
     # Index is many for when there are several floorplans
     path = ""
 
-    def __init__(self, gray, path, info=False):
+    def __init__(self, gray, path, scale, info=False):
         self.path = path
         self.shape = self.generate(gray, info)
+        self.scale = scale
 
-    def get_shape(self, verts, scale):
+    def get_shape(self, verts):
         """
         Get shape
         Rescale boxes to specified scale
@@ -39,6 +41,7 @@ class Generator:
         if len(verts) == 0:
             return [0, 0, 0]
 
+        print(verts)
         poslist = transform.verts_to_poslist(verts)
         high = [0, 0, 0]
         low = poslist[0]
@@ -57,7 +60,7 @@ class Generator:
             if pos[2] < low[2]:
                 low[2] = pos[2]
 
-        return [high[0] - low[0], high[1] - low[1], high[2] - low[2]]
+        return [high[0] - low[0], high[1] - low[1], high[2] - low[2]]*self.scale
 
     @abc.abstractmethod
     def generate(self, gray, info=False):
@@ -66,12 +69,15 @@ class Generator:
 
 
 class Floor(Generator):
+    def __init__(self, gray, path, scale, info=False):
+        super().__init__(gray, path, scale, info)
+
     def generate(self, gray, info=False):
 
         # detect outer Contours (simple floor or roof solution)
-        contour, img = detect.outer_contours(gray)
+        contour, _ = detect.outer_contours(gray)
         # Create verts
-        self.verts = transform.scale_point_to_vector(contour, self.scale, self.height)
+        self.verts = transform.scale_point_to_vector(contour, self.scale, self.pixelscale, self.height)
 
         # create faces
         count = 0
@@ -85,10 +91,13 @@ class Floor(Generator):
         IO.save_to_file(self.path + const.FLOOR_VERTS, self.verts, info)
         IO.save_to_file(self.path + const.FLOOR_FACES, self.faces, info)
 
-        return self.get_shape(self.verts, self.scale)
+        return self.get_shape(self.verts)
 
 
 class Wall(Generator):
+    def __init__(self, gray, path, scale, info=False):
+        super().__init__(gray, path, scale, info)
+
     def generate(self, gray, info=False):
 
         # create wall image (filter out small objects from image)
@@ -124,15 +133,15 @@ class Wall(Generator):
         IO.save_to_file(self.path + const.WALL_HORIZONTAL_VERTS, self.verts, info)
         IO.save_to_file(self.path + const.WALL_HORIZONTAL_FACES, self.faces, info)
 
-        return self.get_shape(self.verts, self.scale)
+        return self.get_shape(self.verts)
 
 
 class Room(Generator):
-    def __init__(self, gray, path, info=False):
+    def __init__(self, gray, path, scale, info=False):
         self.height = (
             const.WALL_HEIGHT - const.ROOM_FLOOR_DISTANCE
         )  # place room slightly above floor
-        super().__init__(gray, path, info)
+        super().__init__(gray, path, scale, info)
 
     def generate(self, gray, info=False):
         gray = detect.wall_filter(gray)
@@ -157,10 +166,10 @@ class Room(Generator):
 
 
 class Door(Generator):
-    def __init__(self, gray, path, image_path, scale_factor, info=False):
+    def __init__(self, gray, path, image_path, scale_factor, scale, info=False):
         self.image_path = image_path
         self.scale_factor = scale_factor
-        super().__init__(gray, path, info)
+        super().__init__(gray, path, scale, info)
 
     def get_point_the_furthest_away(self, door_features, door_box):
         """
@@ -285,10 +294,11 @@ class Window(Generator):
     # TODO: also fill small gaps between windows and walls
     # TODO: also add verts for filling gaps
 
-    def __init__(self, gray, path, image_path, scale_factor, info=False):
+    def __init__(self, gray, path, image_path, scale_factor, scale, info=False):
         self.image_path = image_path
         self.scale_factor = scale_factor
-        super().__init__(gray, path, info)
+        self.scale = scale
+        super().__init__(gray, path, scale, info)
 
     def generate(self, gray, info=False):
         windows = detect.windows(self.image_path, self.scale_factor)

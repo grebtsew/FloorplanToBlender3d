@@ -33,6 +33,10 @@ def multiple_axis(floorplans, axis, dir=1, margin=np.array([0,0,0]), worldpositi
     # Generate data files
     data_paths = list()
     fshape = None
+
+    if margin is None:
+        margin = np.array([0,0,0])
+
     # for each input image path!
     for floorplan in floorplans:
         # Calculate positions and rotations here!
@@ -40,7 +44,7 @@ def multiple_axis(floorplans, axis, dir=1, margin=np.array([0,0,0]), worldpositi
             # Generate all data for imagepath
             if axis == "y":
                 filepath, fshape = generate.generate_all_files(
-                    floorplan, True,world_scale=worldscale, world_position=np.array([0, fshape[1], 0])+worldpositionoffset+margin, world_rotation=worldrotationoffset, dir=dir
+                    floorplan, True,world_direction=dir, world_scale=worldscale, world_position=np.array([0, fshape[1], 0])+worldpositionoffset+margin, world_rotation=worldrotationoffset
                 )
             elif axis == "x":
                 filepath, fshape = generate.generate_all_files(
@@ -51,7 +55,8 @@ def multiple_axis(floorplans, axis, dir=1, margin=np.array([0,0,0]), worldpositi
                     floorplan, True, world_scale=worldscale, world_position=np.array([0, 0, fshape[2]])+worldpositionoffset+margin, world_rotation=worldrotationoffset, world_direction=dir
                 )
         else:
-            filepath, fshape = generate.generate_all_files(floorplan, True)
+            filepath, fshape = generate.generate_all_files(floorplan, True,world_direction=dir, world_scale=worldscale, world_position=worldpositionoffset+margin, world_rotation=worldrotationoffset
+               )
 
         # add path to send to blender
         data_paths.append(filepath)
@@ -82,7 +87,6 @@ def multiple_cylinder(
     @Param degree - how many degree should the circle be, 0-360
     @Return paths to image data
     """
-    #TODO: add functionallity here!
     data_paths = list()
     curr_index = 0
     curr_level = 0

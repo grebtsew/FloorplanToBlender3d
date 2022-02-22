@@ -2,6 +2,9 @@ from . import IO
 from . import execution
 from . import const
 from . import floorplan
+from . import transform
+
+import numpy as np
 
 """
 Stacking
@@ -55,13 +58,16 @@ def parse_stacking_file(path):
         if command == "SEPARATE":
             worlds.append(world)
             world = []
-            
+        elif command == "CLEAR":
+            eval(command+"("+argstring+")")
         else:
             world.extend(eval(command+"("+argstring+")") )
             
-
     worlds.extend(world)
     return worlds
+
+def CLEAR():
+    IO.clean_data_folder(const.BASE_PATH)
 
 def SEPARATE():
     pass
@@ -74,10 +80,10 @@ def ADD(
     image_path=None,
     amount=1,
     mode="x",
-    margin=[0,0,0],
-    worldpositionoffset=[0,0,0],
-    worldrotationoffset=[0,0,0],
-    worldscale=[1,1,1],
+    margin=np.array([0,0,0]),
+    worldpositionoffset=np.array([0,0,0]),
+    worldrotationoffset=np.array([0,0,0]),
+    worldscale=np.array([1,1,1]),
     amount_per_level=None,
     radie=None,
     degree=None
@@ -113,7 +119,7 @@ def ADD(
 
     if mode == "cylinder":        
         return  execution.multiple_cylinder(
-            floorplans, amount_per_level, radie, degree, world_direction=dir, world_position=worldpositionoffset, world_rotation=worldrotationoffset, world_scale=worldscale
+            floorplans, amount_per_level, radie, degree, world_direction=dir, world_position=transform.list_to_nparray(worldpositionoffset), world_rotation=transform.list_to_nparray(worldrotationoffset), world_scale=transform.list_to_nparray(worldscale)
         )
     else:
-        return execution.multiple_axis(floorplans, mode, dir, margin, worldpositionoffset, worldrotationoffset, worldscale)
+        return execution.multiple_axis(floorplans, mode, dir, transform.list_to_nparray(margin), transform.list_to_nparray(worldpositionoffset), transform.list_to_nparray(worldrotationoffset), transform.list_to_nparray(worldscale))

@@ -2,11 +2,14 @@
 # Will try to run all example stacking as separated files
 # Line description:
 # HELP:
+# <CLEARCOMMAND> space
 # <SEPARATECOMMAND> space
 # <FILECOMMAND> <PATHTOSTACKINGFILE> space
 # <ADDCOMMAND> <CONFIGPATH> <IMAGEPATH> <AMOUNT> <STACKINGTYPE> <STACKINGMARGIN> <WORLDPOSITION> <WORLDROTATION> <WORLDSCALE>
 # <AMOUNTPERLEVEL> <RADIE> <DEGREES>  space
 # It is ok to leave arguments empty with "_" if default is wanted.
+
+CLEAR 
 
 FILE "./Stacking/axis_example.txt" 
 SEPARATE 

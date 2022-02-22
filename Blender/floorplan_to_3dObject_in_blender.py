@@ -83,7 +83,7 @@ def subtract_center_verts(verts1, verts2):
     return verts2
 
 
-def create_custom_mesh(objname, verts, faces, pos=None, rot=None, mat=None, cen=None):
+def create_custom_mesh(objname, verts, faces, mat=None, cen=None):
     """
     @Param objname, name of new mesh
     @Param pos, object position [x, y, z]
@@ -181,7 +181,7 @@ def create_floorplan(base_path, program_path, name=None):
 
     # read from file
     transform = read_from_file(path_to_transform_file)
-
+    
     rot = transform["rotation"]
     pos = transform["position"]
 
@@ -272,8 +272,6 @@ def create_floorplan(base_path, program_path, name=None):
                     boxname + wallname,
                     wall,
                     faces,
-                    pos=pos,
-                    rot=rot,
                     cen=cen,
                     mat=create_mat((0.5, 0.5, 0.5, 1)),
                 )
@@ -296,8 +294,6 @@ def create_floorplan(base_path, program_path, name=None):
                 roomname,
                 verts[i],
                 faces[i],
-                pos=pos,
-                rot=rot,
                 cen=cen,
                 mat=create_mat((0.5, 0.5, 0.5, 1)),
             )
@@ -334,8 +330,6 @@ def create_floorplan(base_path, program_path, name=None):
                     boxname + wallname,
                     wall,
                     faces,
-                    pos=pos,
-                    rot=rot,
                     cen=cen,
                     mat=create_mat((0.5, 0.5, 0.5, 1)),
                 )
@@ -358,8 +352,6 @@ def create_floorplan(base_path, program_path, name=None):
                 roomname,
                 verts[i],
                 faces[i],
-                pos=pos,
-                rot=rot,
                 cen=cen,
                 mat=create_mat((0.5, 0.5, 0.5, 1)),
             )
@@ -397,8 +389,6 @@ def create_floorplan(base_path, program_path, name=None):
                     boxname + wallname,
                     wall,
                     faces,
-                    pos=pos,
-                    rot=rot,
                     cen=cen,
                     mat=create_mat((0.5, 0.5, 0.5, 1)),
                 )
@@ -421,8 +411,6 @@ def create_floorplan(base_path, program_path, name=None):
                 roomname,
                 verts[i],
                 faces[i],
-                pos=pos,
-                rot=rot,
                 cen=cen,
                 mat=create_mat((0.5, 0.5, 0.5, 1)),
             )
@@ -444,7 +432,7 @@ def create_floorplan(base_path, program_path, name=None):
         # Create mesh from data
         cornername = "Floor"
         obj = create_custom_mesh(
-            cornername, verts, [faces], pos=pos, mat=create_mat((40, 1, 1, 1)), cen=cen
+            cornername, verts, [faces], mat=create_mat((40, 1, 1, 1)), cen=cen
         )
         obj.parent = parent
 
@@ -461,7 +449,7 @@ def create_floorplan(base_path, program_path, name=None):
         for i in range(0, len(verts)):
             roomname = "Room" + str(i)
             obj = create_custom_mesh(
-                roomname, verts[i], faces[i], pos=pos, rot=rot, cen=cen
+                roomname, verts[i], faces[i], cen=cen
             )
             obj.parent = room_parent
 

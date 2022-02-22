@@ -123,7 +123,7 @@ def verts_to_poslist(verts):
     return res
 
 
-def scale_point_to_vector(boxes, scale=1, height=0):
+def scale_point_to_vector(boxes, scale=np.array([1,1,1]), pixelscale=100, height=0):
     """
     Scale point to vector
     scales a point to a vector
@@ -134,12 +134,16 @@ def scale_point_to_vector(boxes, scale=1, height=0):
     res = []
     for box in boxes:
         for pos in box:
-            res.extend([(pos[0] / scale, pos[1] / scale, height)])
+            res.extend([(pos[0]*scale[0]/pixelscale, pos[1]*scale[1]/pixelscale, height*scale[2])])
     return res
 
 
+def list_to_nparray(list):
+    return np.array([list[0],list[1],list[2]])
+
+
 def create_4xn_verts_and_faces(
-    boxes, height=1, scale=1, ground=False, ground_height=const.WALL_GROUND
+    boxes, height=1, scale=np.array([1,1,1]), ground=False, ground_height=const.WALL_GROUND
 ):
     """
     Create verts and faces
@@ -175,7 +179,7 @@ def create_4xn_verts_and_faces(
     return verts, faces, counter
 
 
-def create_nx4_verts_and_faces(boxes, height=1, scale=1, ground=const.WALL_GROUND):
+def create_nx4_verts_and_faces(boxes, height=1, scale=np.array([1,1,1]), pixelscale=100, ground=const.WALL_GROUND):
     """
     Create verts and faces
     @Param boxes,
@@ -204,10 +208,10 @@ def create_nx4_verts_and_faces(boxes, height=1, scale=1, ground=const.WALL_GROUN
                 # link to first pos
 
             # Create all 3d poses for each wall
-            temp_verts.extend([(current[0] / scale, current[1] / scale, ground)])
-            temp_verts.extend([(current[0] / scale, current[1] / scale, height)])
-            temp_verts.extend([(next_vert[0] / scale, next_vert[1] / scale, ground)])
-            temp_verts.extend([(next_vert[0] / scale, next_vert[1] / scale, height)])
+            temp_verts.extend([((current[0] * scale[0])/pixelscale, (current[1] * scale[1])/pixelscale, ground)])
+            temp_verts.extend([((current[0] * scale[0])/pixelscale, (current[1] * scale[1])/pixelscale, (height-ground)*scale[2])])
+            temp_verts.extend([((next_vert[0] * scale[0])/pixelscale, (next_vert[1] * scale[1])/pixelscale, ground)])
+            temp_verts.extend([((next_vert[0] * scale[0])/pixelscale, (next_vert[1] * scale[1])/pixelscale, (height-ground)*scale[2])])
 
             # add wall verts to verts
             box_verts.extend([temp_verts])
@@ -220,8 +224,7 @@ def create_nx4_verts_and_faces(boxes, height=1, scale=1, ground=const.WALL_GROUN
     faces = [(0, 1, 3, 2)]
     return verts, faces, counter
 
-
-def create_verts(boxes, height, scale):
+#def create_verts(boxes, height, scale):
     """
     Simplified converts 2d poses to 3d poses, and adds a height position
     @Param boxes, 2d boxes as numpy array
@@ -232,6 +235,7 @@ def create_verts(boxes, height, scale):
     Scale and create array of box_verts
     [[box1],[box2],...]
     """
+"""
     verts = []
 
     # for each wall group
@@ -248,3 +252,4 @@ def create_verts(boxes, height, scale):
         verts.extend(temp_verts)
 
     return verts
+"""
