@@ -93,7 +93,7 @@ def flatten_iterative_safe(thelist, res):
     @Param thelist, incoming list
     @Param res, resulting list, preferably []
     """
-    if not thelist:
+    if not thelist or not isinstance(thelist, list):
         return res
     else:
         if isinstance(thelist[0], int) or isinstance(thelist[0], float):
@@ -111,11 +111,11 @@ def verts_to_poslist(verts):
     @Param verts of undecided size
     @Return res, list of position
     """
-    list_of_elements = flatten_iterative_safe(verts, [])
+    list_of_elements = flatten_iterative_safe(verts, []) # TODO: this stopped working!
 
     res = []
     i = 0
-    while i < len(list_of_elements) - 1:
+    while i < len(list_of_elements) - 2: # Might miss one vertex here!
         res.append(
             [list_of_elements[i], list_of_elements[i + 1], list_of_elements[i + 2]]
         )
@@ -123,7 +123,7 @@ def verts_to_poslist(verts):
     return res
 
 
-def scale_point_to_vector(boxes, scale=np.array([1,1,1]), pixelscale=100, height=0):
+def scale_point_to_vector(boxes, pixelscale=100, height=0, scale=np.array([1,1,1])):
     """
     Scale point to vector
     scales a point to a vector
@@ -134,16 +134,19 @@ def scale_point_to_vector(boxes, scale=np.array([1,1,1]), pixelscale=100, height
     res = []
     for box in boxes:
         for pos in box:
-            res.extend([(pos[0]*scale[0]/pixelscale, pos[1]*scale[1]/pixelscale, height*scale[2])])
+            res.extend([[(pos[0]*scale[0])/pixelscale, (pos[1]*scale[1])/pixelscale, height*scale[2]]])
     return res
 
 
 def list_to_nparray(list):
-    return np.array([list[0],list[1],list[2]])
+    if list is None:
+        return np.array([1,1,1])
+    else:
+        return np.array([list[0],list[1],list[2]])
 
 
 def create_4xn_verts_and_faces(
-    boxes, height=1, scale=np.array([1,1,1]), ground=False, ground_height=const.WALL_GROUND
+    boxes, height=1, pixelscale=100, scale=np.array([1,1,1]), ground=False, ground_height=const.WALL_GROUND
 ):
     """
     Create verts and faces
@@ -160,9 +163,9 @@ def create_4xn_verts_and_faces(
 
     # Create verts
     for box in boxes:
-        verts.extend([scale_point_to_vector(box, scale, height)])
+        verts.extend([scale_point_to_vector(box, pixelscale, height, scale)])
         if ground:
-            verts.extend([scale_point_to_vector(box, scale, ground_height)])
+            verts.extend([scale_point_to_vector(box, pixelscale, ground_height, scale)])
         counter += 1
 
     faces = []
@@ -224,7 +227,7 @@ def create_nx4_verts_and_faces(boxes, height=1, scale=np.array([1,1,1]), pixelsc
     faces = [(0, 1, 3, 2)]
     return verts, faces, counter
 
-#def create_verts(boxes, height, scale):
+def create_verts(boxes, height, pixelscale=100, scale=np.array([1,1,1])):
     """
     Simplified converts 2d poses to 3d poses, and adds a height position
     @Param boxes, 2d boxes as numpy array
@@ -235,7 +238,6 @@ def create_nx4_verts_and_faces(boxes, height=1, scale=np.array([1,1,1]), pixelsc
     Scale and create array of box_verts
     [[box1],[box2],...]
     """
-"""
     verts = []
 
     # for each wall group
@@ -245,11 +247,10 @@ def create_nx4_verts_and_faces(boxes, height=1, scale=np.array([1,1,1]), pixelsc
         for pos in box:
 
             # add and convert all positions
-            temp_verts.extend([(pos[0][0] / scale, pos[0][1] / scale, 0.0)])
-            temp_verts.extend([(pos[0][0] / scale, pos[0][1] / scale, height)])
+            temp_verts.extend([((pos[0][0]*scale[0]) / pixelscale, (pos[0][1]*scale[1]) / pixelscale, 0.0)])
+            temp_verts.extend([((pos[0][0]*scale[0]) / pixelscale, (pos[0][1]*scale[1]) / pixelscale, height*scale[2])])
 
         # add box to list
         verts.extend(temp_verts)
 
     return verts
-"""

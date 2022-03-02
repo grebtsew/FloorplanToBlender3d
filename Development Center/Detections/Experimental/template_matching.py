@@ -49,7 +49,7 @@ def test(img_gray, template, alg, threshold, name):
 def show(loc, name, w, h, max=100):
     i = 0
     for pt in zip(*loc[::-1]):
-        print(i)
+        #print(i)
         cv.rectangle(img_rgb, pt, (pt[0] + w, pt[1] + h), (0, 0, 255), 2)
         if i > max:
             print("Max " + str(max) + " reached!")

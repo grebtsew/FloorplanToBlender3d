@@ -1,4 +1,5 @@
 # Example 
+# This is an as simple example as possible
 # Line description:
 # HELP:
 # <SEPARATECOMMAND> space

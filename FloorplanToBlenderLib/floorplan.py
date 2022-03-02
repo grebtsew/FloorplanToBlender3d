@@ -29,7 +29,7 @@ class floorplan():
         self.create_variables_from_config(conf)
 
     def __str__(self):
-        print(vars(self))
+        return str(vars(self))
 
     def create_variables_from_config(self, conf):
         settings = config.get_all(conf)

@@ -24,6 +24,8 @@ import os
 # - update readme
 # - update license dates
 
+# TODO: fix problem with pivot points!
+
 """
 Create Blender Project from floorplan
 This file contains a simple example implementation of creations of 3d models from
@@ -119,6 +121,8 @@ if __name__ == "__main__":
         if var:    
             stacking_def_path = var
         data_paths = stacking.parse_stacking_file(stacking_def_path)
+
+    # TODO: set image?
 
         print("")
         var = input(
