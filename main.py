@@ -122,8 +122,6 @@ if __name__ == "__main__":
             stacking_def_path = var
         data_paths = stacking.parse_stacking_file(stacking_def_path)
 
-    # TODO: set image?
-
         print("")
         var = input(
             "This program is about to run and create blender3d project, continue? : "
@@ -144,10 +142,18 @@ if __name__ == "__main__":
         if var:
             config_path = var
             floorplans.append(floorplan.new_floorplan(c) for c in config_path.split(" "))
-            
+
         else:
             floorplans.append(floorplan.new_floorplan(config_path))
-           
+        
+        var = input(
+            "Do you want to set images to use in each config file? [N/Y]: "
+        )
+        if var in ["y", "Y"]:
+            for floorplan in floorplans:
+                var = input("For config file "+floorplan.conf+" write path for image to use "+ "[Default="+floorplan.image_path+"]:")
+                if var: # TODO: test this
+                    floorplan.image_path = var
         print("")
         var = input(
             "This program is about to run and create blender3d project, continue? : "

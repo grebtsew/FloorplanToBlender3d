@@ -26,7 +26,8 @@ class floorplan():
         if conf is None:
             # use default
             conf = const.IMAGE_DEFAULT_CONFIG_FILE_NAME
-        self.create_variables_from_config(conf)
+        self.conf = conf
+        self.create_variables_from_config(self.conf)
 
     def __str__(self):
         return str(vars(self))
