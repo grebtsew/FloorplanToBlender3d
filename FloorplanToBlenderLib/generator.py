@@ -10,6 +10,7 @@ from . import const
 from . import draw
 from . import calculate
 
+
 class Generator:
     __metaclass__ = abc.ABCMeta
     # create verts (points 3d), points to use in mesh creations
@@ -21,7 +22,7 @@ class Generator:
     # Scale pixel value to 3d pos
     pixelscale = const.PIXEL_TO_3D_SCALE
     # Object scale
-    scale = np.array([1,1,1])
+    scale = np.array([1, 1, 1])
     # Index is many for when there are several floorplans
     path = ""
 
@@ -59,9 +60,11 @@ class Generator:
             if pos[2] < low[2]:
                 low[2] = pos[2]
 
-        return [(high[0] - low[0])*self.scale[0],
-         (high[1] - low[1])*self.scale[1],
-         (high[2] - low[2])**self.scale[2]]
+        return [
+            (high[0] - low[0]) * self.scale[0],
+            (high[1] - low[1]) * self.scale[1],
+            (high[2] - low[2]) ** self.scale[2],
+        ]
 
     @abc.abstractmethod
     def generate(self, gray, info=False):
@@ -78,7 +81,12 @@ class Floor(Generator):
         # detect outer Contours (simple floor or roof solution)
         contour, _ = detect.outer_contours(gray)
         # Create verts
-        self.verts = transform.scale_point_to_vector(boxes=contour, scale=self.scale, pixelscale=self.pixelscale, height=self.height)
+        self.verts = transform.scale_point_to_vector(
+            boxes=contour,
+            scale=self.scale,
+            pixelscale=self.pixelscale,
+            height=self.height,
+        )
 
         # create faces
         count = 0
@@ -114,7 +122,10 @@ class Wall(Generator):
         boxes = calculate.remove_walls_not_in_contour(boxes, contour)
         # Convert boxes to verts and faces, vertically
         self.verts, self.faces, wall_amount = transform.create_nx4_verts_and_faces(
-            boxes=boxes, height=self.height, scale=self.scale, pixelscale=self.pixelscale
+            boxes=boxes,
+            height=self.height,
+            scale=self.scale,
+            pixelscale=self.pixelscale,
         )
 
         if info:
@@ -126,7 +137,11 @@ class Wall(Generator):
 
         # Same but horizontally
         self.verts, self.faces, wall_amount = transform.create_4xn_verts_and_faces(
-            boxes=boxes, height=self.height, scale=self.scale,pixelscale=self.pixelscale, ground=True
+            boxes=boxes,
+            height=self.height,
+            scale=self.scale,
+            pixelscale=self.pixelscale,
+            ground=True,
         )
 
         # One solution to get data to blender is to write and read from file.
@@ -151,9 +166,12 @@ class Room(Generator):
 
         # get box positions for rooms
         boxes, gray_rooms = detect.precise_boxes(gray_rooms, gray_rooms)
-        
+
         self.verts, self.faces, counter = transform.create_4xn_verts_and_faces(
-            boxes=boxes, height=self.height, scale=self.scale, pixelscale=self.pixelscale
+            boxes=boxes,
+            height=self.height,
+            scale=self.scale,
+            pixelscale=self.pixelscale,
         )
 
         if info:
@@ -269,9 +287,12 @@ class Door(Generator):
             draw.image(img)
 
         # Create verts for door
-        
+
         self.verts, self.faces, door_amount = transform.create_nx4_verts_and_faces(
-            boxes=door_contours, height=self.height, scale=self.scale, pixelscale=self.pixelscale
+            boxes=door_contours,
+            height=self.height,
+            scale=self.scale,
+            pixelscale=self.pixelscale,
         )
 
         if info:
@@ -281,8 +302,12 @@ class Door(Generator):
         IO.save_to_file(self.path + "door_vertical_faces", self.faces, info)
 
         self.verts, self.faces, door_amount = transform.create_4xn_verts_and_faces(
-            boxes=door_contours, height=self.height, scale=self.scale,
-             pixelscale=self.pixelscale, ground=True, ground_height=const.WALL_GROUND
+            boxes=door_contours,
+            height=self.height,
+            scale=self.scale,
+            pixelscale=self.pixelscale,
+            ground=True,
+            ground_height=const.WALL_GROUND,
         )
 
         # One solution to get data to blender is to write and read from file.
@@ -307,7 +332,10 @@ class Window(Generator):
 
         # Create verts for window, vertical
         v, self.faces, window_amount1 = transform.create_nx4_verts_and_faces(
-            boxes=windows, height=const.WINDOW_MIN_MAX_GAP[0], scale=self.scale, pixelscale=self.pixelscale
+            boxes=windows,
+            height=const.WINDOW_MIN_MAX_GAP[0],
+            scale=self.scale,
+            pixelscale=self.pixelscale,
         )  # create low piece
         v2, self.faces, window_amount2 = transform.create_nx4_verts_and_faces(
             boxes=windows,
@@ -329,7 +357,7 @@ class Window(Generator):
         IO.save_to_file(self.path + const.WINDOW_VERTICAL_FACES, self.faces, info)
 
         # horizontal
-        
+
         v, f, _ = transform.create_4xn_verts_and_faces(
             boxes=windows,
             height=self.height,

@@ -21,10 +21,11 @@ def points_inside_contour(points, contour):
     """
     Return false if all of the points are outside of the contour
     """
-    for x,y in points:
-        if cv2.pointPolygonTest(contour, (x,y), False) == 1.0:
+    for x, y in points:
+        if cv2.pointPolygonTest(contour, (x, y), False) == 1.0:
             return True
     return False
+
 
 def remove_walls_not_in_contour(walls, contour):
     """
@@ -33,13 +34,14 @@ def remove_walls_not_in_contour(walls, contour):
     res = []
     for wall in walls:
         (x, y, w, h) = cv2.boundingRect(wall)
-        p1 = (x,y)
-        p2 = (x,y+h)
-        p3 = (x+w, y+h)
-        p4 = (x+w, y)
-        if points_inside_contour([p1,p2,p3,p4], contour):
+        p1 = (x, y)
+        p2 = (x, y + h)
+        p3 = (x + w, y + h)
+        p4 = (x + w, y)
+        if points_inside_contour([p1, p2, p3, p4], contour):
             res.append(wall)
     return res
+
 
 def wall_width_average(img):
     """

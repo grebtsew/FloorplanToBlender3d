@@ -1,4 +1,4 @@
-from enum import Enum 
+from enum import Enum
 
 """
 Const
@@ -30,9 +30,11 @@ SUPPORTED_BLENDER_FORMATS = (
 )
 BASE_FORMAT = ".blend"
 
+
 class MODE(Enum):
     AXIS = 0
     CYLINDER = 1
+
 
 # Paths to save folder
 BASE_PATH = "Data/"

@@ -101,10 +101,8 @@ def read_image(path, floorplan=None):
         if floorplan.rescale_image:
 
             calibrations = config.read_calibration(floorplan)
-            floorplan.wall_size_calibration = calibrations # Store for debug
-            scale_factor = image.detect_wall_rescale(
-                float(calibrations), img
-            )
+            floorplan.wall_size_calibration = calibrations  # Store for debug
+            scale_factor = image.detect_wall_rescale(float(calibrations), img)
             if scale_factor is None:
                 print(
                     "WARNING: Auto rescale failed due to non good walls found in image."
@@ -123,13 +121,15 @@ def readlines_file(path):
         res = f.readlines()
     return res
 
+
 def ndarrayJsonDumps(obj):
     if type(obj).__module__ == np.__name__:
         if isinstance(obj, np.ndarray):
             return obj.tolist()
         else:
             return obj.item()
-    raise TypeError('Unknown type:', type(obj))
+    raise TypeError("Unknown type:", type(obj))
+
 
 def save_to_file(file_path, data, show=True):
     """
@@ -142,7 +142,7 @@ def save_to_file(file_path, data, show=True):
         try:
             f.write(json.dumps(data))
         except TypeError:
-                f.write(json.dumps(data, default=ndarrayJsonDumps)) # little haxy
+            f.write(json.dumps(data, default=ndarrayJsonDumps))  # little haxy
 
     if show:
         print("Created file : " + file_path + const.SAVE_DATA_FORMAT)

@@ -36,6 +36,7 @@ Our helpful functions
 # TODO: restructure this file with a class and help-function to save a lot of lines of code!
 # TODO: fix index should be same as floorplan folder
 
+
 def read_from_file(file_path):
     """
     Read from file
@@ -47,6 +48,7 @@ def read_from_file(file_path):
     with open(file_path + ".txt", "r") as f:
         data = json.loads(f.read())
     return data
+
 
 def init_object(name):
     # Create new blender object and return references to mesh and object
@@ -104,7 +106,7 @@ def create_custom_mesh(objname, verts, faces, mat=None, cen=None):
     # Calculate the edges
     mymesh.update(calc_edges=True)
 
-    parent_center = [0,0,0]
+    parent_center = [0, 0, 0]
     if cen is not None:
         parent_center = [int(cen[0] / 2), int(cen[1] / 2), int(cen[2])]
 
@@ -135,7 +137,7 @@ Main functionality here!
 
 
 def main(argv):
-    
+
     # Remove starting object cube
     objs = bpy.data.objects
     objs.remove(objs["Cube"], do_unlink=True)
@@ -181,7 +183,7 @@ def create_floorplan(base_path, program_path, name=None):
 
     # read from file
     transform = read_from_file(path_to_transform_file)
-    
+
     rot = transform["rotation"]
     pos = transform["position"]
     scale = transform["scale"]
@@ -449,9 +451,7 @@ def create_floorplan(base_path, program_path, name=None):
 
         for i in range(0, len(verts)):
             roomname = "Room" + str(i)
-            obj = create_custom_mesh(
-                roomname, verts[i], faces[i], cen=cen
-            )
+            obj = create_custom_mesh(roomname, verts[i], faces[i], cen=cen)
             obj.parent = room_parent
 
         room_parent.parent = parent
@@ -459,7 +459,11 @@ def create_floorplan(base_path, program_path, name=None):
     # Perform Floorplan final position, rotation and scale
     if rot is not None:
         # compensate for mirrored image
-        parent.rotation_euler = [math.radians(rot[0])+math.pi, math.radians(rot[1]), math.radians(rot[2])] 
+        parent.rotation_euler = [
+            math.radians(rot[0]) + math.pi,
+            math.radians(rot[1]),
+            math.radians(rot[2]),
+        ]
 
     if pos is not None:
         parent.location.x += pos[0]
@@ -467,9 +471,9 @@ def create_floorplan(base_path, program_path, name=None):
         parent.location.z += pos[2]
 
     if scale is not None:
-        parent.scale.x =scale[0]
-        parent.scale.y =scale[1]
-        parent.scale.z =scale[2]
+        parent.scale.x = scale[0]
+        parent.scale.y = scale[1]
+        parent.scale.z = scale[2]
 
 
 if __name__ == "__main__":

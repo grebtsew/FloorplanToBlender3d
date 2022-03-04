@@ -19,6 +19,7 @@ Copyright (C) 2021 Daniel Westberg
 # TODO: add config security check, before start up!
 # TODO: safe read, use this func instead of repeating code everywhere!
 
+
 def read_calibration(floorplan):
     """
     Read all calibrations
@@ -32,10 +33,8 @@ def create_image_scale_calibration(floorplan, got_settings=False):
     """
     Create and save image size calibrations
     """
-    
-    calibration_img = cv2.imread(
-        floorplan.calibration_image_path
-    )    
+
+    calibration_img = cv2.imread(floorplan.calibration_image_path)
     return calculate.wall_width_average(calibration_img)
 
 
@@ -58,13 +57,13 @@ def generate_file():
     conf = configparser.ConfigParser()
     conf["IMAGE"] = {
         const.STR_IMAGE_PATH: json.dumps(const.DEFAULT_IMAGE_PATH),
-        "COLOR": json.dumps([0,0,0]),
+        "COLOR": json.dumps([0, 0, 0]),
     }
 
     conf["TRANSFORM"] = {
-        "position" : json.dumps([0,0,0]),
-        "rotation" : json.dumps([0,0,90]),
-        "scale" : json.dumps([1,1,1]),
+        "position": json.dumps([0, 0, 0]),
+        "rotation": json.dumps([0, 0, 90]),
+        "scale": json.dumps([1, 1, 1]),
     }
 
     conf[const.FEATURES] = {
@@ -81,12 +80,17 @@ def generate_file():
     }
 
     conf[const.WALL_CALIBRATION] = {
-        const.STR_CALIBRATION_IMAGE_PATH: json.dumps(const.DEFAULT_CALIBRATION_IMAGE_PATH),
-        const.STR_WALL_SIZE_CALIBRATION: json.dumps(const.DEFAULT_WALL_SIZE_CALIBRATION),
+        const.STR_CALIBRATION_IMAGE_PATH: json.dumps(
+            const.DEFAULT_CALIBRATION_IMAGE_PATH
+        ),
+        const.STR_WALL_SIZE_CALIBRATION: json.dumps(
+            const.DEFAULT_WALL_SIZE_CALIBRATION
+        ),
     }
 
     with open(const.IMAGE_DEFAULT_CONFIG_FILE_NAME, "w") as configfile:
         conf.write(configfile)
+
 
 def show(conf):
     """
@@ -134,7 +138,7 @@ def get(config_path, *args):
     if not file_exist(config_path):
         generate_file()
     conf.read(config_path)
-    
+
     for key in args:
         conf = conf[key]
 
@@ -143,8 +147,10 @@ def get(config_path, *args):
     else:
         return conf
 
+
 def get_default_image_path():
-    return get(const.IMAGE_DEFAULT_CONFIG_FILE_NAME, "IMAGE",const.STR_IMAGE_PATH )
+    return get(const.IMAGE_DEFAULT_CONFIG_FILE_NAME, "IMAGE", const.STR_IMAGE_PATH)
+
 
 def get_default_blender_installation_path():
     return get(const.SYSTEM_CONFIG_FILE_NAME, "SYSTEM", const.STR_BLENDER_INSTALL_PATH)
