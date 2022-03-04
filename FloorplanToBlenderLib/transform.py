@@ -134,16 +134,14 @@ def scale_point_to_vector(boxes, pixelscale=100, height=0, scale=np.array([1,1,1
     res = []
     for box in boxes:
         for pos in box:
-            res.extend([[(pos[0]*scale[0])/pixelscale, (pos[1]*scale[1])/pixelscale, height*scale[2]]])
+            res.extend([[(pos[0])/pixelscale, (pos[1])/pixelscale, height]])
     return res
 
-
-def list_to_nparray(list):
+def list_to_nparray(list, default=np.array([1,1,1])):
     if list is None:
-        return np.array([1,1,1])
+        return default
     else:
         return np.array([list[0],list[1],list[2]])
-
 
 def create_4xn_verts_and_faces(
     boxes, height=1, pixelscale=100, scale=np.array([1,1,1]), ground=False, ground_height=const.WALL_GROUND
@@ -211,10 +209,10 @@ def create_nx4_verts_and_faces(boxes, height=1, scale=np.array([1,1,1]), pixelsc
                 # link to first pos
 
             # Create all 3d poses for each wall
-            temp_verts.extend([((current[0] * scale[0])/pixelscale, (current[1] * scale[1])/pixelscale, ground)])
-            temp_verts.extend([((current[0] * scale[0])/pixelscale, (current[1] * scale[1])/pixelscale, (height-ground)*scale[2])])
-            temp_verts.extend([((next_vert[0] * scale[0])/pixelscale, (next_vert[1] * scale[1])/pixelscale, ground)])
-            temp_verts.extend([((next_vert[0] * scale[0])/pixelscale, (next_vert[1] * scale[1])/pixelscale, (height-ground)*scale[2])])
+            temp_verts.extend([((current[0] )/pixelscale, (current[1] )/pixelscale, ground)])
+            temp_verts.extend([((current[0] )/pixelscale, (current[1] )/pixelscale, (height-ground))])
+            temp_verts.extend([((next_vert[0] )/pixelscale, (next_vert[1] )/pixelscale, ground)])
+            temp_verts.extend([((next_vert[0] )/pixelscale, (next_vert[1] )/pixelscale, (height-ground))])
 
             # add wall verts to verts
             box_verts.extend([temp_verts])
@@ -247,8 +245,8 @@ def create_verts(boxes, height, pixelscale=100, scale=np.array([1,1,1])):
         for pos in box:
 
             # add and convert all positions
-            temp_verts.extend([((pos[0][0]*scale[0]) / pixelscale, (pos[0][1]*scale[1]) / pixelscale, 0.0)])
-            temp_verts.extend([((pos[0][0]*scale[0]) / pixelscale, (pos[0][1]*scale[1]) / pixelscale, height*scale[2])])
+            temp_verts.extend([((pos[0][0]) / pixelscale, (pos[0][1]) / pixelscale, 0.0)])
+            temp_verts.extend([((pos[0][0]) / pixelscale, (pos[0][1]) / pixelscale, height)])
 
         # add box to list
         verts.extend(temp_verts)

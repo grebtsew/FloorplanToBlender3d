@@ -119,7 +119,7 @@ def ADD(
 
     if mode == "cylinder":        
         return  execution.multiple_cylinder(
-            floorplans, amount_per_level, radie, degree, world_direction=dir, world_position=transform.list_to_nparray(worldpositionoffset), world_rotation=transform.list_to_nparray(worldrotationoffset), world_scale=transform.list_to_nparray(worldscale)
+            floorplans, amount_per_level, radie, degree, world_direction=dir, world_position=transform.list_to_nparray(worldpositionoffset, np.array([0,0,0])), world_rotation=transform.list_to_nparray(worldrotationoffset, np.array([0,0,0])), world_scale=transform.list_to_nparray(worldscale), margin=transform.list_to_nparray(margin, np.array([0,0,0]))
         )
     else:
-        return execution.multiple_axis(floorplans, mode, dir, transform.list_to_nparray(margin), transform.list_to_nparray(worldpositionoffset), transform.list_to_nparray(worldrotationoffset), transform.list_to_nparray(worldscale))
+        return execution.multiple_axis(floorplans, mode, dir, transform.list_to_nparray(margin, np.array([0,0,0])), transform.list_to_nparray(worldpositionoffset, np.array([0,0,0])), transform.list_to_nparray(worldrotationoffset, np.array([0,0,0])), transform.list_to_nparray(worldscale))

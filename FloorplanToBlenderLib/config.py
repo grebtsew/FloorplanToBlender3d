@@ -64,7 +64,7 @@ def generate_file():
     conf["TRANSFORM"] = {
         "position" : json.dumps([0,0,0]),
         "rotation" : json.dumps([0,0,90]),
-        "scale" : json.dumps([0,0,0]),
+        "scale" : json.dumps([1,1,1]),
     }
 
     conf[const.FEATURES] = {

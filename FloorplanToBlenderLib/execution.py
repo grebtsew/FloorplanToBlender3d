@@ -74,7 +74,7 @@ def AngleBtw2Points(pointA, pointB):
   return degrees(atan2(changeInY,changeInX)) 
 
 def multiple_cylinder(
-    floorplans, amount_per_level, radie, degree, world_direction=None, world_position=np.array([0,0,0]), world_rotation=np.array([0,0,0]), world_scale=np.array([1,1,1])
+    floorplans, amount_per_level, radie, degree, world_direction=None, world_position=np.array([0,0,0]), world_rotation=np.array([0,0,0]), world_scale=np.array([1,1,1], margin=np.array([0,0,0]))
 ):  
     """
     Generates several new apartments in a cylindric shape
@@ -87,6 +87,8 @@ def multiple_cylinder(
     @Param degree - how many degree should the circle be, 0-360
     @Return paths to image data
     """
+    # TODO: add world rotation solution
+    # TODO: add margin solution
     data_paths = list()
     curr_index = 0
     curr_level = 0

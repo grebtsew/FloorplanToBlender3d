@@ -37,6 +37,8 @@ def generate_all_files(floorplan, info, world_direction = None,world_scale=np.ar
             transform.list_to_nparray(floorplan.position)+transform.list_to_nparray(world_position),
             " rot ",
             transform.list_to_nparray(floorplan.rotation)+transform.list_to_nparray(world_rotation),
+            " scale ",
+            scale,
             " -----",
         )
 
@@ -69,7 +71,7 @@ def generate_all_files(floorplan, info, world_direction = None,world_scale=np.ar
             Door(gray, path, floorplan.image_path, scale_factor, scale, info)
 
     generate_transform_file(
-        floorplan.image_path, path, info, floorplan.position, world_position, floorplan.rotation, world_rotation, shape, path, origin_path
+        floorplan.image_path, path, info, floorplan.position, world_position, floorplan.rotation, world_rotation, scale, shape, path, origin_path
     )
 
     if floorplan.position is not None:
@@ -93,8 +95,8 @@ def validate_shape(old_shape, new_shape):
 
 
 def generate_transform_file(
-    img_path, path, info, position, world_position, rotation, world_rotation, shape, data_path, origin_path
-):  
+    img_path, path, info, position, world_position, rotation, world_rotation, scale, shape, data_path, origin_path
+    ):  
     """
     Generate transform of file
     A transform contains information about an objects position, rotation.
@@ -111,6 +113,11 @@ def generate_transform_file(
         transform[const.STR_POSITION] = np.array([0, 0, 0])
     else:
         transform[const.STR_POSITION] = position+ world_position
+
+    if scale is None:
+        transform["scale"] = np.array([1,1,1])
+    else:
+        transform["scale"] = scale
 
     if rotation is None:
         transform[const.STR_ROTATION] = np.array([0, 0, 0])

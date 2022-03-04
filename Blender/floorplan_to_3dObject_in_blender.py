@@ -184,6 +184,7 @@ def create_floorplan(base_path, program_path, name=None):
     
     rot = transform["rotation"]
     pos = transform["position"]
+    scale = transform["scale"]
 
     # Calculate and move floorplan shape to center
     cen = transform["shape"]
@@ -464,6 +465,11 @@ def create_floorplan(base_path, program_path, name=None):
         parent.location.x += pos[0]
         parent.location.y += pos[1]
         parent.location.z += pos[2]
+
+    if scale is not None:
+        parent.scale.x =scale[0]
+        parent.scale.y =scale[1]
+        parent.scale.z =scale[2]
 
 
 if __name__ == "__main__":
