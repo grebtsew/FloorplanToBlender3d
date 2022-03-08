@@ -1,5 +1,4 @@
 import cv2
-import pywavefront
 import os
 import requests
 import json as jsonlib
@@ -96,6 +95,9 @@ if __name__ == "__main__":
     print(response)
     print(response.text)
     print("DONE!")
+
+    # TODO: send ConfigFile
+    # TODO: send StackingFile
 
     #  Test sending to id that already exists
     print("----- PUT upload same file ----- ")

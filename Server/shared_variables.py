@@ -9,7 +9,7 @@ import hashlib
 
 """
 FloorplanToBlender3d
-Copyright (C) 2021 Daniel Westberg
+Copyright (C) 2022 Daniel Westberg
 """
 
 # TODO make threadsafe!
@@ -20,6 +20,8 @@ class shared_variables:
     all_files = []
     all_ids = []
     all_processes = []
+    supported_config_formats = (".ini")
+    supported_stacking_formats = (".txt")
     supported_image_formats = (".png", ".jpg", ".jpeg", ".tiff", ".bmp", ".gif")
     supported_blender_formats = (
         ".obj",
@@ -56,15 +58,15 @@ class shared_variables:
                 return process
         return None
 
-    def get_image_path(self, id):
+    def get_file_path(self, id, type_path, list):
         """return full path to file with id, return None if can't be found"""
-        for image in self.images:
-            if id in image:
-                return self.parentPath + "/" + self.imagesPath + "/" + image
+        for file in list:
+            if id in file:
+                return self.parentPath + "/" + type_path + "/" + file
         return None
 
     def reindex_files(self):
-        self.all_files, self.images, self.objects = self.list_files(self.parentPath)
+        self.all_files, self.images, self.objects, self.stackingfiles, self.configfiles = self.list_files(self.parentPath)
 
     def init_ids(self):
         # initialize ids
@@ -131,17 +133,23 @@ class shared_variables:
         res = dict()
         all_files = []
         images = []
+        configfiles = []
+        stackingfiles = []
         objects = []
 
         for _, _, files in os.walk(startpath):
 
             for f in files:
+                if f.lower().endswith(self.supported_config_formats):
+                    configfiles.append(f)
+                if f.lower().endswith(self.supported_stacking_formats):
+                    stackingfiles.append(f)
                 if f.lower().endswith(self.supported_image_formats):
                     images.append(f)
                 if f.lower().endswith(self.supported_blender_formats):
                     objects.append(f)
                 all_files.append(f)
-        return all_files, images, objects
+        return all_files, images, objects, stackingfiles, configfiles
 
     def init_server_file_structure(self):
         """Creating folders for server files if they do not already exist"""
@@ -172,3 +180,5 @@ class shared_variables:
         self.parentPath = conf.get("Storage", "PARENT")
         self.imagesPath = conf.get("Storage", "IMAGES")
         self.objectsPath = conf.get("Storage", "OBJECTS")
+        self.stackingPath = conf.get("Storage", "STACKING")
+        self.configPath = conf.get("Storage", "CONFIG")

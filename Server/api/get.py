@@ -37,6 +37,10 @@ class Get(Api):
         self.dispatched_calls["objects"] = self.objects
         self.dispatched_calls["process"] = self.process
         self.dispatched_calls["processes"] = self.processes
+        self.dispatched_calls["configfiles"] = self.configfiles
+        self.dispatched_calls["stackingfiles"] = self.stackingfiles
+        self.dispatched_calls["configfile"] = self.configfile
+        self.dispatched_calls["stackingfile"] = self.stackingfile
 
     def info(self, _api_ref, _data, *args, **kwargs) -> str:
         """Returns information about server implementation as JSON."""
@@ -68,6 +72,14 @@ class Get(Api):
     def images(self, *args, **kwargs) -> str:
         """Get all images on server as JSON."""
         return json.dumps(self.shared.images)
+    
+    def stackingfiles(self, *args, **kwargs) -> str:
+        """Get all stackingfiles on server as JSON"""
+        return json.dumps(self.shared.stackingfiles)
+
+    def configfiles(self, *args, **kwargs) -> str:
+        """Get all configfiles on server as JSON"""
+        return json.dumps(self.shared.configfiles)
 
     def objects(self, *args, **kwargs) -> str:
         """Get all objects on server as JSON."""
@@ -80,7 +92,16 @@ class Get(Api):
     def image(self, _api_ref, id: str, *args, **kwargs) -> str:
         """Return imagefile of id specified in JSON."""
         # check that file exist
-        return returnFile(self.shared.get_image_path(id), _api_ref)
+        return returnFile(self.shared.get_image_path(id,self.shared.imagesPath, self.shared.images), _api_ref)
+
+    def stackingfile(self, _api_ref, id: str, *args, **kwargs) -> str:
+        """Get a stackingfile on server as JSON"""
+        return returnFile(self.shared.get_image_path(id,self.shared.stackingPath, self.shared.stackingfiles), _api_ref)
+
+    def configfiles(self, _api_ref, id: str, *args, **kwargs) -> str:
+        """Get a configfile on server as JSON"""
+        return returnFile(self.shared.get_image_path(id,self.shared.configPath, self.shared.configfiles), _api_ref)
+
 
     def object(self, _api_ref, id: str, oformat: str, *args, **kwargs) -> str:
         """Return objectfile of id specified in JSON."""

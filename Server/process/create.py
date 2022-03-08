@@ -69,7 +69,8 @@ class Create(Process):
         generate.base_path = "./storage/data/" + self.process["in"]
         generate.path = "./storage/data/" + self.process["in"]
         target_path = "./storage/objects/" + self.process["in"] + ".blend"
-
+        
+        # TODO: create this as floorplan instead
         data_paths = list()
         data_paths = [execution.simple_single(image_path, False)]
 

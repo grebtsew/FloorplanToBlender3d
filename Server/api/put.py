@@ -32,8 +32,8 @@ class Put(Api):
         status = True
         if (id, hash, False) in self.shared.all_ids:
 
-            # image format supported?
-            if iformat in self.shared.supported_image_formats:
+            # format supported?
+            if iformat in self.shared.supported_image_formats or iformat in self.shared.supported_config_formats or iformat in self.shared.supported_stacking_formats:
 
                 create_file(self, id, iformat, file)
 
