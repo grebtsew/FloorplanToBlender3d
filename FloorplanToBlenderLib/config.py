@@ -13,7 +13,7 @@ Config
 This file contains functions for handling config files.
 
 FloorplanToBlender3d
-Copyright (C) 2021 Daniel Westberg
+Copyright (C) 2022 Daniel Westberg
 """
 # TODO: settings for coloring all objects
 # TODO: add config security check, before start up!
@@ -64,6 +64,7 @@ def generate_file():
         "position": json.dumps([0, 0, 0]),
         "rotation": json.dumps([0, 0, 90]),
         "scale": json.dumps([1, 1, 1]),
+        "margin": json.dumps([0,0,0]),
     }
 
     conf[const.FEATURES] = {
