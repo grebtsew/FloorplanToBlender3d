@@ -7,17 +7,13 @@ except ImportError:
     raise ImportError  # floorplan to blender lib
 
 
-def test_generate_file():
-    assert None == config.generate_file()
-
-
 def test_show():
-    conf = config.get_all()
+    conf = config.get_all("../Configs/system.ini")
     assert None == config.show(conf)
 
 
 def test_get_all():
-    assert config.get_all()
+    assert config.get_all("../Configs/default.ini")
 
 
 def test_file_exist():
@@ -25,8 +21,5 @@ def test_file_exist():
 
 
 def test_get():
-    assert config.get("FEATURES")
+    assert config.get("../Configs/default.ini","FEATURES")
 
-
-def test_get_default():
-    assert config.get_default()
