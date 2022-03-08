@@ -17,7 +17,7 @@ Copyright (C) 2022 Daniel Westberg
 # TODO: settings for coloring all objects
 # TODO: add config security check, before start up!
 # TODO: safe read, use this func instead of repeating code everywhere!
-
+# TODO: add blender path addition to system.ini
 
 def read_calibration(floorplan):
     """

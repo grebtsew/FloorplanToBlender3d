@@ -21,10 +21,11 @@
   - [Run on Docker](#run-on-docker)
   - [Run locally on OS](#run-locally-on-os)
     - [Run Tutorial](#run-tutorial)
+  - [ConfigFile](#configfile)
+  - [StackingFile](#stackingfile)
 - [Demos](#demos)
 - [Documentation](#documentation)
 - [Testing](#testing)
-- [References and Imports](#References-and-Imports)
 - [Contribute](#contribute)
 - [Known Issues](#Known-Issues)
 - [License](#license)
@@ -43,7 +44,7 @@ sounds and uses a low amount of resources, enabling it to be used on low hardwar
  or [CAD](https://www.autodesk.com/solutions/cad-software). 
 
 # Contents
-This repository contains the floorplan to blender library **FTBL** along with example scripts for converting an image to a 3d model **./create_blender_project_from_floorplan.py**. The repository also contains a server that receives images and converts them into 3d models using the **FTBL** library. The Server contains a [Swagger API](https://swagger.io/) gui and is monitored using a [weavescope](https://github.com/weaveworks/scope) container. Read more about the server implementation [here](./Server/README.md). To allow developers to utilize more functionality a Jupyter tutorial has been added to the project, explaining some of the development steps and functions of the library. Read more about the tutorial [here](./Docs/README.md).
+This repository contains the floorplan to blender library **FTBL** along with example scripts for converting an image to a 3d model **./create_blender_project_from_floorplan.py**. The repository also contains a server that receives images and converts them into 3d models using the **FTBL** library. The Server contains a [Swagger API](https://swagger.io/) gui and is monitored using a [weavescope](https://github.com/weaveworks/scope) container. Read more about the server implementation [here](./Server/README.md). To allow developers to utilize more functionality a Jupyter tutorial has been added to the project, explaining some of the development steps and functions of the library. Read more about the tutorial [here](./Docs/README.md). Stacking is now also added as a core feature read more about how to use stacking below.
 
 # How-To
 This part contains information about how to setup and execute the example script.
@@ -92,7 +93,7 @@ If you are a `Linux/Ubuntu` user, look at `Dockerfile` for better instructions.
 
 These are the programs that are required to run this implementation.
 
-* [Blender3d >  2.82](https://www.blender.org/)
+* [Blender3d >  2.93](https://www.blender.org/)
 * `Python >== 3.6.5`
 
 Clone or download this repo:
@@ -110,12 +111,19 @@ With a suitable `blender`, `python` and `python pip` installed you can have `Pyt
 This tutorial takes you through the execution of this program.
 
 1. Receive floorplan as image, from pdf or by using other method (for example paint)
+2. (Optional) create a new ConfigFile in `Configs` folder or StackingFile in `Stacking` folder.
 2. Run python script `create_blender_project_from_floorplan.py`
 3. Follow instructions
 4. Created `floorplan.blender` files will be saved under `./target`
 
 <span style="color:blue">**NOTE**</span>
 : For more information about alternative ways of executing the implementation read more [here](./Docs/README.md).
+
+## ConfigFile
+With the new update of the implementation `ConfigFiles` are added. These files describe information about each floorplan class instance. In this file model transform can be changed. If no config is added, default will be used. To generate a new default file remove or move the old one. Next to the default config file is the system default config file containing additional settings for the entire system. All configs are placed inside the `Configs` folder.
+
+## StackingFile
+With the new update the `StackingFile` was added. StackingFiles are used to create worlds of floorplans at once. Using a self developed parsing language. See the example files in the `Stacking` folder.
 
 # Demos
 
@@ -175,18 +183,6 @@ Vital and core functionality are tested with pytest. To run tests yourself enter
 pytest
 ```
 
-# References and Imports
-During the development of this project I have been searching a lot and copied code from `StackOverflow`.
-I share links to copied code and other contributors here:
-
-* First look at problem : https://mathematica.stackexchange.com/questions/19546/image-processing-floor-plan-detecting-rooms-borders-area-and-room-names-t
-* Room detection : https://stackoverflow.com/questions/54274610/crop-each-of-them-using-opencv-python
-* Watershed : https://docs.opencv.org/3.1.0/d3/db4/tutorial_py_watershed.html
-* Shape detection : https://docs.opencv.org/3.0-beta/doc/py_tutorials/py_feature2d/py_features_harris/py_features_harris.html
-* Distance in image : https://stackoverflow.com/questions/50930033/drawing-lines-and-distance-to-them-on-image-opencv-python
-* Rect contain : https://stackoverflow.com/questions/33065834/how-to-detect-if-a-point-is-contained-within-a-bounding-rect-opecv-python
-* Line detection : https://docs.opencv.org/3.0-beta/doc/py_tutorials/py_imgproc/py_houghlines/py_houghlines.html
-* Readme tips: https://github.com/matiassingers/awesome-readme
 
 # Contribute
 Let me know if you want to contribute to this project, also if you want me to add more

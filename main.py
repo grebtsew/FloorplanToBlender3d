@@ -10,22 +10,6 @@ from FloorplanToBlenderLib import (
 )  # floorplan to blender lib
 import os
 
-# TODO:s need fixing before next merge with main -
-# - floorplan class
-# - floorplan config
-# - margin
-# - add floor / roof
-# - test dockerfile
-# - secure window and door detections, as selectable settings
-# - go through all TODO:s and solve easy to fix ones, create issues for the rest
-# - create issue for multi model doors
-# - create issue for use logging and f''
-# - update demos
-# - update readme
-# - update license dates
-
-# TODO: fix problem with pivot points!
-
 """
 Create Blender Project from floorplan
 This file contains a simple example implementation of creations of 3d models from
@@ -151,7 +135,7 @@ if __name__ == "__main__":
         else:
             floorplans.append(floorplan.new_floorplan(config_path))
 
-        var = input("Do you want to set images to use in each config file? [N/Y]: ")
+        var = input("Do you want to set images to use in each config file? [N/y]: ")
         if var in ["y", "Y"]:
             for floorplan in floorplans:
                 var = input(
