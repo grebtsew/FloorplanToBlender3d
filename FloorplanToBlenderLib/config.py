@@ -49,6 +49,7 @@ def generate_file():
         const.STR_OUT_FORMAT: json.dumps(const.DEFAULT_OUT_FORMAT),
     }
 
+    os.makedirs(os.path.dirname(const.SYSTEM_CONFIG_FILE_NAME), exist_ok=True)
     with open(const.SYSTEM_CONFIG_FILE_NAME, "w") as configfile:
         conf.write(configfile)
 

@@ -6,6 +6,7 @@ import string
 import random
 import os
 import hashlib
+import sys
 
 """
 FloorplanToBlender3d
@@ -165,6 +166,12 @@ class shared_variables:
 
         if not os.path.exists(self.parentPath + "/" + self.objectsPath):
             os.makedirs(self.parentPath + "/" + self.objectsPath)
+        
+        if not os.path.exists(self.parentPath + "/" + self.stackingPath):
+            os.makedirs(self.parentPath + "/" + self.stackingPath)
+
+        if not os.path.exists(self.parentPath + "/" + self.configPath):
+            os.makedirs(self.parentPath + "/" + self.configPath)
 
     def init_config(self):
         """Load configs from config file"""

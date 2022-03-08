@@ -13,7 +13,7 @@ Copyright (C) 2021 Daniel Westberg
 The purpose of this file is to test core functionality of the server.
 We also test some common problems.
 """
-path_to_test_image = "../../Images/example.png"
+path_to_test_image = "../../Images/Examples/example.png"
 path_to_result_folder = "./test-result"
 
 show = False
@@ -134,7 +134,18 @@ if __name__ == "__main__":
             pid = process["pid"]
             tmp_process = process
     json = {"func": "process", "pid": pid}
-    print("----- GET " + str(pid) + " process ----- ")
+    print("----- GET " + str(pid) + " process 3 times----- ")
+    response = requests.get(url, params=json)
+    print(response)
+    print(response.text)
+    
+    time.sleep(1)
+    response = requests.get(url, params=json)
+    print(response)
+    print(response.text)
+    
+    
+    time.sleep(1)
     response = requests.get(url, params=json)
     print(response)
     print(response.text)

@@ -6,6 +6,7 @@ Copyright (C) 2021 Daniel Westberg
 """
 
 """This class should resize image for better performance, if needed"""
+# TODO: implement this
 
 
 class Resize(Process):

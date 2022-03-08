@@ -6,6 +6,7 @@ Copyright (C) 2021 Daniel Westberg
 """
 
 """This class should check if images are too similar!"""
+# TODO: implement this
 
 
 class Resize(Process):

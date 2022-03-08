@@ -6,6 +6,7 @@ Copyright (C) 2021 Daniel Westberg
 """
 
 """This class should reformat one object supported in blender, into another format"""
+# TODO: implement this
 
 
 class Reformat(Process):
