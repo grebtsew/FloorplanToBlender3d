@@ -9,7 +9,7 @@ Transform
 This file contains functions for transforming data between different formats.
 
 FloorplanToBlender3d
-Copyright (C) 2021 Daniel Westberg
+Copyright (C) 2022 Daniel Westberg
 """
 
 

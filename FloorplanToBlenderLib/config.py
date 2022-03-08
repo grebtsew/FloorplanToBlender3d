@@ -2,7 +2,6 @@ import configparser
 import os
 import cv2
 import json
-import numpy as np
 
 from . import IO
 from . import const

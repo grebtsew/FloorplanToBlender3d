@@ -2,12 +2,10 @@ import json
 import os
 from shutil import which
 import shutil
-from typing import Type
 import cv2
 import platform
 from sys import platform as pf
 import numpy as np
-import codecs
 
 from . import const
 from . import image
@@ -18,11 +16,8 @@ IO
 This file contains functions for handling files.
 
 FloorplanToBlender3d
-Copyright (C) 2021 Daniel Westberg
+Copyright (C) 2022 Daniel Westberg
 """
-
-# TODO: add config security check, before start up!
-
 
 def find_reuseable_data(image_path, path):
     """
@@ -61,10 +56,10 @@ def blender_installed():
     """
     if pf == "linux" or pf == "linux2":
         # linux
-        return find_files("blender", "C:")
+        return find_files("blender", "/")
     elif pf == "darwin":
         # OS X
-        return find_files("blender", "C:")
+        return find_files("blender", "/") # TODO: this need to be tested!
     elif pf == "win32":
         # Windows
         return find_files("blender.exe", "C:\\")

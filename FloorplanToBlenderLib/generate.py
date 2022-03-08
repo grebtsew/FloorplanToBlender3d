@@ -11,7 +11,7 @@ This file contains code for generate data files, used when creating blender proj
 A temp storage of calculated data and a way to transfer data to the blender script.
 
 FloorplanToBlender3d
-Copyright (C) 2021 Daniel Westberg
+Copyright (C) 2022 Daniel Westberg
 """
 
 

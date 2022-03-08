@@ -8,7 +8,7 @@ Execution
 This file contains some example usages and creations of multiple floorplans.
 
 FloorplanToBlender3d
-Copyright (C) 2021 Daniel Westberg
+Copyright (C) 2022 Daniel Westberg
 """
 
 

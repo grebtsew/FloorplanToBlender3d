@@ -9,7 +9,7 @@ Calculate
 This file contains functions for handling math or calculations.
 
 FloorplanToBlender3d
-Copyright (C) 2021 Daniel Westberg
+Copyright (C) 2022 Daniel Westberg
 """
 
 

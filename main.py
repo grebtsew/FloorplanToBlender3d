@@ -192,8 +192,6 @@ if __name__ == "__main__":
     print("Creates blender project")
     print("")
 
-    # TODO: fix separated in stacking
-    # TODO: Detect separated by structure of array
     if isinstance(data_paths[0], list):
         for paths in data_paths:
             create_blender_project(paths)

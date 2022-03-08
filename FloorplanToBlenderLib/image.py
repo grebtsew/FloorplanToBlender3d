@@ -1,7 +1,6 @@
 import cv2
 import numpy as np
 from PIL import Image
-from . import detect
 from . import calculate
 from . import const
 
@@ -11,7 +10,7 @@ This file contains code for image processing, used when creating blender project
 Contains functions for tweeking and filter images for better results.
 
 FloorplanToBlender3d
-Copyright (C) 2021 Daniel Westberg
+Copyright (C) 2022 Daniel Westberg
 """
 
 

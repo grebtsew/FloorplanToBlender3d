@@ -1,5 +1,4 @@
 import cv2
-from . import const
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -8,6 +7,8 @@ DRAW
 
 This file contains functions and tools for visualization of data.
 
+FloorplanToBlender3d
+Copyright (C) 2022 Daniel Westberg
 """
 
 

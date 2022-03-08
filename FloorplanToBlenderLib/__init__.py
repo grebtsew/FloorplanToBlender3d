@@ -1,6 +1,6 @@
 """
 FloorplanToBlender3d
-Copyright (C) 2019 Daniel Westberg
+Copyright (C) 2022 Daniel Westberg
 
 This file create python package
 

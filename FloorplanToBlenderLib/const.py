@@ -8,7 +8,7 @@ Use this file to customize all strings in program easily from one place.
 Be careful changing these.
 
 FloorplanToBlender3d
-Copyright (C) 2021 Daniel Westberg
+Copyright (C) 2022 Daniel Westberg
 """
 
 # Main script
