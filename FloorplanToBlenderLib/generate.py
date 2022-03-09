@@ -74,7 +74,7 @@ def generate_all_files(
                 new_shape = Wall(gray, path, scale, info).shape
                 shape = validate_shape(shape, new_shape)
             else:
-                 shape = Wall(gray, path, scale, info).shape
+                shape = Wall(gray, path, scale, info).shape
 
         if floorplan.rooms:
             if shape is not None:
@@ -111,7 +111,7 @@ def generate_all_files(
         ]
 
     if shape is None:
-        shape = [0,0,0]
+        shape = [0, 0, 0]
 
     return path, shape
 

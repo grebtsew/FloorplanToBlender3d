@@ -21,8 +21,8 @@ class shared_variables:
     all_files = []
     all_ids = []
     all_processes = []
-    supported_config_formats = (".ini")
-    supported_stacking_formats = (".txt")
+    supported_config_formats = ".ini"
+    supported_stacking_formats = ".txt"
     supported_image_formats = (".png", ".jpg", ".jpeg", ".tiff", ".bmp", ".gif")
     supported_blender_formats = (
         ".obj",
@@ -67,7 +67,13 @@ class shared_variables:
         return None
 
     def reindex_files(self):
-        self.all_files, self.images, self.objects, self.stackingfiles, self.configfiles = self.list_files(self.parentPath)
+        (
+            self.all_files,
+            self.images,
+            self.objects,
+            self.stackingfiles,
+            self.configfiles,
+        ) = self.list_files(self.parentPath)
 
     def init_ids(self):
         # initialize ids
@@ -104,7 +110,7 @@ class shared_variables:
 
     def random_with_N_digits(self, n):
         range_start = 10 ** (n - 1)
-        range_end = (10 ** n) - 1
+        range_end = (10**n) - 1
         return randint(range_start, range_end)
 
     def pid_exist(self, pid):
@@ -166,7 +172,7 @@ class shared_variables:
 
         if not os.path.exists(self.parentPath + "/" + self.objectsPath):
             os.makedirs(self.parentPath + "/" + self.objectsPath)
-        
+
         if not os.path.exists(self.parentPath + "/" + self.stackingPath):
             os.makedirs(self.parentPath + "/" + self.stackingPath)
 

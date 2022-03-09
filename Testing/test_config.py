@@ -21,5 +21,4 @@ def test_file_exist():
 
 
 def test_get():
-    assert config.get("../Configs/default.ini","FEATURES")
-
+    assert config.get("../Configs/default.ini", "FEATURES")

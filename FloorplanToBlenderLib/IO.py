@@ -19,6 +19,7 @@ FloorplanToBlender3d
 Copyright (C) 2022 Daniel Westberg
 """
 
+
 def find_reuseable_data(image_path, path):
     """
     Checks if floorplan data already exists and can be reused
@@ -59,7 +60,7 @@ def blender_installed():
         return find_files("blender", "/")
     elif pf == "darwin":
         # OS X
-        return find_files("blender", "/") # TODO: this need to be tested!
+        return find_files("blender", "/")  # TODO: this need to be tested!
     elif pf == "win32":
         # Windows
         return find_files("blender.exe", "C:\\")

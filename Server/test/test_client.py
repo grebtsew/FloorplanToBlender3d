@@ -138,13 +138,12 @@ if __name__ == "__main__":
     response = requests.get(url, params=json)
     print(response)
     print(response.text)
-    
+
     time.sleep(1)
     response = requests.get(url, params=json)
     print(response)
     print(response.text)
-    
-    
+
     time.sleep(1)
     response = requests.get(url, params=json)
     print(response)

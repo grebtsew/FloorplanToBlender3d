@@ -72,7 +72,7 @@ class Get(Api):
     def images(self, *args, **kwargs) -> str:
         """Get all images on server as JSON."""
         return json.dumps(self.shared.images)
-    
+
     def stackingfiles(self, *args, **kwargs) -> str:
         """Get all stackingfiles on server as JSON"""
         return json.dumps(self.shared.stackingfiles)
@@ -92,16 +92,28 @@ class Get(Api):
     def image(self, _api_ref, id: str, *args, **kwargs) -> str:
         """Return imagefile of id specified in JSON."""
         # check that file exist
-        return returnFile(self.shared.get_file_path(id,self.shared.imagesPath, self.shared.images), _api_ref)
+        return returnFile(
+            self.shared.get_file_path(id, self.shared.imagesPath, self.shared.images),
+            _api_ref,
+        )
 
     def stackingfile(self, _api_ref, id: str, *args, **kwargs) -> str:
         """Get a stackingfile on server as JSON"""
-        return returnFile(self.shared.get_file_path(id,self.shared.stackingPath, self.shared.stackingfiles), _api_ref)
+        return returnFile(
+            self.shared.get_file_path(
+                id, self.shared.stackingPath, self.shared.stackingfiles
+            ),
+            _api_ref,
+        )
 
     def configfiles(self, _api_ref, id: str, *args, **kwargs) -> str:
         """Get a configfile on server as JSON"""
-        return returnFile(self.shared.get_file_path(id,self.shared.configPath, self.shared.configfiles), _api_ref)
-
+        return returnFile(
+            self.shared.get_file_path(
+                id, self.shared.configPath, self.shared.configfiles
+            ),
+            _api_ref,
+        )
 
     def object(self, _api_ref, id: str, oformat: str, *args, **kwargs) -> str:
         """Return objectfile of id specified in JSON."""

@@ -19,6 +19,7 @@ Copyright (C) 2022 Daniel Westberg
 # TODO: safe read, use this func instead of repeating code everywhere!
 # TODO: add blender path addition to system.ini
 
+
 def read_calibration(floorplan):
     """
     Read all calibrations
@@ -64,7 +65,7 @@ def generate_file():
         "position": json.dumps([0, 0, 0]),
         "rotation": json.dumps([0, 0, 90]),
         "scale": json.dumps([1, 1, 1]),
-        "margin": json.dumps([0,0,0]),
+        "margin": json.dumps([0, 0, 0]),
     }
 
     conf[const.FEATURES] = {

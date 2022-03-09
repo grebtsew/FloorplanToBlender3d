@@ -102,7 +102,7 @@ if __name__ == "__main__":
     var = input(
         "Do you want to build from StackingFile or ConfigFile list ? [default = ConfigFile]: "
     )
-    if var in ["N","n","StackingFile","stacking","stackingfile"]:
+    if var in ["N", "n", "StackingFile", "stacking", "stackingfile"]:
         stacking_def_path = "./Stacking/all_separated_example.txt"
         var = input(f"Enter path to Stacking file : [default = {stacking_def_path}]: ")
         if var:
