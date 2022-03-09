@@ -226,7 +226,7 @@ def create_nx4_verts_and_faces(
                     (
                         (current[0]) / pixelscale,
                         (current[1]) / pixelscale,
-                        (height - ground),
+                        (height ),
                     )
                 ]
             )
@@ -238,7 +238,7 @@ def create_nx4_verts_and_faces(
                     (
                         (next_vert[0]) / pixelscale,
                         (next_vert[1]) / pixelscale,
-                        (height - ground),
+                        (height),
                     )
                 ]
             )

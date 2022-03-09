@@ -344,6 +344,7 @@ class Window(Generator):
             height=const.WINDOW_MIN_MAX_GAP[0],
             scale=self.scale,
             pixelscale=self.pixelscale,
+            ground=0,
         )  # create low piece
         v2, self.faces, window_amount2 = transform.create_nx4_verts_and_faces(
             boxes=windows,
