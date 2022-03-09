@@ -13,7 +13,7 @@ Perform several distance transforms here
 
 floorplan_lib_path = os.path.dirname(os.path.realpath(__file__)) + "/../../../"
 example_image_path = (
-    os.path.dirname(os.path.realpath(__file__)) + "/../../../Images/example.png"
+    os.path.dirname(os.path.realpath(__file__)) + "/../../../Images/Examples/example.png"
 )
 
 
@@ -49,13 +49,13 @@ wall_temp = wall_img
 Detect Wall
 """
 # detect walls
-boxes, img = detect.detectPreciseBoxes(wall_img, blank_image)
+boxes, img = detect.precise_boxes(wall_img, blank_image)
 
 cv.imshow("wall Image", wall_img)
 
 cv.imshow("wallbox Image", blank_image)
 
-contour, img = detect.detectOuterContours(gray, blank_image, color=(255, 0, 0))
+contour, img = detect.outer_contours(gray, blank_image, color=(255, 0, 0))
 
 
 # src = img

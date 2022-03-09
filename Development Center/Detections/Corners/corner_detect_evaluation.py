@@ -8,7 +8,7 @@ import numpy as np
 import os
 
 example_image_path = (
-    os.path.dirname(os.path.realpath(__file__)) + "/../../../Images/example.png"
+    os.path.dirname(os.path.realpath(__file__)) + "/../../../Images/Examples/example.png"
 )
 
 

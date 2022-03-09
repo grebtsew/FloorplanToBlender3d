@@ -11,7 +11,7 @@ import os
 
 floorplan_lib_path = os.path.dirname(os.path.realpath(__file__)) + "/../../"
 example_image_path = (
-    os.path.dirname(os.path.realpath(__file__)) + "/../../Images/example.png"
+    os.path.dirname(os.path.realpath(__file__)) + "/../../Images/Examples/example.png"
 )
 
 
@@ -48,13 +48,13 @@ def test(path):
     Detect Wall
     """
     # detect walls
-    boxes, img = detect.detectPreciseBoxes(wall_img, blank_image)
+    boxes, img = detect.precise_boxes(wall_img, blank_image)
 
     """
     Detect Floor
     """
     # detect outer Contours (simple floor or roof solution)
-    contour, img = detect.detectOuterContours(gray, blank_image, color=(255, 0, 0))
+    contour, img = detect.outer_contours(gray, blank_image, color=(255, 0, 0))
 
     # grayscale
     gray = ~wall_temp
@@ -70,7 +70,7 @@ def test(path):
         gap_in_wall_min_threshold=5000,
     )
     gray_rooms = cv2.cvtColor(colored_rooms, cv2.COLOR_BGR2GRAY)
-    boxes, blank_image = detect.detectPreciseBoxes(
+    boxes, blank_image = detect.precise_boxes(
         gray_rooms, blank_image, color=(0, 100, 200)
     )
 
@@ -86,7 +86,7 @@ def test(path):
         gap_in_wall_min_threshold=10,
     )
     gray_details = cv2.cvtColor(colored_doors, cv2.COLOR_BGR2GRAY)
-    boxes, blank_image = detect.detectPreciseBoxes(
+    boxes, blank_image = detect.precise_boxes(
         gray_details, blank_image, color=(0, 200, 100)
     )
 

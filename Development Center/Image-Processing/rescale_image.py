@@ -4,7 +4,7 @@ import numpy as np
 from PIL import Image
 
 example_image_path = (
-    os.path.dirname(os.path.realpath(__file__)) + "/../../Images/example2.png"
+    os.path.dirname(os.path.realpath(__file__)) + "/../../Images/Examples/example2.png"
 )
 
 scalefactor = 2.5  # downscale < 1 < upscale

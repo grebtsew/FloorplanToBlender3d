@@ -9,10 +9,10 @@ Problem with this solution is that we would need to test all 360 angles...
 """
 
 example_image_path = (
-    os.path.dirname(os.path.realpath(__file__)) + "/../../../Images/example.png"
+    os.path.dirname(os.path.realpath(__file__)) + "/../../../Images/Examples/example.png"
 )
 window_image_path = (
-    os.path.dirname(os.path.realpath(__file__)) + "/../../../Images/window.png"
+    os.path.dirname(os.path.realpath(__file__)) + "/../../../Images/Models/Windows/window.png"
 )
 
 image = cv2.imread(example_image_path)

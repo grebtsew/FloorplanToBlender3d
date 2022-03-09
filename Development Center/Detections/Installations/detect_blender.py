@@ -15,10 +15,10 @@ def find_files(filename, search_path):
 def blender_installed():
     if platform == "linux" or platform == "linux2":
         # linux
-        return find_files("blender", "C:")
+        return find_files("blender", "/")
     elif platform == "darwin":
         # OS X
-        return find_files("blender", "C:")
+        return find_files("blender", "/")
     elif platform == "win32":
         # Windows
         return find_files("blender.exe", "C:\\")

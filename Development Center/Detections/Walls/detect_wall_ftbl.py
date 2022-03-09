@@ -14,7 +14,7 @@ except ImportError as e:
 
 def main():
     example_image_path = (
-        os.path.dirname(os.path.realpath(__file__)) + "/../../../Images/example.png"
+        os.path.dirname(os.path.realpath(__file__)) + "/../../../Images/Examples/example.png"
     )
     # Read floorplan image
     img = cv2.imread(example_image_path)
@@ -35,7 +35,7 @@ def main():
     Detect Wall
     """
     # detect walls
-    boxes, img = detect.detectPreciseBoxes(wall_img, blank_image)
+    boxes, img = detect.precise_boxes(wall_img, blank_image)
 
     cv2.imshow("origin", image)
     cv2.imshow("res", img)

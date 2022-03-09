@@ -5,7 +5,7 @@ import os
 
 floorplan_lib_path = os.path.dirname(os.path.realpath(__file__)) + "/../../../"
 example_image_path = (
-    os.path.dirname(os.path.realpath(__file__)) + "/../../../Images/example.png"
+    os.path.dirname(os.path.realpath(__file__)) + "/../../../Images/Examples/example.png"
 )
 
 sys.path.insert(0, floorplan_lib_path)
@@ -49,7 +49,7 @@ def test():
     # gray = cv2.bilateralFilter(gray, 11, 17, 17)
     # edged = cv2.Canny(gray, 30, 200)
 
-    res, out = detect.detectAndRemovePreciseBoxes(wall_img, output_img=gray)
+    res, out = detect.and_remove_precise_boxes(wall_img, output_img=gray)
 
     # detect walls
     # boxes, img = detect.detectUnpreciseBoxes(out, output_img = gray)
@@ -199,7 +199,7 @@ wall_img = detect.wall_filter(gray)
 # gray = cv2.bilateralFilter(gray, 11, 17, 17)
 # edged = cv2.Canny(gray, 30, 200)
 
-res, out = detect.detectAndRemovePreciseBoxes(wall_img, output_img=gray)
+res, out = detect.and_remove_precise_boxes(wall_img, output_img=gray)
 
 
 gray = cv2.GaussianBlur(gray, (5, 5), 0)

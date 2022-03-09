@@ -15,20 +15,20 @@ except ImportError as e:
 
 def main():
     # Get preferred pixel per wall size
-    path = os.path.dirname(os.path.realpath(__file__)) + "/../../Images/example.png"
+    path = os.path.dirname(os.path.realpath(__file__)) + "/../../Images/Examples/example.png"
     img = cv2.imread(path)
     preferred = calculate_wall_width_average(img)
 
     #
     # Get 2 examples to test against
     #
-    path = os.path.dirname(os.path.realpath(__file__)) + "/../../Images/example2.png"
+    path = os.path.dirname(os.path.realpath(__file__)) + "/../../Images/Examples/example2.png"
     img = cv2.imread(path)
     too_small1 = calculate_wall_width_average(img)
 
     scalefactor1 = calculate_scale_factor(preferred, too_small1)
 
-    path = os.path.dirname(os.path.realpath(__file__)) + "/../../Images/example3.png"
+    path = os.path.dirname(os.path.realpath(__file__)) + "/../../Images/Examples/example3.png"
     img = cv2.imread(path)
     too_small2 = calculate_wall_width_average(img)
 

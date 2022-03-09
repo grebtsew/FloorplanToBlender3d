@@ -5,7 +5,6 @@ https://docs.opencv.org/trunk/d4/dc6/tutorial_py_template_matching.html
 import os
 import cv2 as cv
 import numpy as np
-import time
 
 
 """
@@ -13,17 +12,15 @@ We test template matching on door and window in one angle
 """
 
 example_image_path = (
-    os.path.dirname(os.path.realpath(__file__)) + "/../../../Images/example.png"
+    os.path.dirname(os.path.realpath(__file__)) + "/../../../Images/Examples/example.png"
 )
 door_image_path = (
-    os.path.dirname(os.path.realpath(__file__)) + "/../../../Images/door.png"
+    os.path.dirname(os.path.realpath(__file__)) + "/../../../Images/Models/Doors/door.png"
 )
 window_image_path = (
-    os.path.dirname(os.path.realpath(__file__)) + "/../../../Images/window.png"
+    os.path.dirname(os.path.realpath(__file__)) + "/../../../Images/Models/Windows/window.png"
 )
-text_image_path = (
-    os.path.dirname(os.path.realpath(__file__)) + "/../../../Images/text.png"
-)
+
 
 
 def match(image, template, name, threshold=0.99):
@@ -64,11 +61,11 @@ img_rgb = cv.imread(example_image_path)
 
 window_template = cv.imread(window_image_path, 0)  # window.png door.png text_test.png
 door_template = cv.imread(door_image_path, 0)  # window.png door.png text_test.png
-text_template = cv.imread(text_image_path, 0)  # window.png door.png text_test.png
+#text_template = cv.imread(text_image_path, 0)  # window.png door.png text_test.png
 
 print("window")
 match(img_rgb, window_template, "window")
 print("door")
 match(img_rgb, door_template, "door")
 print("text")
-match(img_rgb, text_template, "text")
+#match(img_rgb, text_template, "text")

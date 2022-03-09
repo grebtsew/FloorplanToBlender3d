@@ -8,7 +8,6 @@ https://bitesofcode.wordpress.com/2017/09/12/augmented-reality-with-python-and-o
 import os
 import cv2
 import numpy as np
-from matplotlib import pyplot as plt
 import math
 
 
@@ -526,10 +525,10 @@ Therefore the developers created ORB. And it seems to be working fine!
 
 if __name__ == "__main__":
     door_image_path = (
-        os.path.dirname(os.path.realpath(__file__)) + "/../../../Images/door.png"
+        os.path.dirname(os.path.realpath(__file__)) + "/../../../Images/Models/Doors/door.png"
     )
     example_image_path = (
-        os.path.dirname(os.path.realpath(__file__)) + "/../../../Images/example.png"
+        os.path.dirname(os.path.realpath(__file__)) + "/../../../Images/Examples/example.png"
     )
 
     img1 = cv2.imread(example_image_path, 0)
