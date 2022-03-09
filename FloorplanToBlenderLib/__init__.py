@@ -1,6 +1,6 @@
-'''
+"""
 FloorplanToBlender3d
-Copyright (C) 2019 Daniel Westberg
+Copyright (C) 2022 Daniel Westberg
 
 This file create python package
 
@@ -15,6 +15,21 @@ transform...
 dialog...
 execution...
 
-'''
+"""
 
-__all__ = ['detect', 'generate', 'IO', 'transform', 'dialog', 'execution']
+__all__ = [
+    "image",
+    "detect",
+    "generate",
+    "IO",
+    "transform",
+    "dialog",
+    "execution",
+    "const",
+    "generator",
+    "draw",
+    "calculate",
+    "config",
+    "stacking",
+    "floorplan",
+]

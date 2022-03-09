@@ -1,0 +1,14 @@
+# Example 
+# Line description:
+# HELP:
+# <SEPARATECOMMAND> space
+# <FILECOMMAND> <PATHTOSTACKINGFILE> space
+# <ADDCOMMAND> <CONFIGPATH> <IMAGEPATH> <AMOUNT> <STACKINGTYPE> <STACKINGMARGIN> <WORLDPOSITION> <WORLDROTATION> <WORLDSCALE>
+# <AMOUNTPERLEVEL> <RADIE> <DEGREES>  space
+# It is ok to leave arguments empty with "_" or leave them entierly if default is wanted.
+
+ADD "Configs/default.ini" "_" 1 "_" "_" [5,2,0] [45,45,0] [1,1,1] "_" "_" "_" 
+
+ADD "Configs/default.ini" "_" 1 "_" "_" [5,1,0] [45,45,0] [0.5,0.5,0.5] "_" "_" "_" 
+
+ADD "Configs/default.ini" "_" 1 "_" "_" [5,0,0] [45,45,0] [0.25,0.25,0.25] "_" "_" "_" 

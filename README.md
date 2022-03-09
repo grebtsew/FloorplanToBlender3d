@@ -1,5 +1,5 @@
 <p align="center">
-  <img width="460" height="300" src="Images/logo.png">
+  <img width="460" height="300" src="Images/Logo/logo.png">
 </p>
 
 ![license](https://img.shields.io/github/license/grebtsew/FloorplanToBlender3d)
@@ -9,7 +9,7 @@
 <!-- TODO Add more relevant badges! -->
 
 
-![Demo](Images/powerpoint.gif)
+![Demo](Images/Demos/powerpoint.gif)
 
 <details>
   <summary><strong>Table of Contents</strong> (click to expand)</summary>
@@ -21,10 +21,11 @@
   - [Run on Docker](#run-on-docker)
   - [Run locally on OS](#run-locally-on-os)
     - [Run Tutorial](#run-tutorial)
+  - [ConfigFile](#configfile)
+  - [StackingFile](#stackingfile)
 - [Demos](#demos)
 - [Documentation](#documentation)
 - [Testing](#testing)
-- [References and Imports](#References-and-Imports)
 - [Contribute](#contribute)
 - [Known Issues](#Known-Issues)
 - [License](#license)
@@ -43,7 +44,7 @@ sounds and uses a low amount of resources, enabling it to be used on low hardwar
  or [CAD](https://www.autodesk.com/solutions/cad-software). 
 
 # Contents
-This repository contains the floorplan to blender library **FTBL** along with example scripts for converting an image to a 3d model **./create_blender_project_from_floorplan.py**. The repository also contains a server that receives images and converts them into 3d models using the **FTBL** library. The Server contains a [Swagger API](https://swagger.io/) gui and is monitored using a [weavescope](https://github.com/weaveworks/scope) container. Read more about the server implementation [here](./Server/README.md). To allow developers to utilize more functionality a Jupyter tutorial has been added to the project, explaining some of the development steps and functions of the library. Read more about the tutorial [here](./Docs/README.md).
+This repository contains the floorplan to blender library **FTBL** along with example scripts for converting an image to a 3d model **./create_blender_project_from_floorplan.py**. The repository also contains a server that receives images and converts them into 3d models using the **FTBL** library. The Server contains a [Swagger API](https://swagger.io/) gui and is monitored using a [weavescope](https://github.com/weaveworks/scope) container. Read more about the server implementation [here](./Server/README.md). To allow developers to utilize more functionality a Jupyter tutorial has been added to the project, explaining some of the development steps and functions of the library. Read more about the tutorial [here](./Docs/README.md). Stacking is now also added as a core feature read more about how to use stacking below.
 
 # How-To
 This part contains information about how to setup and execute the example script.
@@ -92,7 +93,7 @@ If you are a `Linux/Ubuntu` user, look at `Dockerfile` for better instructions.
 
 These are the programs that are required to run this implementation.
 
-* [Blender3d >  2.82](https://www.blender.org/)
+* [Blender3d >  2.93](https://www.blender.org/)
 * `Python >== 3.6.5`
 
 Clone or download this repo:
@@ -110,6 +111,7 @@ With a suitable `blender`, `python` and `python pip` installed you can have `Pyt
 This tutorial takes you through the execution of this program.
 
 1. Receive floorplan as image, from pdf or by using other method (for example paint)
+2. (Optional) create a new ConfigFile in `Configs` folder or StackingFile in `Stacking` folder.
 2. Run python script `create_blender_project_from_floorplan.py`
 3. Follow instructions
 4. Created `floorplan.blender` files will be saved under `./target`
@@ -117,27 +119,41 @@ This tutorial takes you through the execution of this program.
 <span style="color:blue">**NOTE**</span>
 : For more information about alternative ways of executing the implementation read more [here](./Docs/README.md).
 
+## Update Settings in Config files
+When the implementation run the first time a `system.ini` and ``default.ini` file is created.
+
+## ConfigFile
+With the new update of the implementation `ConfigFiles` are added. These files describe information about each floorplan class instance. In this file model transform can be changed. If no config is added, default will be used. To generate a new default file remove or move the old one. Next to the default config file is the system default config file containing additional settings for the entire system. All configs are placed inside the `Configs` folder.
+
+## StackingFile
+With the new update the `StackingFile` was added. StackingFiles are used to create worlds of floorplans at once. Using a self developed parsing language. See the example files in the `Stacking` folder.
+
 # Demos
 
 ## Create Floorplan in Blender3d
 Here we demo the program. First of we need a floorplan image to process.
 We use `example.png`, see below:
-![Floorplanexample](Images/example.png)
+![Floorplanexample](Images/Examples/example.png)
 
 Next up we execute our script and answer the questions:
-![RunScriptDemo](Images/RunScriptDemo.gif)
+![RunScriptDemo](Images/Demos/RunScriptDemo.gif)
 
 Finally we can open the newly created floorplan.blender file and see the result:
 
-![OpenFiledemo](Images/OpenFiledemo.gif)
+![OpenFiledemo](Images/Demos/OpenFiledemo.gif)
 
 <span style="color:blue">**NOTE**</span>: This demo only uses default settings. For instance coloring is by default random.
 
+## Create several floorplans using Stacking
+Here we instead use StackingFiles to create a world containing several floorplans.
+![RunScriptDemo](Images/Demos/demoStacking1.gif)
+Show the result.
+![RunScriptDemo](Images/Demos/demoStacking2.gif)
 
 ## Floorplan To Blender Server with Swagger API
 The server implementation comes with an automatically generated [Swagger API](https://swagger.io/) page.
 
-![swagger](Images/swaggerdemo.gif)
+![swagger](Images/Demos/swaggerdemo.gif)
 
 ## Usages in other applications
 If you are interested in code for these demos they are accessable in another repository [here](https://github.com/grebtsew/ARFloorplanDemo).
@@ -145,25 +161,25 @@ If you are interested in code for these demos they are accessable in another rep
 ### AR foundation place floorplans in world
 
 <p align="left">
-  <img width="460" height="300" src="Images/ardemo.gif">
+  <img width="460" height="300" src="Images/Demos/ardemo.gif">
 </p>
 
 ### AR foundation real life scaling of floorplans
 
 <p align="left">
-  <img width="460" height="300" src="Images/arrealifedemo.gif">
+  <img width="460" height="300" src="Images/Demos/arrealifedemo.gif">
 </p>
 
 ### AR foundation interior design of floorplans
 
 <p align="left">
-  <img width="460" height="300" src="Images/PlaceObjectInRoomDemo.gif">
+  <img width="460" height="300" src="Images/Demos/PlaceObjectInRoomDemo.gif">
 </p>
 
 ### AR foundation with MediaPipe Hands interactions
 
 <p align="left">
-  <img width="460" height="300" src="Images/InteractDemo.gif">
+  <img width="460" height="300" src="Images/Demos/InteractDemo.gif">
 </p>
 
 # Documentation
@@ -175,18 +191,6 @@ Vital and core functionality are tested with pytest. To run tests yourself enter
 pytest
 ```
 
-# References and Imports
-During the development of this project I have been searching a lot and copied code from `StackOverflow`.
-I share links to copied code and other contributors here:
-
-* First look at problem : https://mathematica.stackexchange.com/questions/19546/image-processing-floor-plan-detecting-rooms-borders-area-and-room-names-t
-* Room detection : https://stackoverflow.com/questions/54274610/crop-each-of-them-using-opencv-python
-* Watershed : https://docs.opencv.org/3.1.0/d3/db4/tutorial_py_watershed.html
-* Shape detection : https://docs.opencv.org/3.0-beta/doc/py_tutorials/py_feature2d/py_features_harris/py_features_harris.html
-* Distance in image : https://stackoverflow.com/questions/50930033/drawing-lines-and-distance-to-them-on-image-opencv-python
-* Rect contain : https://stackoverflow.com/questions/33065834/how-to-detect-if-a-point-is-contained-within-a-bounding-rect-opecv-python
-* Line detection : https://docs.opencv.org/3.0-beta/doc/py_tutorials/py_imgproc/py_houghlines/py_houghlines.html
-* Readme tips: https://github.com/matiassingers/awesome-readme
 
 # Contribute
 Let me know if you want to contribute to this project, also if you want me to add more

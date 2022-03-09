@@ -1,0 +1,16 @@
+# Example 
+# Line description:
+# HELP:
+# <SEPARATECOMMAND> space
+# <FILECOMMAND> <PATHTOSTACKINGFILE> space
+# <ADDCOMMAND> <CONFIGPATH> <IMAGEPATH> <AMOUNT> <STACKINGTYPE> <STACKINGMARGIN> <WORLDPOSITION> <WORLDROTATION> <WORLDSCALE>
+# <AMOUNTPERLEVEL> <RADIE> <DEGREES>  space
+# It is ok to leave arguments empty with "_" or leave them entierly if default is wanted.
+
+ADD "_" "Images/Examples/example.png" 3 "x" [0,0,0] [0,0,0] [0,0,0] [1,1,1] "_" "_" "_" 
+
+ADD "_" "Images/Examples/example.png" 3 "-x" [0,0,0] [0,0,10] [0,180,0] [1,1,1] "_" "_" "_" 
+
+ADD "_" "_" 3 "y" [0,0,0] [0,0,1] [0,0,0] [1,1,1] "_" "_" "_" 
+
+ADD "_" "_" 3 "z" [0,0,0] [0,1,0] [0,0,0] [1,1,1] "_" "_" "_" 

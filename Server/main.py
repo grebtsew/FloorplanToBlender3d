@@ -2,15 +2,15 @@
 Setup & Start Rest Apis and flask
 """
 
-'''
+"""
 FloorplanToBlender3d
 Copyright (C) 2021 Daniel Westberg
-'''
+"""
 
 from shared_variables import shared_variables
 from swagger.swagger_flask import Swagger
 
-#import webbrowser
+# import webbrowser
 from api.server import Server
 
 if __name__ == "__main__":

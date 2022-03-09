@@ -14,6 +14,7 @@ In this folder I will share more links and information about the implementation.
 - [Run](#run)
   - [Run old style](#run-old-style)
 - [Solved Issues](#solved-issues)
+- [References and Imports](#references-and-imports)
 
 # Code Review and Explanation
 Here we explain how to use the `Floorplan to blender library` utilizing `Jupyter notebook`.
@@ -117,3 +118,20 @@ Resolved version issues:
 * If a later `OpenCV` library version than 3.4.1.15 for python is used, several changes has to be done in the `/FloorplanToBlender3d/detect.py` file.
 Please create an issue if you encounter any problems with this implementation.
 
+# Code format
+
+For autoformating in python we use the black library. It requires python version 3.6.0+.
+To use it install using `pip install black` and then run in root folder `black ./*`
+
+# References and Imports
+During the development of this project I have been searching a lot and copied code from `StackOverflow`.
+I share links to copied code and other contributors here:
+
+* First look at problem : https://mathematica.stackexchange.com/questions/19546/image-processing-floor-plan-detecting-rooms-borders-area-and-room-names-t
+* Room detection : https://stackoverflow.com/questions/54274610/crop-each-of-them-using-opencv-python
+* Watershed : https://docs.opencv.org/3.1.0/d3/db4/tutorial_py_watershed.html
+* Shape detection : https://docs.opencv.org/3.0-beta/doc/py_tutorials/py_feature2d/py_features_harris/py_features_harris.html
+* Distance in image : https://stackoverflow.com/questions/50930033/drawing-lines-and-distance-to-them-on-image-opencv-python
+* Rect contain : https://stackoverflow.com/questions/33065834/how-to-detect-if-a-point-is-contained-within-a-bounding-rect-opecv-python
+* Line detection : https://docs.opencv.org/3.0-beta/doc/py_tutorials/py_imgproc/py_houghlines/py_houghlines.html
+* Readme tips: https://github.com/matiassingers/awesome-readme

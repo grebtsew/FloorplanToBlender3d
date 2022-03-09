@@ -2,6 +2,18 @@
 *test-result
 */storage
 
+config.ini
+./config.ini
+*/config.ini
+
+system.ini
+./system.ini
+*/system.ini
+
+default.ini
+./default.ini
+*/default.ini
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
