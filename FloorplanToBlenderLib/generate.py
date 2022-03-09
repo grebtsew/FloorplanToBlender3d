@@ -70,12 +70,18 @@ def generate_all_files(
             shape = Floor(gray, path, scale, info).shape
 
         if floorplan.walls:
-            new_shape = Wall(gray, path, scale, info).shape
-            shape = validate_shape(shape, new_shape)
+            if shape is not None:
+                new_shape = Wall(gray, path, scale, info).shape
+                shape = validate_shape(shape, new_shape)
+            else:
+                 shape = Wall(gray, path, scale, info).shape
 
         if floorplan.rooms:
-            new_shape = Room(gray, path, scale, info).shape
-            shape = validate_shape(shape, new_shape)
+            if shape is not None:
+                new_shape = Room(gray, path, scale, info).shape
+                shape = validate_shape(shape, new_shape)
+            else:
+                shape = Room(gray, path, scale, info).shape
 
         if floorplan.windows:
             Window(gray, path, floorplan.image_path, scale_factor, scale, info)
@@ -103,6 +109,9 @@ def generate_all_files(
             world_direction * shape[1] + floorplan.position[1] + world_position[1],
             world_direction * shape[2] + floorplan.position[2] + world_position[2],
         ]
+
+    if shape is None:
+        shape = [0,0,0]
 
     return path, shape
 
