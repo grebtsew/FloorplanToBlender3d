@@ -119,6 +119,9 @@ This tutorial takes you through the execution of this program.
 <span style="color:blue">**NOTE**</span>
 : For more information about alternative ways of executing the implementation read more [here](./Docs/README.md).
 
+## Update Settings in Config files
+When the implementation run the first time a `system.ini` and ``default.ini` file is created.
+
 ## ConfigFile
 With the new update of the implementation `ConfigFiles` are added. These files describe information about each floorplan class instance. In this file model transform can be changed. If no config is added, default will be used. To generate a new default file remove or move the old one. Next to the default config file is the system default config file containing additional settings for the entire system. All configs are placed inside the `Configs` folder.
 
@@ -141,6 +144,11 @@ Finally we can open the newly created floorplan.blender file and see the result:
 
 <span style="color:blue">**NOTE**</span>: This demo only uses default settings. For instance coloring is by default random.
 
+## Create several floorplans using Stacking
+Here we instead use StackingFiles to create a world containing several floorplans.
+![RunScriptDemo](Images/Demos/demoStacking1.gif)
+Show the result.
+![RunScriptDemo](Images/Demos/demoStacking2.gif)
 
 ## Floorplan To Blender Server with Swagger API
 The server implementation comes with an automatically generated [Swagger API](https://swagger.io/) page.
