@@ -94,7 +94,7 @@ If you are a `Linux/Ubuntu` user, look at `Dockerfile` for better instructions.
 These are the programs that are required to run this implementation.
 
 * [Blender3d >  2.93](https://www.blender.org/)
-* `Python >== 3.6.5`
+* `Python >== 3.8.0`
 
 Clone or download this repo:
 ```git

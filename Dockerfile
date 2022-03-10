@@ -2,7 +2,7 @@ FROM ubuntu:18.04
 
 # Welcome to this DockerFile for the Floorplan To Blender3d project
 # All steps of the installation are described below
-LABEL MAINTAINER=grebtsew UPDATED=2022-03-08
+LABEL MAINTAINER=grebtsew UPDATED=2022-03-10
 
 # Create program install folder
 ENV PROGRAM_PATH /home/floorplan_to_blender
@@ -22,8 +22,7 @@ RUN apt-get update && \
 	libxrender1 \
     nano \
 	dos2unix \
-    python3-pip \
-    python3-dev  && \
+	software-properties-common  && \
 	apt-get -y autoremove && \
 	rm -rf /var/lib/apt/lists/*
 
@@ -38,14 +37,22 @@ RUN mkdir /usr/local/blender && \
 	tar -xf blender.tar.xz -C /usr/local/blender --strip-components=1 && \
 	rm blender.tar.xz
 
+# Install python3.8
+RUN add-apt-repository ppa:deadsnakes/ppa
+RUN apt-get update && \
+	apt-get install -y \
+	python3.8 python3-pip python3.8-dev  && \
+	apt-get -y autoremove && \
+	rm -rf /var/lib/apt/lists/*
+
 # Add our program
 ADD ./ ${PROGRAM_PATH}/
 
 # Setup python
-RUN python3 -m pip install --upgrade pip
-RUN pip install -r ${PROGRAM_PATH}/requirements.txt
-RUN pip install -r ${PROGRAM_PATH}/Docs/requirements.txt
-RUN pip install -r ${PROGRAM_PATH}/Development\ Center/requirements.txt
+RUN python3.8 -m pip install --upgrade pip
+RUN python3.8 -m pip install -r ${PROGRAM_PATH}/requirements.txt
+RUN python3.8 -m pip install -r ${PROGRAM_PATH}/Docs/requirements.txt
+RUN python3.8 -m pip install -r ${PROGRAM_PATH}/Development\ Center/requirements.txt
 
 # Volume to share images and get data after execution
 VOLUME ${PROGRAM_PATH}/Images
