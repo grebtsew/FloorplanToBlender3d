@@ -1,5 +1,5 @@
 opencv-python==4.2.0.34 
-numpy==1.21.0
+numpy==1.22.0
 configparser==3.5.0
 future-fstrings==1.2.0
 requests==2.25.1
