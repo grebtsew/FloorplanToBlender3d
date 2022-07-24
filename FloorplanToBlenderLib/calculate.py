@@ -33,13 +33,10 @@ def remove_walls_not_in_contour(walls, contour):
     """
     res = []
     for wall in walls:
-        (x, y, w, h) = cv2.boundingRect(wall)
-        p1 = (x, y)
-        p2 = (x, y + h)
-        p3 = (x + w, y + h)
-        p4 = (x + w, y)
-        if points_inside_contour([p1, p2, p3, p4], contour):
-            res.append(wall)
+        for point in wall:
+            if points_inside_contour(point, contour):
+                res.append(wall)
+                break
     return res
 
 
