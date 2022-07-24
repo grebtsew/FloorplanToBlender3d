@@ -126,8 +126,18 @@ class Wall(Generator):
         # detect contour
         contour, _ = detect.outer_contours(gray)
 
+        # get bounding Rect of the outer_contours
+        (x, y, w, h) = cv2.boundingRect(contour)
+        p1 = [x, y]
+        p2 = [x, y + h]
+        p3 = [x + w, y + h]
+        p4 = [x + w, y]
+        pts = np.array([p1, p2, p3, p4], np.int32)
+        pts = pts.reshape(-1, 1, 2)
+
         # remove walls outside of contour
-        boxes = calculate.remove_walls_not_in_contour(boxes, contour)
+        boxes = calculate.remove_walls_not_in_contour(boxes, pts)
+        # boxes = calculate.remove_walls_not_in_contour(boxes, contour)
         # Convert boxes to verts and faces, vertically
         self.verts, self.faces, wall_amount = transform.create_nx4_verts_and_faces(
             boxes=boxes,
