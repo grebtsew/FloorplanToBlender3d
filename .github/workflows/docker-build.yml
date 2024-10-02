@@ -1,0 +1,30 @@
+name: Test Docker Build
+
+on:
+  # Run on Pull Requests
+  pull_request:
+    branches:
+      - main
+      - '**'  # Or any other branches you want to include
+
+  # Run once a month at midnight on the first day of the month
+  schedule:
+    - cron: '0 0 1 * *'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Docker Buildx
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # Step 3: Build the Docker image
+      - name: Build Docker image
+        run: |
+          docker build -t my-image-name .
