@@ -25,7 +25,7 @@ if __name__ == "__main__":
                     "../Blender/floorplan_to_3dObject_in_blender.py",
                     "/home/floorplan_to_blender/Server/",
                     "storage/objects/" + str(sys.argv[1]) + ".blend",
-                    "storage/data/" + str(sys.argv[1]) + "0/",
+                    "storage/data/" + str(sys.argv[1]) + "/0/",
                 ]
             )
         )
@@ -41,6 +41,6 @@ if __name__ == "__main__":
             "../Blender/floorplan_to_3dObject_in_blender.py",
             "/home/floorplan_to_blender/Server/",
             "storage/objects/" + str(sys.argv[1]) + ".blend",
-            "storage/data/" + str(sys.argv[1]) + "0/",
+            "storage/data/" + str(sys.argv[1]) + "/0/",
         ]
     )

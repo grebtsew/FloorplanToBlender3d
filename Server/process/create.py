@@ -122,8 +122,7 @@ class Create(Process):
         self.process["state"] = self.process["state"] + 1
         self.update("status", "Create Object file")
 
-        check_output(
-            [
+        cmd = [
                 blender_install_path,
                 "-noaudio",  # this is a dockerfile ubuntu hax fix
                 "--background",
@@ -133,6 +132,8 @@ class Create(Process):
                 self.process["format"],
                 "./storage/objects/" + self.process["out"],
             ]
+        check_output(
+            cmd
         )
 
         self.process["state"] = self.process["state"] + 1
@@ -141,10 +142,11 @@ class Create(Process):
         # Don't remove target!
         # Remove data
         # TODO: handle multiple floorplan removeal
-        fh.remove("./storage/data/" + self.process["in"] + "0/")
+        fh.remove("./storage/data/" + self.process["in"] + "/0/")
 
         self.process["state"] = self.process["state"] + 1
         self.update("status", "Done")
 
         # Reindex here
         self.shared.reindex_files()
+        print(f"Done with task: {cmd}")
