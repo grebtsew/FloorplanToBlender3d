@@ -52,16 +52,27 @@ def rescale_rect(list_of_rects, scale_factor):
     return rescaled_rects
 
 
-def flatten(in_list):
+def flatten_iterative_safe(thelist, res=None):
     """
-    Flatten multidim list into single dim array
+    Flatten iterative safe using an explicit stack to prevent recursion depth issues.
+    Handles nested lists and skips non-list elements safely.
+    @Param thelist, incoming list
+    @Param res, resulting list, preferably []
     """
-    if in_list == []:
-        return []
-    elif type(in_list) is not list:
-        return [in_list]
-    else:
-        return flatten(in_list[0]) + flatten(in_list[1:])
+    if res is None:
+        res = []
+    stack = [iter(thelist)]
+    while stack:
+        current_iter = stack[-1]
+        try:
+            item = next(current_iter)
+            if isinstance(item, list):
+                stack.append(iter(item))
+            else:
+                res.append(item)
+        except StopIteration:
+            stack.pop()
+    return res
 
 
 def rotate_round_origin_vector_2d(origin, point, angle):
